@@ -9,7 +9,7 @@ import {
 	Setting, TFile
 } from 'obsidian';
 
-import {IMetadataCollection, SuggestionCollector} from "./suggestionsCollection";
+import {IMetadataCollection, Suggestion, SuggestionCollector} from "./suggestionsCollection";
 
 interface NoteAutoCreatorSettings {
 	mySetting: string;
@@ -100,7 +100,8 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	renderSuggestion(value: string, el: HTMLElement): void {
-		el.setText( value );
+		const suggestion = new Suggestion(value)
+		el.setText( suggestion.Title );
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
