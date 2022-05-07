@@ -58,8 +58,51 @@ describe('the list of suggestions', function () {
 
 	})
 
-	test('only one suggestion per link', () => {
+	test('contains only one suggestion per link', () => {
+		const unresolvedLinks = {
+			'document 1.md': {
+				'Some link': 1,
+			},
+			'Some other markdown.md': {},
+			'Hello world.md': {'Some link': 1}
+		}
 
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const suggestions = collector.getSuggestions();
+		const expectedSuggestionTitles = [
+			'document 1',
+			'Some link',
+			'Some other markdown',
+			'Hello world',
+		]
+
+		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
+	})
+
+	test('may contains multiple suggestions with same names if they are in separate locations', () => {
+		const unresolvedLinks = {
+			'document 1.md': {
+				'Some link': 1,
+			},
+			'Some other markdown.md': {},
+			'Hello world.md': {'Other folder/Some link': 1}
+		}
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const suggestions = collector.getSuggestions();
+		const expectedSuggestionTitles = [
+			'document 1',
+			'Some link',
+			'Some other markdown',
+			'Hello world',
+			'Some link',
+		]
+
+		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
 	})
 
 	test('filters out suggestions that do not contain the query text', () => {
