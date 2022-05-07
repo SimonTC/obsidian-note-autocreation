@@ -81,42 +81,34 @@ describe('the list of suggestions', function () {
 
 describe('a single suggestion', function () {
 	it.each([
-		['folder1/folder2/mynote.md', 'folder1/folder2'],
-		['folder2/mynote.md', 'folder2'],
-		['mynote.md', undefined],
-	])('does not contain file name in folder path %p', (vaultPath, expectedFolderPath) => {
+		{vaultPath: 'folder1/folder2/mynote.md', expectedFolderPath: 'folder1/folder2'},
+		{vaultPath: 'folder2/mynote.md', expectedFolderPath: 'folder2'},
+		{vaultPath: 'mynote.md', expectedFolderPath: undefined},
+	])('does not contain file name when vault path is $vaultPath', ({vaultPath, expectedFolderPath}) => {
 		const suggestion = new Suggestion(vaultPath);
 
 		expect(suggestion.FolderPath).toBe(expectedFolderPath)
 	})
 
-
-	test('uses only the name of the link object as title', () => {
-		const vaultPath = 'folder1/folder2/mynote.md';
+	it.each([
+		{vaultPath: 'folder1/folder2/mynote.md', expectedTitle: 'mynote'}, // normal link
+		{vaultPath: 'folder1/folder2/some note', expectedTitle: 'some note'}, // link without extension
+		{vaultPath: 'folder1/folder2/with some extension.exe', expectedTitle: 'with some extension'}, // wrong extension given
+	])('uses title $expectedTitle when vault path is $vaultPath', ({vaultPath, expectedTitle}) => {
 		const suggestion = new Suggestion(vaultPath);
 
-		expect(suggestion.Title).toBe('mynote')
+		expect(suggestion.Title).toBe(expectedTitle)
 	})
 
-	test('has correct title when path has no extension', () => {
-		const vaultPath = 'folder1/folder2/mynote';
+	it.each([
+		{vaultPath: 'folder1/folder2/mynote.md'},
+		{vaultPath: 'folder1/folder2/some note'},
+		{vaultPath: 'reading/books/short-stories/how I Won.md'},
+		{vaultPath: 'note.md'},
+	])('stores $vaultPath as vault path', ({vaultPath}) => {
 		const suggestion = new Suggestion(vaultPath);
 
-		expect(suggestion.Title).toBe('mynote')
-	})
-
-	test('has correct title when wrong extension is given', () => {
-		const vaultPath = 'folder1/folder2/mynote.exe';
-		const suggestion = new Suggestion(vaultPath);
-
-		expect(suggestion.Title).toBe('mynote')
-	})
-
-	test('stores the full vault path', () => {
-		const expectedPath = 'reading/books/short-stories/how I Won.md'
-		const suggestion = new Suggestion(expectedPath)
-
-		expect(suggestion.VaultPath).toEqual(expectedPath);
+		expect(suggestion.VaultPath).toBe(vaultPath)
 	})
 });
 
