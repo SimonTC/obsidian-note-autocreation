@@ -1,4 +1,5 @@
 import esbuild from "esbuild";
+import copyFilePlugin from 'esbuild-plugin-copy-file';
 import process from "process";
 import builtins from 'builtin-modules'
 
@@ -49,4 +50,12 @@ esbuild.build({
 	sourcemap: prod ? false : 'inline',
 	treeShaking: true,
 	outfile: 'src/main.js',
+	plugins: [copyFilePlugin({
+		before:{},
+		after: { // copy after bundling (target, source)
+			'./tests/Note Auto Creation Test Vault/.obsidian/plugins/obsidian-note-autocreation/styles.css': './styles.css',
+			'./tests/Note Auto Creation Test Vault/.obsidian/plugins/obsidian-note-autocreation/manifest.json': './manifest.json',
+			'./tests/Note Auto Creation Test Vault/.obsidian/plugins/obsidian-note-autocreation/main.js': './src/main.js'
+		}
+	})]
 }).catch(() => process.exit(1));
