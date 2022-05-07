@@ -1,8 +1,36 @@
 import NoteAutoCreator from "../src/main";
 
+class Suggestion{
+
+}
+
+class SuggestionCollector{
+	private metadata: IMetadataCollection;
+
+	constructor(metadata: IMetadataCollection) {
+		this.metadata = metadata;
+	}
+
+	getSuggestions(): Suggestion[] {
+		return []
+	}
+}
+
+/**
+ * Interface for accessing metadata from Obsidian
+ */
+interface IMetadataCollection{
+	unresolvedLinks:  Record<string, Record<string, number>>
+}
+
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
+		const metadata = <IMetadataCollection>{unresolvedLinks: {} };
+		const collector = new SuggestionCollector(metadata);
 
+		const suggestions = collector.getSuggestions();
+
+		expect(suggestions).toEqual<Suggestion[]>([]);
 	})
 
 	test('contains all files in the vault', () => {
