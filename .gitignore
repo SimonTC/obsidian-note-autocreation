@@ -20,3 +20,11 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# Do not exclude the main.js file from hot-reload since that is needed to enable hot reload
+!**/hot-reload/main.js
+
+# Exclude copied plugin files
+/tests/**/obsidian-note-autocreation/styles.css
+/tests/**/obsidian-note-autocreation/manifest.json
+/tests/**/obsidian-note-autocreation/main.js
