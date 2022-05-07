@@ -32,14 +32,41 @@ describe('the list of suggestions', function () {
 	})
 
 	test('contains links that do not have any files created for them', () => {
+		const unresolvedLinks = {
+			'document 1.md': {
+				'Some link': 1,
+				'another link': 13
+			},
+			'Some other markdown.md': {},
+			'Hello world.md': {'I have no page.md': 1}
+		}
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const suggestions = collector.getSuggestions();
+		const expectedSuggestionTitles = [
+			'document 1',
+			'Some link',
+			'another link',
+			'Some other markdown',
+			'Hello world',
+			'I have no page'
+		]
+
+		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
 
 	})
 
-	test('filters out suggestions that do not contain the link text', () => {
+	test('only one suggestion per link', () => {
 
 	})
 
-	test('is sorted in alphabetical order by link name', () => {
+	test('filters out suggestions that do not contain the query text', () => {
+
+	})
+
+	test('is sorted in alphabetical order by vault path', () => {
 
 	})
 
