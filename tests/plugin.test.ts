@@ -1,43 +1,9 @@
-import NoteAutoCreator from "../src/main";
+import {IMetadataCollection, Suggestion, SuggestionCollector} from "../src/suggestionsCollection";
 
-class Suggestion{
-
-	readonly VaultPath: string;
-
-	constructor(expectedPath: string) {
-		this.VaultPath = expectedPath;
-	}
-
-
-}
-
-class SuggestionCollector{
-	private metadata: IMetadataCollection;
-
-	constructor(metadata: IMetadataCollection) {
-		this.metadata = metadata;
-	}
-
-	getSuggestions(): Suggestion[] {
-		const suggestions = [];
-		for (let filePath in this.metadata.unresolvedLinks) {
-			let suggestion = new Suggestion(filePath);
-			suggestions.push(suggestion)
-		}
-		return suggestions;
-	}
-}
-
-/**
- * Interface for accessing metadata from Obsidian
- */
-interface IMetadataCollection{
-	unresolvedLinks:  Record<string, Record<string, number>>
-}
 
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
-		const metadata = <IMetadataCollection>{unresolvedLinks: {} };
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} };
 		const collector = new SuggestionCollector(metadata);
 
 		const suggestions = collector.getSuggestions();
@@ -57,7 +23,7 @@ describe('the list of suggestions', function () {
 			collection[file] = {}
 			return collection
 		}, {})
-		const metadata = <IMetadataCollection>{unresolvedLinks: unresolvedLinks };
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
 		const collector = new SuggestionCollector(metadata);
 
 		const suggestions = collector.getSuggestions();
