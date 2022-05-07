@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.1",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "obsidian-note-autocreator",
+	"version": "0.0.1",
+	"description": "This plugin makes it possible to automatically create notes when links are created to them.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
