@@ -28,3 +28,6 @@ data.json
 /tests/**/obsidian-note-autocreation/styles.css
 /tests/**/obsidian-note-autocreation/manifest.json
 /tests/**/obsidian-note-autocreation/main.js
+
+# Exclude markdown files in the test vault
+/tests/Note Auto Creation Test Vault/*.md
