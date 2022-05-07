@@ -2,10 +2,19 @@ export class Suggestion{
 
 	readonly VaultPath: string;
 	readonly Title: string;
+	readonly FolderPath: string
 
 	constructor(vaultPath: string) {
 		this.VaultPath = vaultPath;
 		this.Title = this.extractTitle(vaultPath);
+		this.FolderPath = this.extractFolderPath(vaultPath);
+	}
+
+	private extractFolderPath(vaultPath: string): string {
+		const fileNameStartsAt = vaultPath.lastIndexOf('/')
+		return fileNameStartsAt === -1
+			? undefined
+			: vaultPath.slice(0, fileNameStartsAt);
 	}
 
 	private extractTitle(vaultPath: string): string{

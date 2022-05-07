@@ -83,10 +83,11 @@ describe('a single suggestion', function () {
 	it.each([
 		['folder1/folder2/mynote.md', 'folder1/folder2'],
 		['folder2/mynote.md', 'folder2'],
-	])('does not contain file name in folder path $vaultPath', (vaultPath, expectedFolderPath) => {
+		['mynote.md', undefined],
+	])('does not contain file name in folder path %p', (vaultPath, expectedFolderPath) => {
 		const suggestion = new Suggestion(vaultPath);
 
-		expect(suggestion.Title).toBe('mynote')
+		expect(suggestion.FolderPath).toBe(expectedFolderPath)
 	})
 
 
