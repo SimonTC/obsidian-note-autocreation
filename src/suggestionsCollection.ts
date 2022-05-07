@@ -27,13 +27,12 @@ export class SuggestionCollector{
 
 	getSuggestions(): Suggestion[] {
 		const suggestions = [];
-		const unresolvedLinks = this.metadata.getUnresolvedLinks();
-		for (let unresolvedLinksKey in unresolvedLinks) {
-			// The key is the full path to the file which might contain unresolved links
-			let suggestion = new Suggestion(unresolvedLinksKey);
+		const unresolvedLinks: Record<string, Record<string, number>> = this.metadata.getUnresolvedLinks();
+		for (let pathToFileWithPossibleUnresolvedLink in unresolvedLinks) {
+			let suggestion = new Suggestion(pathToFileWithPossibleUnresolvedLink);
 			suggestions.push(suggestion)
 
-			for (let unresolvedLink in unresolvedLinks[unresolvedLinksKey]) {
+			for (let unresolvedLink in unresolvedLinks[pathToFileWithPossibleUnresolvedLink]) {
 				let suggestion = new Suggestion(unresolvedLink);
 				suggestions.push(suggestion)
 			}
