@@ -80,9 +80,15 @@ describe('the list of suggestions', function () {
 });
 
 describe('a single suggestion', function () {
-	test('has the folder of the link as a description', () => {
+	it.each([
+		['folder1/folder2/mynote.md', 'folder1/folder2'],
+		['folder2/mynote.md', 'folder2'],
+	])('does not contain file name in folder path $vaultPath', (vaultPath, expectedFolderPath) => {
+		const suggestion = new Suggestion(vaultPath);
 
+		expect(suggestion.Title).toBe('mynote')
 	})
+
 
 	test('uses only the name of the link object as title', () => {
 		const vaultPath = 'folder1/folder2/mynote.md';
