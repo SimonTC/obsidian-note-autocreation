@@ -2,6 +2,13 @@ import NoteAutoCreator from "../src/main";
 
 class Suggestion{
 
+	readonly VaultPath: string;
+
+	constructor(expectedPath: string) {
+		this.VaultPath = expectedPath;
+	}
+
+
 }
 
 class SuggestionCollector{
@@ -71,8 +78,11 @@ describe('a single suggestion', function () {
 
 	})
 
-	test('stores the full obsidian path', () => {
+	test('stores the full vault path', () => {
+		const expectedPath = 'reading/books/short-stories/how I Won.md'
+		const suggestion = new Suggestion(expectedPath)
 
+		expect(suggestion.VaultPath).toEqual(expectedPath);
 	})
 });
 
