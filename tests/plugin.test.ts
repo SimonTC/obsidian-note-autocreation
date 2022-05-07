@@ -28,7 +28,7 @@ describe('the list of suggestions', function () {
 
 		const suggestions = collector.getSuggestions();
 
-		expect(suggestions.map(su => su.VaultPath)).toEqual(files);
+		expect(suggestions.map(su => su.VaultPath).sort()).toEqual(files.sort());
 	})
 
 	test('contains links that do not have any files created for them', () => {
@@ -54,7 +54,7 @@ describe('the list of suggestions', function () {
 			'I have no page'
 		]
 
-		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
+		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort());
 
 	})
 
@@ -78,7 +78,7 @@ describe('the list of suggestions', function () {
 			'Hello world',
 		]
 
-		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
+		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort());
 	})
 
 	test('may contains multiple suggestions with same names if they are in separate locations', () => {
@@ -102,14 +102,34 @@ describe('the list of suggestions', function () {
 			'Some link',
 		]
 
+		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort());
+	})
+
+	test('is sorted in alphabetical order by suggestion title', () => {
+		const unresolvedLinks = {
+			'document 1.md': {
+				'Some link': 1,
+			},
+			'Some other markdown.md': {},
+			'Hello world.md': {'Other folder/Some link': 1}
+		}
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const suggestions = collector.getSuggestions();
+		const expectedSuggestionTitles = [
+			'document 1',
+			'Hello world',
+			'Some link',
+			'Some link',
+			'Some other markdown',
+		]
+
 		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
 	})
 
 	test('filters out suggestions that do not contain the query text', () => {
-
-	})
-
-	test('is sorted in alphabetical order by vault path', () => {
 
 	})
 

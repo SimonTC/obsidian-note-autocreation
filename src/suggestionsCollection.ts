@@ -36,7 +36,7 @@ export class SuggestionCollector{
 
 	getSuggestions(): Suggestion[] {
 		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())];
-		return allLinks.map(path => new Suggestion(path))
+		return allLinks.map(path => new Suggestion(path)).sort((a,b) =>  a.Title.localeCompare(b.Title))
 	}
 
 	private *getVaultPathsOfAllLinks(){
