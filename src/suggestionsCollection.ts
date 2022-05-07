@@ -35,18 +35,19 @@ export class SuggestionCollector{
 	}
 
 	getSuggestions(): Suggestion[] {
-		const suggestions = new Map<string, Suggestion>();
+		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())];
+		return allLinks.map(path => new Suggestion(path))
+	}
+
+	private *getVaultPathsOfAllLinks(){
 		const unresolvedLinks: Record<string, Record<string, number>> = this.metadata.getUnresolvedLinks();
 		for (let pathToFileWithPossibleUnresolvedLink in unresolvedLinks) {
-			let suggestion = new Suggestion(pathToFileWithPossibleUnresolvedLink);
-			suggestions.set(suggestion.VaultPath, suggestion);
+			yield pathToFileWithPossibleUnresolvedLink;
 
 			for (let unresolvedLink in unresolvedLinks[pathToFileWithPossibleUnresolvedLink]) {
-				let suggestion = new Suggestion(unresolvedLink);
-				suggestions.set(suggestion.VaultPath, suggestion);
+				yield unresolvedLink;
 			}
 		}
-		return [...suggestions.values()];
 	}
 }
 
