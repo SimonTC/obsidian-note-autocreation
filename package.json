@@ -2,7 +2,7 @@
 	"name": "obsidian-note-autocreator",
 	"version": "0.0.1",
 	"description": "This plugin makes it possible to automatically create notes when links are created to them.",
-	"main": "main.js",
+	"main": "src/main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
