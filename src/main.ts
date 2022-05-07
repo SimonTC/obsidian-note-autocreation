@@ -1,4 +1,15 @@
-import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import {
+	App,
+	Editor,
+	EditorPosition,
+	EditorSuggest,
+	EditorSuggestContext, EditorSuggestTriggerInfo,
+	Plugin,
+	PluginSettingTab,
+	Setting, TFile
+} from 'obsidian';
+
+import {IMetadataCollection, SuggestionCollector} from "./suggestionsCollection";
 
 interface NoteAutoCreatorSettings {
 	mySetting: string;
@@ -13,6 +24,9 @@ export default class NoteAutoCreator extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+		// This adds a settings tab so the user can configure various aspects of the plugin
+		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.registerEditorSuggest( new LinkSuggestor( this.app ) );
 
 	}
 
@@ -27,6 +41,72 @@ export default class NoteAutoCreator extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+}
+
+class ObsidianMetadataCollection implements IMetadataCollection{
+	private readonly app: App;
+	constructor(app: App) {
+		this.app = app;
+	}
+
+	getUnresolvedLinks(): Record<string, Record<string, number>> {
+		return app.metadataCache.unresolvedLinks;
+
+	}
+}
+
+class LinkSuggestor extends EditorSuggest<string>{
+	private readonly suggestionsCollector: SuggestionCollector;
+
+	constructor( app: App ) {
+		super( app );
+		const metadataCollection = new ObsidianMetadataCollection(app);
+		this.suggestionsCollector = new SuggestionCollector(metadataCollection) ;
+	}
+
+	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
+		return this.suggestionsCollector.getSuggestions().map(s => s.VaultPath)
+	}
+
+	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
+		if (cursor.ch === 0){
+			// At beginning of line, nothing has been written
+			return null;
+		}
+
+		const line = editor.getLine( cursor.line );
+		const startOfSearch = line.lastIndexOf('@');
+		const regex = new RegExp(/@(.*)/)
+		const match = regex.exec(
+			line.slice(startOfSearch, line.length)
+		);
+
+		if (!match){
+			return null;
+		}
+
+		// Modify match to be relative to line
+		match.index += startOfSearch;
+
+		console.log('Found a match', match)
+
+		const startMatch = match.length === 1 ? match.index : match.index + 1 // TO avoid issue where only @ has been added and it is the last character in the document
+
+		return {
+			start: { line: cursor.line, ch: startMatch },
+			end: { line: cursor.line, ch: match.length  },
+			query: match[1]
+		};
+	}
+
+	renderSuggestion(value: string, el: HTMLElement): void {
+		el.setText( value );
+	}
+
+	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
+
+	}
+
 }
 
 class SampleSettingTab extends PluginSettingTab {
