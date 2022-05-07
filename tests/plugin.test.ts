@@ -57,12 +57,25 @@ describe('a single suggestion', function () {
 
 	})
 
-	test('uses only the name of the link object as name', () => {
+	test('uses only the name of the link object as title', () => {
+		const vaultPath = 'folder1/folder2/mynote.md';
+		const suggestion = new Suggestion(vaultPath);
 
+		expect(suggestion.Title).toBe('mynote')
 	})
 
-	test('does not contain the extension in the name', () => {
+	test('has correct title when path has no extension', () => {
+		const vaultPath = 'folder1/folder2/mynote';
+		const suggestion = new Suggestion(vaultPath);
 
+		expect(suggestion.Title).toBe('mynote')
+	})
+
+	test('has correct title when wrong extension is given', () => {
+		const vaultPath = 'folder1/folder2/mynote.exe';
+		const suggestion = new Suggestion(vaultPath);
+
+		expect(suggestion.Title).toBe('mynote')
 	})
 
 	test('stores the full vault path', () => {

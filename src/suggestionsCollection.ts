@@ -1,9 +1,20 @@
 export class Suggestion{
 
 	readonly VaultPath: string;
+	readonly Title: string;
 
-	constructor(expectedPath: string) {
-		this.VaultPath = expectedPath;
+	constructor(vaultPath: string) {
+		this.VaultPath = vaultPath;
+		this.Title = this.extractTitle(vaultPath);
+	}
+
+	private extractTitle(vaultPath: string): string{
+		const fileNameWithPossibleExtension = vaultPath.split('/').pop();
+		const extensionStartsAt = fileNameWithPossibleExtension.lastIndexOf('.')
+
+		return extensionStartsAt === -1
+			? fileNameWithPossibleExtension
+			: fileNameWithPossibleExtension.slice(0, extensionStartsAt);
 	}
 }
 
