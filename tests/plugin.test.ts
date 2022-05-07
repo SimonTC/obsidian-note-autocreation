@@ -19,7 +19,12 @@ class SuggestionCollector{
 	}
 
 	getSuggestions(): Suggestion[] {
-		return []
+		const suggestions = [];
+		for (let filePath in this.metadata.unresolvedLinks) {
+			let suggestion = new Suggestion(filePath);
+			suggestions.push(suggestion)
+		}
+		return suggestions;
 	}
 }
 
@@ -41,7 +46,23 @@ describe('the list of suggestions', function () {
 	})
 
 	test('contains all files in the vault', () => {
+		const files = [
+			"james bond.md",
+			"how to cook.md",
+			"articles/my happy wedding.md",
+			"notes/2022/05/02/daily.md",
+		]
 
+		const unresolvedLinks = files.reduce((collection: Record<string, Record<string, number>>, file) => {
+			collection[file] = {}
+			return collection
+		}, {})
+		const metadata = <IMetadataCollection>{unresolvedLinks: unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const suggestions = collector.getSuggestions();
+
+		expect(suggestions.map(su => su.VaultPath)).toEqual(files);
 	})
 
 	test('contains links that do not have any files created for them', () => {
