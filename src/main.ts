@@ -96,7 +96,6 @@ class LinkSuggestor extends EditorSuggest<string>{
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
 		const editor = this.context.editor;
 		const suggestion = new Suggestion(value)
-		const valueToInsert = `[[${suggestion.VaultPath}|${suggestion.Title}]]`;
 		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
 
 		if(suggestion.Title === ""){
@@ -110,12 +109,19 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 		let newFilePath = getLinkpath(suggestion.VaultPath);
 
-		if(!app.vault.getAbstractFileByPath(newFilePath)){
+		const pathToActiveFile = app.workspace.getActiveFile().path;
+		let file = app.metadataCache.getFirstLinkpathDest(suggestion.VaultPath, pathToActiveFile)
+
+		if(!file){
 			if (!newFilePath.endsWith('.md')){
 				newFilePath = `${newFilePath}.md`
 			}
-			app.vault.create(newFilePath, `# ${suggestion.Title}`)
+			app.vault.create(newFilePath, `# ${suggestion.Title}`).then(f => file = f);
 		}
+
+		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, true)
+		let valueToInsert = `[[${pathToFile}|${suggestion.Title}]]`;
+
 
 		editor.replaceRange( valueToInsert, startPosition, this.currentTrigger.end );
 	}
