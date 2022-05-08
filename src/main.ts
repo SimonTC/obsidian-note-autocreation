@@ -9,7 +9,13 @@ import {
 	Setting, TFile
 } from 'obsidian';
 
-import {IMetadataCollection, Suggestion, SuggestionCollector, extractSuggestionTrigger} from "./suggestionsCollection";
+import {
+	IMetadataCollection,
+	Suggestion,
+	SuggestionCollector,
+	extractSuggestionTrigger,
+	SuggestionTrigger
+} from "./suggestionsCollection";
 
 interface NoteAutoCreatorSettings {
 	mySetting: string;
@@ -57,6 +63,7 @@ class ObsidianMetadataCollection implements IMetadataCollection{
 
 class LinkSuggestor extends EditorSuggest<string>{
 	private readonly suggestionsCollector: SuggestionCollector;
+	private currentTrigger: EditorSuggestTriggerInfo;
 
 	constructor( app: App ) {
 		super( app );
@@ -70,7 +77,8 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
 		const line = editor.getLine( cursor.line );
-		return extractSuggestionTrigger(line, {...cursor})
+		this.currentTrigger = extractSuggestionTrigger(line, {...cursor});
+		return this.currentTrigger
 	}
 
 	renderSuggestion(value: string, el: HTMLElement): void {
@@ -86,9 +94,12 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
-
+		const editor = this.context.editor;
+		const suggestion = new Suggestion(value)
+		const valueToInsert = `[[${suggestion.VaultPath}|${suggestion.Title}]]`;
+		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
+		editor.replaceRange( valueToInsert, startPosition, this.currentTrigger.end );
 	}
-
 }
 
 class SampleSettingTab extends PluginSettingTab {
