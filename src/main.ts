@@ -119,8 +119,12 @@ class LinkSuggestor extends EditorSuggest<string>{
 			app.vault.create(newFilePath, `# ${suggestion.Title}`).then(f => file = f);
 		}
 
-		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, true)
-		let valueToInsert = `[[${pathToFile}|${suggestion.Title}]]`;
+		const useWikiLinks = true
+		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, !useWikiLinks)
+
+		let valueToInsert = useWikiLinks
+			? `[${suggestion.Title}](${encodeURI(pathToFile)})`
+			: `[[${pathToFile}|${suggestion.Title}]]`;
 
 
 		editor.replaceRange( valueToInsert, startPosition, this.currentTrigger.end );
