@@ -98,6 +98,21 @@ class LinkSuggestor extends EditorSuggest<string>{
 		const suggestion = new Suggestion(value)
 		const valueToInsert = `[[${suggestion.VaultPath}|${suggestion.Title}]]`;
 		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
+
+		// Create folder if necessary
+		if(!app.vault.getAbstractFileByPath(suggestion.FolderPath)){
+			app.vault.createFolder(suggestion.FolderPath)
+		}
+
+		let newFilePath = suggestion.VaultPath;
+		if (!newFilePath.endsWith('.md')){
+			newFilePath = `${newFilePath}.md`
+		}
+
+		if(!app.vault.getAbstractFileByPath(newFilePath)){
+			app.vault.create(newFilePath, `# ${suggestion.Title}`)
+		}
+
 		editor.replaceRange( valueToInsert, startPosition, this.currentTrigger.end );
 	}
 }

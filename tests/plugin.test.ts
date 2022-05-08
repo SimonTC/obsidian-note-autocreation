@@ -177,8 +177,6 @@ describe('the list of suggestions', function () {
 		expect(observedSuggestions).toEqual(expectedSuggestions)
 
 	})
-
-
 });
 
 describe('a single suggestion', function () {
