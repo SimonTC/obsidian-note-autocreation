@@ -5,9 +5,10 @@ export class Suggestion{
 	readonly FolderPath: string
 
 	constructor(vaultPath: string) {
-		this.VaultPath = vaultPath;
-		this.Title = this.extractTitle(vaultPath);
-		this.FolderPath = this.extractFolderPath(vaultPath);
+		const fullPath = vaultPath.trim()
+		this.VaultPath = fullPath;
+		this.Title = this.extractTitle(fullPath);
+		this.FolderPath = this.extractFolderPath(fullPath);
 	}
 
 	private extractFolderPath(vaultPath: string): string {

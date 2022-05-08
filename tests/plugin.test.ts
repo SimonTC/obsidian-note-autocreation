@@ -212,6 +212,16 @@ describe('a single suggestion', function () {
 	})
 
 	it.each([
+		{vaultPath: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'},
+		{vaultPath: 'folder1/note ', expected: 'folder1/note'},
+		{vaultPath: ' folder/name ', expected: 'folder/name'},
+	])('has no extra white space in paths when vault path is $vaultPath', ({vaultPath, expected}) => {
+		const suggestion = new Suggestion(vaultPath);
+
+		expect(suggestion.VaultPath).toBe(expected)
+	})
+
+	it.each([
 		{vaultPath: 'folder1/folder2/mynote.md'},
 		{vaultPath: 'folder1/folder2/some note'},
 		{vaultPath: 'reading/books/short-stories/how I Won.md'},
