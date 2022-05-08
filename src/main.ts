@@ -3,7 +3,7 @@ import {
 	Editor,
 	EditorPosition,
 	EditorSuggest,
-	EditorSuggestContext, EditorSuggestTriggerInfo,
+	EditorSuggestContext, EditorSuggestTriggerInfo, getLinkpath,
 	Plugin,
 	PluginSettingTab,
 	Setting, TFile
@@ -108,12 +108,12 @@ class LinkSuggestor extends EditorSuggest<string>{
 			app.vault.createFolder(suggestion.FolderPath)
 		}
 
-		let newFilePath = suggestion.VaultPath;
-		if (!newFilePath.endsWith('.md')){
-			newFilePath = `${newFilePath}.md`
-		}
+		let newFilePath = getLinkpath(suggestion.VaultPath);
 
 		if(!app.vault.getAbstractFileByPath(newFilePath)){
+			if (!newFilePath.endsWith('.md')){
+				newFilePath = `${newFilePath}.md`
+			}
 			app.vault.create(newFilePath, `# ${suggestion.Title}`)
 		}
 
