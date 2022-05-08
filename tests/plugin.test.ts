@@ -11,7 +11,7 @@ describe('the list of suggestions', function () {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} };
 		const collector = new SuggestionCollector(metadata);
 
-		const suggestions = collector.getSuggestions();
+		const suggestions = collector.getSuggestions("");
 
 		expect(suggestions).toEqual<Suggestion[]>([]);
 	})
@@ -31,7 +31,7 @@ describe('the list of suggestions', function () {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
 		const collector = new SuggestionCollector(metadata);
 
-		const suggestions = collector.getSuggestions();
+		const suggestions = collector.getSuggestions("");
 
 		expect(suggestions.map(su => su.VaultPath).sort()).toEqual(files.sort());
 	})
@@ -49,7 +49,7 @@ describe('the list of suggestions', function () {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
 		const collector = new SuggestionCollector(metadata);
 
-		const suggestions = collector.getSuggestions();
+		const suggestions = collector.getSuggestions("");
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Some link',
@@ -75,7 +75,7 @@ describe('the list of suggestions', function () {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
 		const collector = new SuggestionCollector(metadata);
 
-		const suggestions = collector.getSuggestions();
+		const suggestions = collector.getSuggestions("");
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Some link',
@@ -98,7 +98,7 @@ describe('the list of suggestions', function () {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
 		const collector = new SuggestionCollector(metadata);
 
-		const suggestions = collector.getSuggestions();
+		const suggestions = collector.getSuggestions("");
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Some link',
@@ -122,7 +122,7 @@ describe('the list of suggestions', function () {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
 		const collector = new SuggestionCollector(metadata);
 
-		const suggestions = collector.getSuggestions();
+		const suggestions = collector.getSuggestions("");
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Hello world',
@@ -134,17 +134,30 @@ describe('the list of suggestions', function () {
 		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
 	})
 
-	test('filters out suggestions that do not contain the query text', () => {
+	it.each([
+		{query: 'ja', expectedFiles: ['jack.md']},
+		{query: 'b', expectedFiles: ['bob.md', 'bobby.md']},
+		{query: 'B', expectedFiles: ['bob.md', 'bobby.md']},
+		{query: 's', expectedFiles: ['Simon.md']},
+		{query: '', expectedFiles: ['bob.md', 'bobby.md', 'jack.md', 'Simon.md']},
+		{query: 'p', expectedFiles: []},
+		{query: 'md', expectedFiles: []},
+	])('filtered with "$query" returns $expectedFiles', ({query, expectedFiles}) => {
+		const unresolvedLinks = {
+			'bob.md': {},
+			'bobby.md': {},
+			'jack.md': {},
+			'Simon.md': {},
+		}
 
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const observedSuggestions = collector.getSuggestions(query);
+		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
-	test('does not use the trigger symbol for filtering', () => {
 
-	})
-
-	test('uses the trigger symbol for filtering if there is more than one instance of it', () => {
-
-	})
 });
 
 describe('a single suggestion', function () {

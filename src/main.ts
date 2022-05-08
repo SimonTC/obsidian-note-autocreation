@@ -65,7 +65,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
-		return this.suggestionsCollector.getSuggestions().map(s => s.VaultPath)
+		return this.suggestionsCollector.getSuggestions(context.query).map(s => s.VaultPath)
 	}
 
 	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
