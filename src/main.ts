@@ -9,7 +9,7 @@ import {
 	Setting, TFile
 } from 'obsidian';
 
-import {IMetadataCollection, Suggestion, SuggestionCollector} from "./suggestionsCollection";
+import {IMetadataCollection, Suggestion, SuggestionCollector, extractSuggestionTrigger} from "./suggestionsCollection";
 
 interface NoteAutoCreatorSettings {
 	mySetting: string;
@@ -69,34 +69,8 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
-		if (cursor.ch === 0){
-			// At beginning of line, nothing has been written
-			return null;
-		}
-
 		const line = editor.getLine( cursor.line );
-		const startOfSearch = line.lastIndexOf('@');
-		const regex = new RegExp(/@(.*)/)
-		const match = regex.exec(
-			line.slice(startOfSearch, line.length)
-		);
-
-		if (!match){
-			return null;
-		}
-
-		// Modify match to be relative to line
-		match.index += startOfSearch;
-
-		console.log('Found a match', match)
-
-		const startMatch = match.length === 1 ? match.index : match.index + 1 // TO avoid issue where only @ has been added and it is the last character in the document
-
-		return {
-			start: { line: cursor.line, ch: startMatch },
-			end: { line: cursor.line, ch: match.length  },
-			query: match[1]
-		};
+		return extractSuggestionTrigger(line, {...cursor})
 	}
 
 	renderSuggestion(value: string, el: HTMLElement): void {
