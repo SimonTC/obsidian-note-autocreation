@@ -75,7 +75,14 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	renderSuggestion(value: string, el: HTMLElement): void {
 		const suggestion = new Suggestion(value)
-		el.setText( suggestion.Title );
+		el.createDiv({
+			cls: "suggestion-content",
+			text: suggestion.Title
+		});
+		el.createDiv({
+			cls: "suggestion-note",
+			text: suggestion.FolderPath
+		})
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
