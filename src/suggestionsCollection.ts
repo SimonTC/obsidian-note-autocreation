@@ -76,10 +76,16 @@ export class SuggestionCollector{
 	getSuggestions(query: string): Suggestion[] {
 		const lowerCaseQuery = query.toLowerCase()
 		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())];
-		return allLinks
+		const suggestions = allLinks
 			.map(path => new Suggestion(path))
 			.filter(su => su.Title.toLowerCase().includes(lowerCaseQuery))
-			.sort((a,b) =>  a.Title.localeCompare(b.Title))
+			.sort((a,b) =>  a.Title.localeCompare(b.Title));
+
+		if (query !== ''){
+			suggestions.unshift(new Suggestion(query))
+		}
+
+		return suggestions
 	}
 
 	private *getVaultPathsOfAllLinks(){

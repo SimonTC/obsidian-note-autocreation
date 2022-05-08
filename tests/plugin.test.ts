@@ -135,13 +135,13 @@ describe('the list of suggestions', function () {
 	})
 
 	it.each([
-		{query: 'ja', expectedFiles: ['jack.md']},
-		{query: 'b', expectedFiles: ['bob.md', 'bobby.md']},
-		{query: 'B', expectedFiles: ['bob.md', 'bobby.md']},
-		{query: 's', expectedFiles: ['Simon.md']},
+		{query: 'ja', expectedFiles: ['ja', 'jack.md']},
+		{query: 'b', expectedFiles: ['b', 'bob.md', 'bobby.md']},
+		{query: 'B', expectedFiles: ['B', 'bob.md', 'bobby.md']},
+		{query: 's', expectedFiles: ['s', 'Simon.md']},
 		{query: '', expectedFiles: ['bob.md', 'bobby.md', 'jack.md', 'Simon.md']},
-		{query: 'p', expectedFiles: []},
-		{query: 'md', expectedFiles: []},
+		{query: 'p', expectedFiles: ['p']},
+		{query: 'md', expectedFiles: ['md']},
 	])('filtered with "$query" returns $expectedFiles', ({query, expectedFiles}) => {
 		const unresolvedLinks = {
 			'bob.md': {},
@@ -157,6 +157,27 @@ describe('the list of suggestions', function () {
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
+	test('Query is first in returned suggestions', () => {
+		const unresolvedLinks = {
+			'bob.md': {},
+			'jack.md': {},
+		}
+
+		const query = 'b';
+
+		const expectedSuggestions: Suggestion[] = [
+			new Suggestion(query),
+			new Suggestion('bob.md'),
+		]
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const observedSuggestions = collector.getSuggestions(query);
+		expect(observedSuggestions).toEqual(expectedSuggestions)
+
+	})
+
 
 });
 
@@ -165,7 +186,7 @@ describe('a single suggestion', function () {
 		{vaultPath: 'folder1/folder2/mynote.md', expectedFolderPath: 'folder1/folder2'},
 		{vaultPath: 'folder2/mynote.md', expectedFolderPath: 'folder2'},
 		{vaultPath: 'mynote.md', expectedFolderPath: undefined},
-	])('does not contain file name when vault path is $vaultPath', ({vaultPath, expectedFolderPath}) => {
+	])('does not contain file name in folder path when vault path is $vaultPath', ({vaultPath, expectedFolderPath}) => {
 		const suggestion = new Suggestion(vaultPath);
 
 		expect(suggestion.FolderPath).toBe(expectedFolderPath)
