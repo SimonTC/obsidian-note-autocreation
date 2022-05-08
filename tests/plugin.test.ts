@@ -201,6 +201,17 @@ describe('a single suggestion', function () {
 	})
 
 	it.each([
+		{vaultPath: 'folder1/folder2/.md'},
+		{vaultPath: 'folder1/'},
+		{vaultPath: ''},
+		{vaultPath: '/'},
+	])('has empty title when vault path is $vaultPath', ({vaultPath}) => {
+		const suggestion = new Suggestion(vaultPath);
+
+		expect(suggestion.Title).toBe('')
+	})
+
+	it.each([
 		{vaultPath: 'folder1/folder2/mynote.md'},
 		{vaultPath: 'folder1/folder2/some note'},
 		{vaultPath: 'reading/books/short-stories/how I Won.md'},

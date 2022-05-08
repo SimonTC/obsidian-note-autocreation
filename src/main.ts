@@ -99,6 +99,10 @@ class LinkSuggestor extends EditorSuggest<string>{
 		const valueToInsert = `[[${suggestion.VaultPath}|${suggestion.Title}]]`;
 		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
 
+		if(suggestion.Title === ""){
+			return
+		}
+
 		// Create folder if necessary
 		if(!app.vault.getAbstractFileByPath(suggestion.FolderPath)){
 			app.vault.createFolder(suggestion.FolderPath)
