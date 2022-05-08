@@ -18,11 +18,11 @@ import {
 } from "./suggestionsCollection";
 
 interface NoteAutoCreatorSettings {
-	mySetting: string;
+	useWikiLinks: boolean
 }
 
 const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
-	mySetting: 'default'
+	useWikiLinks: true
 }
 
 export default class NoteAutoCreator extends Plugin {
@@ -32,7 +32,7 @@ export default class NoteAutoCreator extends Plugin {
 		await this.loadSettings();
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SampleSettingTab(this.app, this));
-		this.registerEditorSuggest( new LinkSuggestor( this.app ) );
+		this.registerEditorSuggest( new LinkSuggestor( this.app, this.settings ) );
 
 	}
 
@@ -64,11 +64,13 @@ class ObsidianMetadataCollection implements IMetadataCollection{
 class LinkSuggestor extends EditorSuggest<string>{
 	private readonly suggestionsCollector: SuggestionCollector;
 	private currentTrigger: EditorSuggestTriggerInfo;
+	private settings: NoteAutoCreatorSettings;
 
-	constructor( app: App ) {
+	constructor( app: App, settings: NoteAutoCreatorSettings ) {
 		super( app );
 		const metadataCollection = new ObsidianMetadataCollection(app);
-		this.suggestionsCollector = new SuggestionCollector(metadataCollection) ;
+		this.suggestionsCollector = new SuggestionCollector(metadataCollection);
+		this.settings = settings;
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
@@ -119,12 +121,12 @@ class LinkSuggestor extends EditorSuggest<string>{
 			app.vault.create(newFilePath, `# ${suggestion.Title}`).then(f => file = f);
 		}
 
-		const useWikiLinks = true
-		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, !useWikiLinks)
+		const useWikiLinks = this.settings.useWikiLinks
+		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, useWikiLinks)
 
 		let valueToInsert = useWikiLinks
-			? `[${suggestion.Title}](${encodeURI(pathToFile)})`
-			: `[[${pathToFile}|${suggestion.Title}]]`;
+			? `[[${pathToFile}|${suggestion.Title}]]`
+			: `[${suggestion.Title}](${encodeURI(pathToFile)})`;
 
 
 		editor.replaceRange( valueToInsert, startPosition, this.currentTrigger.end );
@@ -147,14 +149,12 @@ class SampleSettingTab extends PluginSettingTab {
 		containerEl.createEl('h2', {text: 'Settings for the Note Auto Creator plugin'});
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+			.setName('Use [[Wikilinks]]')
+			.setDesc('Generate Wikilinks when creating new links. Disable this option to generate Markdown links instead')
+			.addToggle(component => component
+				.setValue(this.plugin.settings.useWikiLinks)
 				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.useWikiLinks = value;
 					await this.plugin.saveSettings();
 				}));
 	}
