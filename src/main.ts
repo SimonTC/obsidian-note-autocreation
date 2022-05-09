@@ -96,17 +96,24 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent) {
+		this.doTheThing(value).then(() => console.log('Done with the suggestion')).catch(err => console.error(err));
+	}
+
+	private async doTheThing(value: string) {
+		console.log('entering do the thing')
 		const editor = this.context.editor;
 		const suggestion = new Suggestion(value)
 		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
 
-		if(suggestion.Title === ""){
+		if (suggestion.Title === "") {
 			return
 		}
 
 		// Create folder if necessary
-		if(!app.vault.getAbstractFileByPath(suggestion.FolderPath)){
-			app.vault.createFolder(suggestion.FolderPath).then(()  => console.log('folder created') )
+		if (suggestion.FolderPath && !app.vault.getAbstractFileByPath(suggestion.FolderPath)) {
+			console.log('Creating folder', suggestion.FolderPath)
+			await app.vault.createFolder(suggestion.FolderPath)
+			console.log('Folder created')
 		}
 
 
@@ -117,14 +124,11 @@ class LinkSuggestor extends EditorSuggest<string>{
 		console.log('File is', file)
 
 		let newFilePath = getLinkpath(suggestion.VaultPath);
-		if(!file){
-			if (!newFilePath.endsWith('.md')){
+		if (!file) {
+			if (!newFilePath.endsWith('.md')) {
 				newFilePath = `${newFilePath}.md`
 			}
-			this.createFile(newFilePath, `# ${suggestion.Title}`).then(newFile => {
-				console.log('File created')
-				file = newFile
-			})
+			file = await this.createFile(newFilePath, `# ${suggestion.Title}`)
 		}
 
 		console.log('Done with file creation')
@@ -141,7 +145,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 		console.log('Inserting value', valueToInsert)
 
 
-		editor.replaceRange( valueToInsert, startPosition, this.currentTrigger.end );
+		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end);
 	}
 
 	async createFolder(folderPath: string){
