@@ -1,9 +1,7 @@
-import {
-	extractSuggestionTrigger,
-	IMetadataCollection,
-	Suggestion,
-	SuggestionCollector
-} from "../src/suggestionsCollection";
+import {Suggestion} from "../src/Suggestion";
+import {SuggestionCollector} from "../src/SuggestionCollector";
+import {IMetadataCollection} from "../src/ObsidianInterfaces";
+import {extractSuggestionTrigger} from "../src/suggestionExtraction";
 
 
 describe('the list of suggestions', function () {

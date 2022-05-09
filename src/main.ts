@@ -9,13 +9,10 @@ import {
 	Setting, TFile
 } from 'obsidian';
 
-import {
-	IMetadataCollection,
-	Suggestion,
-	SuggestionCollector,
-	extractSuggestionTrigger,
-	SuggestionTrigger
-} from "./suggestionsCollection";
+import {Suggestion} from "./Suggestion";
+import {SuggestionCollector} from "./SuggestionCollector";
+import {IMetadataCollection} from "./ObsidianInterfaces";
+import {extractSuggestionTrigger} from "./suggestionExtraction";
 
 interface NoteAutoCreatorSettings {
 	useWikiLinks: boolean
