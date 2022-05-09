@@ -13,10 +13,15 @@ export class SuggestionCollector {
 		const lowerCaseQuery = query.toLowerCase()
 		const lowerCaseQueryAsSuggestion = new Suggestion(lowerCaseQuery);
 		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())];
+
 		const suggestions = allLinks
 			.map(path => new Suggestion(path))
-			.filter(su => su.VaultPath.toLowerCase().includes(lowerCaseQueryAsSuggestion.Title))
 			.filter(su => su.FolderPath.toLowerCase().includes(lowerCaseQueryAsSuggestion.FolderPath))
+			.filter(su =>
+				su.VaultPath
+					.toLowerCase()
+					.replace(lowerCaseQueryAsSuggestion.FolderPath, '')
+					.includes(lowerCaseQueryAsSuggestion.Title))
 			.sort((a, b) => a.Title.localeCompare(b.Title));
 
 		if (query !== '') {

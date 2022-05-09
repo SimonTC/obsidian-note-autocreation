@@ -174,6 +174,24 @@ describe('the list of suggestions', function () {
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
+	it.each([
+		{query: 'Folder1/fo', expectedFiles: ['Folder1/fo']},
+		{query: 'Folder1/', expectedFiles: ['Folder1/', 'Folder1/item1.md', 'Folder1/item2.md']},
+		{query: 'Folder1/1', expectedFiles: ['Folder1/1', 'Folder1/item1.md']},
+	])('only returns items from subfolder when query $query is given', ({query, expectedFiles}) => {
+		const unresolvedLinks = {
+			'Folder1/item1.md': {},
+			'Folder1/item2.md': {},
+			'Folder2/folder item.md': {},
+		}
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const observedSuggestions = collector.getSuggestions(query);
+		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
+	})
+
 	test('Query is first in returned suggestions', () => {
 		const unresolvedLinks = {
 			'bob.md': {},
