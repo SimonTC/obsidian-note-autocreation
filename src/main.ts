@@ -95,7 +95,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 		})
 	}
 
-	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent): void {
+	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent) {
 		const editor = this.context.editor;
 		const suggestion = new Suggestion(value)
 		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
@@ -106,30 +106,51 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 		// Create folder if necessary
 		if(!app.vault.getAbstractFileByPath(suggestion.FolderPath)){
-			app.vault.createFolder(suggestion.FolderPath)
+			app.vault.createFolder(suggestion.FolderPath).then(()  => console.log('folder created') )
 		}
 
-		let newFilePath = getLinkpath(suggestion.VaultPath);
 
 		const pathToActiveFile = app.workspace.getActiveFile().path;
+		console.log('Path to active file is', pathToActiveFile)
 		let file = app.metadataCache.getFirstLinkpathDest(suggestion.VaultPath, pathToActiveFile)
 
+		console.log('File is', file)
+
+		let newFilePath = getLinkpath(suggestion.VaultPath);
 		if(!file){
 			if (!newFilePath.endsWith('.md')){
 				newFilePath = `${newFilePath}.md`
 			}
-			app.vault.create(newFilePath, `# ${suggestion.Title}`).then(f => file = f);
+			this.createFile(newFilePath, `# ${suggestion.Title}`).then(newFile => {
+				console.log('File created')
+				file = newFile
+			})
 		}
+
+		console.log('Done with file creation')
 
 		const useWikiLinks = this.settings.useWikiLinks
 		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, useWikiLinks)
+
+		console.log('Path to file is', pathToFile)
 
 		let valueToInsert = useWikiLinks
 			? `[[${pathToFile}|${suggestion.Title}]]`
 			: `[${suggestion.Title}](${encodeURI(pathToFile)})`;
 
+		console.log('Inserting value', valueToInsert)
+
 
 		editor.replaceRange( valueToInsert, startPosition, this.currentTrigger.end );
+	}
+
+	async createFolder(folderPath: string){
+		await app.vault.createFolder(folderPath)
+	}
+
+	async createFile(filePath: string, fileContent: string): Promise<TFile> {
+		const file = await app.vault.create(filePath, `# ${fileContent}`);
+		return file;
 	}
 }
 
