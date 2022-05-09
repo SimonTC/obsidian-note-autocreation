@@ -3,17 +3,20 @@ import {
 	Editor,
 	EditorPosition,
 	EditorSuggest,
-	EditorSuggestContext, EditorSuggestTriggerInfo, getLinkpath,
+	EditorSuggestContext,
+	EditorSuggestTriggerInfo,
 	Plugin,
 	PluginSettingTab,
-	Setting, TFile, TFolder
+	Setting,
+	TFile,
+	TFolder
 } from 'obsidian';
 
 import {Suggestion} from "./Suggestion";
 import {SuggestionCollector} from "./SuggestionCollector";
 import {IFileSystem, IMetadataCollection} from "./ObsidianInterfaces";
 import {extractSuggestionTrigger} from "./suggestionExtraction";
-import {NoteCreationPreparer} from "./NoteCreationPreparer";
+import {NoteCreationCommand, NoteCreationPreparer} from "./NoteCreationPreparer";
 
 interface NoteAutoCreatorSettings {
 	useWikiLinks: boolean
@@ -55,7 +58,6 @@ class ObsidianInterop implements IMetadataCollection, IFileSystem{
 
 	getUnresolvedLinks(): Record<string, Record<string, number>> {
 		return app.metadataCache.unresolvedLinks;
-
 	}
 
 	folderExists(folderPath: string): boolean {
@@ -64,8 +66,8 @@ class ObsidianInterop implements IMetadataCollection, IFileSystem{
 	}
 
 	noteExists(notePath: string): boolean {
-		const foundItem = app.vault.getAbstractFileByPath(notePath)
-		return foundItem && foundItem instanceof TFile
+		const foundItem = app.metadataCache.getFirstLinkpathDest(notePath, "")
+		return foundItem !== null
 	}
 }
 
@@ -106,6 +108,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent) {
+
 		this.doTheThing(value).then(() => console.log('Done with the suggestion')).catch(err => console.error(err));
 	}
 
@@ -116,18 +119,11 @@ class LinkSuggestor extends EditorSuggest<string>{
 			return
 		}
 
-		const editor = this.context.editor;
-		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
-
 		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion);
-		if (creationCommand.FolderCreationNeeded){
-			await app.vault.createFolder(creationCommand.PathToNewFolder)
-		}
+		await this.createFolderIfNeeded(creationCommand)
+		const file = await this.createOrGetFile(creationCommand, suggestion)
 
-		const file = creationCommand.FileCreationNeeded
-			? await app.vault.create(creationCommand.PathToNewFile, creationCommand.NoteContent)
-			: app.vault.getAbstractFileByPath(suggestion.VaultPath) as TFile
-
+		console.debug('NAC: Path to file that will be linked', file.path)
 		const pathToActiveFile = app.workspace.getActiveFile().path;
 		const useWikiLinks = this.settings.useWikiLinks
 		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, useWikiLinks)
@@ -135,19 +131,46 @@ class LinkSuggestor extends EditorSuggest<string>{
 			? `[[${pathToFile}|${suggestion.Title}]]`
 			: `[${suggestion.Title}](${encodeURI(pathToFile)})`;
 
-		console.log('Inserting value', valueToInsert)
-
-
+		const editor = this.context.editor;
+		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end);
 	}
 
-	async createFolder(folderPath: string){
-		await app.vault.createFolder(folderPath)
+	async createOrGetFile(creationCommand: NoteCreationCommand, suggestion: Suggestion): Promise<TFile>{
+		let file: TFile
+
+		if (creationCommand.FileCreationNeeded){
+			console.debug(`NAC: Note does not exist. Will be created. Path: ${creationCommand.PathToNewFile}`)
+			file = await this.tryCreateFile(creationCommand.PathToNewFile, creationCommand.NoteContent)
+		}
+
+		return file ? file : app.metadataCache.getFirstLinkpathDest(suggestion.VaultPath, "")
 	}
 
-	async createFile(filePath: string, fileContent: string): Promise<TFile> {
-		const file = await app.vault.create(filePath, `# ${fileContent}`);
-		return file;
+	async createFolderIfNeeded(creationCommand: NoteCreationCommand){
+		if (!creationCommand.FolderCreationNeeded){
+			return
+		}
+
+		try{
+			await app.vault.createFolder(creationCommand.PathToNewFolder)
+		} catch (e) {
+			// Folder apparently already exists.
+			// This might happen if a folder of the same name but with different casing exist
+			console.debug('NAC: Failed folder creation. Folder probably already exist.')
+		}
+	}
+
+	async tryCreateFile(filePath: string, fileContent: string): Promise<TFile> {
+		try{
+			return await app.vault.create(filePath, fileContent);
+		} catch (e) {
+			// File apparently already exists.
+			// This might happen if a file of the same name but with different casing exist
+			console.debug('NAC: Failed file creation. File probably already exist.')
+		}
+
+		return undefined;
 	}
 }
 
