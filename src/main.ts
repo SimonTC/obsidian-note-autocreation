@@ -87,11 +87,10 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent) {
-
-		this.doTheThing(value).then(() => console.log('Done with the suggestion')).catch(err => console.error(err));
+		this.selectSuggestionAsync(value);
 	}
 
-	private async doTheThing(value: string) {
+	private async selectSuggestionAsync(value: string) {
 		const suggestion = new Suggestion(value)
 
 		if (suggestion.Title === "") {
@@ -102,16 +101,25 @@ class LinkSuggestor extends EditorSuggest<string>{
 		const file = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
 
 		console.debug('NAC: Path to file that will be linked', file.path)
+		let linkToInsert = this.getLinkToInsert(file, suggestion);
+
+		this.replaceSuggestionWithLink(linkToInsert);
+	}
+
+	private replaceSuggestionWithLink(valueToInsert: string) {
+		const editor = this.context.editor;
+		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
+		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end);
+	}
+
+	private getLinkToInsert(file: TFile, suggestion: Suggestion) {
 		const pathToActiveFile = app.workspace.getActiveFile().path;
 		const useWikiLinks = this.settings.useWikiLinks
 		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, useWikiLinks)
 		let valueToInsert = useWikiLinks
 			? `[[${pathToFile}|${suggestion.Title}]]`
 			: `[${suggestion.Title}](${encodeURI(pathToFile)})`;
-
-		const editor = this.context.editor;
-		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
-		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end);
+		return valueToInsert;
 	}
 }
 
