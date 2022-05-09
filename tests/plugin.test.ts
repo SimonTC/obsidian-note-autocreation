@@ -2,6 +2,7 @@ import {Suggestion} from "../src/Suggestion";
 import {SuggestionCollector} from "../src/SuggestionCollector";
 import {IMetadataCollection} from "../src/ObsidianInterfaces";
 import {extractSuggestionTrigger} from "../src/suggestionExtraction";
+import {NoteCreator} from "../src/NoteCreator";
 
 
 describe('the list of suggestions', function () {
@@ -232,7 +233,12 @@ describe('a single suggestion', function () {
 });
 
 test('no file is created if the suggestion name is empty', () => {
+	const noteCreator = new NoteCreator()
+	const suggestion = new Suggestion("")
 
+	const cmd = noteCreator.prepareNoteCreationFor(suggestion)
+
+	expect(cmd.FileCreationNeeded).toBeFalsy()
 })
 
 describe('when the suggestion for a link to a non-existing file is accepted', function () {
