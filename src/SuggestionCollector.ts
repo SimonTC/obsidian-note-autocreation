@@ -15,7 +15,7 @@ export class SuggestionCollector {
 		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())];
 		const suggestions = allLinks
 			.map(path => new Suggestion(path))
-			.filter(su => su.Title.toLowerCase().includes(lowerCaseQueryAsSuggestion.Title))
+			.filter(su => su.VaultPath.toLowerCase().includes(lowerCaseQueryAsSuggestion.Title))
 			.filter(su => su.FolderPath.toLowerCase().includes(lowerCaseQueryAsSuggestion.FolderPath))
 			.sort((a, b) => a.Title.localeCompare(b.Title));
 

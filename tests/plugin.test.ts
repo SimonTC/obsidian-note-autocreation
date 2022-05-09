@@ -140,7 +140,6 @@ describe('the list of suggestions', function () {
 		{query: 's', expectedFiles: ['s', 'Simon.md']},
 		{query: '', expectedFiles: ['bob.md', 'bobby.md', 'jack.md', 'Simon.md']},
 		{query: 'p', expectedFiles: ['p']},
-		{query: 'md', expectedFiles: ['md']},
 	])('filtered with "$query" returns $expectedFiles', ({query, expectedFiles}) => {
 		const unresolvedLinks = {
 			'bob.md': {},
@@ -157,7 +156,7 @@ describe('the list of suggestions', function () {
 	})
 
 	it.each([
-		{query: 'Folder1', expectedFiles: ['Folder1']},
+		{query: 'Folder1', expectedFiles: ['Folder1', 'Folder1/Note1.md', 'Folder1/Item2.md']},
 		{query: 'Folder1/', expectedFiles: ['Folder1/', 'Folder1/Note1.md', 'Folder1/Item2.md']},
 		{query: 'Folder1/It', expectedFiles: ['Folder1/It', 'Folder1/Item2.md']}
 	])('returns $expectedFiles when query is $query', ({query, expectedFiles}) => {
