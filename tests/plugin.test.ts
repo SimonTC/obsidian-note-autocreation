@@ -233,6 +233,10 @@ describe('a single suggestion', function () {
 	})
 });
 
+test('no file is created if the suggestion name is empty', () => {
+
+})
+
 describe('when the suggestion for a link to a non-existing file is accepted', function () {
 	test('the file is created', () => {
 
@@ -242,7 +246,23 @@ describe('when the suggestion for a link to a non-existing file is accepted', fu
 
 	})
 
-	test('only the suggestion name is shown in the document', () => {
+	test('a folder is not created if the suggestion is for a note in the root folder', () => {
+
+	})
+
+	test('the file will contain the suggestion title as header 1', () => {
+
+	})
+});
+
+describe('when wikilinks creation is enabled', function () {
+	test('a wikilink is created with the suggestion title as alias', () => {
+
+	})
+});
+
+describe('when markdown link creation is enabled', function () {
+	test('a markdown link is created with the suggestion title as link name', () => {
 
 	})
 });
@@ -278,10 +298,6 @@ describe('a suggestion trigger', function () {
 
 	})
 });
-
-test('no file is created if the suggestion name is empty', () => {
-
-})
 
 
 
