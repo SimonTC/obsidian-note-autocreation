@@ -6,13 +6,14 @@ import {
 	EditorSuggestContext, EditorSuggestTriggerInfo, getLinkpath,
 	Plugin,
 	PluginSettingTab,
-	Setting, TFile
+	Setting, TFile, TFolder
 } from 'obsidian';
 
 import {Suggestion} from "./Suggestion";
 import {SuggestionCollector} from "./SuggestionCollector";
-import {IMetadataCollection} from "./ObsidianInterfaces";
+import {IFileSystem, IMetadataCollection} from "./ObsidianInterfaces";
 import {extractSuggestionTrigger} from "./suggestionExtraction";
+import {NoteCreationPreparer} from "./NoteCreationPreparer";
 
 interface NoteAutoCreatorSettings {
 	useWikiLinks: boolean
@@ -46,7 +47,7 @@ export default class NoteAutoCreator extends Plugin {
 	}
 }
 
-class ObsidianMetadataCollection implements IMetadataCollection{
+class ObsidianInterOp implements IMetadataCollection, IFileSystem{
 	private readonly app: App;
 	constructor(app: App) {
 		this.app = app;
@@ -56,17 +57,29 @@ class ObsidianMetadataCollection implements IMetadataCollection{
 		return app.metadataCache.unresolvedLinks;
 
 	}
+
+	folderExists(folderPath: string): boolean {
+		const foundItem = app.vault.getAbstractFileByPath(folderPath)
+		return foundItem && foundItem instanceof TFolder
+	}
+
+	noteExists(notePath: string): boolean {
+		const foundItem = app.vault.getAbstractFileByPath(notePath)
+		return foundItem && foundItem instanceof TFile
+	}
 }
 
 class LinkSuggestor extends EditorSuggest<string>{
 	private readonly suggestionsCollector: SuggestionCollector;
+	private readonly noteCreationPreparer: NoteCreationPreparer
 	private currentTrigger: EditorSuggestTriggerInfo;
 	private settings: NoteAutoCreatorSettings;
 
 	constructor( app: App, settings: NoteAutoCreatorSettings ) {
 		super( app );
-		const metadataCollection = new ObsidianMetadataCollection(app);
+		const metadataCollection = new ObsidianInterOp(app);
 		this.suggestionsCollector = new SuggestionCollector(metadataCollection);
+		this.noteCreationPreparer = new NoteCreationPreparer(metadataCollection)
 		this.settings = settings;
 	}
 
@@ -97,44 +110,27 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	private async doTheThing(value: string) {
-		console.log('entering do the thing')
-		const editor = this.context.editor;
 		const suggestion = new Suggestion(value)
-		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
 
 		if (suggestion.Title === "") {
 			return
 		}
 
-		// Create folder if necessary
-		if (suggestion.FolderPath && !app.vault.getAbstractFileByPath(suggestion.FolderPath)) {
-			console.log('Creating folder', suggestion.FolderPath)
-			await app.vault.createFolder(suggestion.FolderPath)
-			console.log('Folder created')
+		const editor = this.context.editor;
+		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
+
+		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion);
+		if (creationCommand.FolderCreationNeeded){
+			await app.vault.createFolder(creationCommand.PathToNewFolder)
 		}
 
+		const file = creationCommand.FileCreationNeeded
+			? await app.vault.create(creationCommand.PathToNewFile, creationCommand.NoteContent)
+			: app.vault.getAbstractFileByPath(suggestion.VaultPath) as TFile
 
 		const pathToActiveFile = app.workspace.getActiveFile().path;
-		console.log('Path to active file is', pathToActiveFile)
-		let file = app.metadataCache.getFirstLinkpathDest(suggestion.VaultPath, pathToActiveFile)
-
-		console.log('File is', file)
-
-		if (!file) {
-			let newFilePath = suggestion.VaultPath;
-			if (!newFilePath.endsWith('.md')) {
-				newFilePath = `${newFilePath}.md`
-			}
-			file = await this.createFile(newFilePath, `# ${suggestion.Title}`)
-		}
-
-		console.log('Done with file creation')
-
 		const useWikiLinks = this.settings.useWikiLinks
 		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, useWikiLinks)
-
-		console.log('Path to file is', pathToFile)
-
 		let valueToInsert = useWikiLinks
 			? `[[${pathToFile}|${suggestion.Title}]]`
 			: `[${suggestion.Title}](${encodeURI(pathToFile)})`;
