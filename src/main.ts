@@ -47,7 +47,7 @@ export default class NoteAutoCreator extends Plugin {
 	}
 }
 
-class ObsidianInterOp implements IMetadataCollection, IFileSystem{
+class ObsidianInterop implements IMetadataCollection, IFileSystem{
 	private readonly app: App;
 	constructor(app: App) {
 		this.app = app;
@@ -77,7 +77,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	constructor( app: App, settings: NoteAutoCreatorSettings ) {
 		super( app );
-		const metadataCollection = new ObsidianInterOp(app);
+		const metadataCollection = new ObsidianInterop(app);
 		this.suggestionsCollector = new SuggestionCollector(metadataCollection);
 		this.noteCreationPreparer = new NoteCreationPreparer(metadataCollection)
 		this.settings = settings;
