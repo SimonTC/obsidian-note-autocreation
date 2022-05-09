@@ -156,6 +156,25 @@ describe('the list of suggestions', function () {
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
+	it.each([
+		{query: 'Folder1', expectedFiles: ['Folder1']},
+		{query: 'Folder1/', expectedFiles: ['Folder1/', 'Folder1/Note1.md', 'Folder1/Item2.md']},
+		{query: 'Folder1/It', expectedFiles: ['Folder1/It', 'Folder1/Item2.md']}
+	])('returns $expectedFiles when query is $query', ({query, expectedFiles}) => {
+		const unresolvedLinks = {
+			'bob.md': {},
+			'Folder1/Note1.md': {},
+			'Folder1/Item2.md': {},
+			'Folder3/Item66.md': {},
+		}
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+		const collector = new SuggestionCollector(metadata);
+
+		const observedSuggestions = collector.getSuggestions(query);
+		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
+	})
+
 	test('Query is first in returned suggestions', () => {
 		const unresolvedLinks = {
 			'bob.md': {},
@@ -182,7 +201,7 @@ describe('a single suggestion', function () {
 	it.each([
 		{vaultPath: 'folder1/folder2/mynote.md', expectedFolderPath: 'folder1/folder2'},
 		{vaultPath: 'folder2/mynote.md', expectedFolderPath: 'folder2'},
-		{vaultPath: 'mynote.md', expectedFolderPath: undefined},
+		{vaultPath: 'mynote.md', expectedFolderPath: ''},
 	])('does not contain file name in folder path when vault path is $vaultPath', ({vaultPath, expectedFolderPath}) => {
 		const suggestion = new Suggestion(vaultPath);
 

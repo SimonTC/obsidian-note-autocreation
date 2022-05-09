@@ -18,7 +18,7 @@ export class NoteCreationPreparer {
 	
 	prepareNoteCreationFor(suggestion: Suggestion): NoteCreationCommand{
 		const fileCreationNeeded = suggestion.Title !== '' && !this.fileSystem.noteExists(suggestion.VaultPath);
-		const folderCreationNeeded = suggestion.FolderPath && !this.fileSystem.folderExists(suggestion.FolderPath);
+		const folderCreationNeeded = suggestion.FolderPath !== '' && !this.fileSystem.folderExists(suggestion.FolderPath);
 
 		return {
 			PathToNewFile: fileCreationNeeded ? this.getFileName(suggestion) : undefined,

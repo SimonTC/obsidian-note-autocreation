@@ -14,7 +14,7 @@ export class Suggestion {
 	private extractFolderPath(vaultPath: string): string {
 		const fileNameStartsAt = vaultPath.lastIndexOf('/')
 		return fileNameStartsAt === -1
-			? undefined
+			? ''
 			: vaultPath.slice(0, fileNameStartsAt);
 	}
 
