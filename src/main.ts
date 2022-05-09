@@ -123,8 +123,8 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 		console.log('File is', file)
 
-		let newFilePath = getLinkpath(suggestion.VaultPath);
 		if (!file) {
+			let newFilePath = suggestion.VaultPath;
 			if (!newFilePath.endsWith('.md')) {
 				newFilePath = `${newFilePath}.md`
 			}
