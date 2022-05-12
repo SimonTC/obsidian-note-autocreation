@@ -360,18 +360,6 @@ describe('when the file in the suggestion does not exist', function () {
 	})
 });
 
-describe('when wikilinks creation is enabled', function () {
-	test('a wikilink is created with the suggestion title as alias', () => {
-
-	})
-});
-
-describe('when markdown link creation is enabled', function () {
-	test('a markdown link is created with the suggestion title as link name', () => {
-
-	})
-});
-
 describe('a suggestion trigger', function () {
 	it.each([
 		{inputLine: "", cursorPosition:{line: 1, ch: 5}, expectedTrigger: null, description: 'line is empty'},

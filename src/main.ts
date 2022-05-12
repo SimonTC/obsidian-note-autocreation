@@ -101,7 +101,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 		const file = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
 
 		console.debug('NAC: Path to file that will be linked', file.path)
-		let linkToInsert = this.getLinkToInsert(file, suggestion);
+		let linkToInsert = this.getLinkToInsert(file);
 
 		this.replaceSuggestionWithLink(linkToInsert);
 	}
@@ -112,14 +112,9 @@ class LinkSuggestor extends EditorSuggest<string>{
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end);
 	}
 
-	private getLinkToInsert(file: TFile, suggestion: Suggestion) {
+	private getLinkToInsert(file: TFile) {
 		const pathToActiveFile = app.workspace.getActiveFile().path;
-		const useWikiLinks = this.settings.useWikiLinks
-		const pathToFile = app.metadataCache.fileToLinktext(file, pathToActiveFile, useWikiLinks)
-		let valueToInsert = useWikiLinks
-			? `[[${pathToFile}|${suggestion.Title}]]`
-			: `[${suggestion.Title}](${encodeURI(pathToFile)})`;
-		return valueToInsert;
+		return app.fileManager.generateMarkdownLink(file, pathToActiveFile );
 	}
 }
 
