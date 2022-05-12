@@ -62,6 +62,13 @@ class LinkSuggestor extends EditorSuggest<string>{
 		this.suggestionsCollector = new SuggestionCollector(this.obsidianInterop);
 		this.noteCreationPreparer = new NoteCreationPreparer(this.obsidianInterop)
 		this.settings = settings;
+
+		const instructions = [
+			{command: 'Type #', purpose: 'to link heading'},
+			{command: 'Type ^', purpose: 'to link blocks'},
+			{command: 'Type |', purpose: 'to change display text'},
+		]
+		this.setInstructions(instructions)
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
