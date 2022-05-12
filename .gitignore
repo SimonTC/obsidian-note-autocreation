@@ -30,4 +30,4 @@ data.json
 /tests/**/obsidian-note-autocreation/main.js
 
 # Exclude markdown files in the test vault
-/tests/Note Auto Creation Test Vault/*.md
+/tests/Note Auto Creation Test Vault/**/*.md
