@@ -1,7 +1,35 @@
 import {Suggestion} from "../src/Suggestion";
 import {SuggestionCollector} from "../src/SuggestionCollector";
 import {IMetadataCollection} from "../src/ObsidianInterfaces";
+import {faker} from "@faker-js/faker"
 
+test('the suggestion collector can deal with big vaults', () => {
+	const getFakeFile = () => {
+		let fakePath = faker.system.directoryPath()
+		let fakeFile = faker.system.commonFileName('md')
+		return `${fakePath}/${fakeFile}`
+	}
+
+	let files = []
+	for (let i = 0; i < 10000; i++) {
+		files.push(getFakeFile())
+	}
+
+	const unresolvedLinks = files.reduce((collection: Record<string, Record<string, number>>, file) => {
+		collection[file] = {}
+		return collection
+	}, {})
+	const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
+	const collector = new SuggestionCollector(metadata);
+
+	let startTime = performance.now()
+	collector.getSuggestions("");
+	let endTime = performance.now()
+
+	let diff = endTime - startTime;
+	console.log(`Collecting suggestions took ${diff} ms.`)
+	expect(diff).toBeLessThan(55)
+})
 
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
