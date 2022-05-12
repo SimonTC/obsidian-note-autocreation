@@ -87,22 +87,20 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent) {
-		this.selectSuggestionAsync(value);
+		const currentFile = this.context.file
+		this.selectSuggestionAsync(value, currentFile)
 	}
 
-	private async selectSuggestionAsync(value: string) {
-		const suggestion = new Suggestion(value)
+	private async selectSuggestionAsync(suggestionString: string, currentFile: TFile) {
+		const suggestion = new Suggestion(suggestionString)
 
 		if (suggestion.Title === "") {
 			return
 		}
 
 		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion);
-		const file = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
-
-		console.debug('NAC: Path to file that will be linked', file.path)
-		let linkToInsert = this.getLinkToInsert(file);
-
+		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
+		let linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path);
 		this.replaceSuggestionWithLink(linkToInsert);
 	}
 
@@ -110,11 +108,6 @@ class LinkSuggestor extends EditorSuggest<string>{
 		const editor = this.context.editor;
 		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end);
-	}
-
-	private getLinkToInsert(file: TFile) {
-		const pathToActiveFile = app.workspace.getActiveFile().path;
-		return app.fileManager.generateMarkdownLink(file, pathToActiveFile );
 	}
 }
 
