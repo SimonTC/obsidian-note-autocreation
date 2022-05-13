@@ -115,7 +115,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	private replaceSuggestionWithLink(valueToInsert: string) {
 		const editor = this.context.editor;
-		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - 1};
+		const startPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch - this.settings.triggerSymbol.length};
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end);
 	}
 }
