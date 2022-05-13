@@ -27,8 +27,9 @@ export class Suggestion {
 	 */
 	readonly Alias: string
 
-	constructor(vaultPath: string) {
-		const fullPath = vaultPath.trim()
+	constructor(trigger: string) {
+		const fullPath = trigger.trim();
+		this.Trigger = fullPath;
 		this.VaultPath = fullPath;
 		let {title, alias} = this.extractTitleAndAlias(fullPath);
 		this.Title = title

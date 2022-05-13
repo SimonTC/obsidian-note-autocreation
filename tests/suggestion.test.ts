@@ -2,69 +2,82 @@ import {Suggestion} from "../src/Suggestion";
 
 describe('a single suggestion', function () {
 	it.each([
-		{vaultPath: 'folder1/folder2/mynote.md', expectedFolderPath: 'folder1/folder2'},
-		{vaultPath: 'folder1/folder2/note 1|other name', expectedFolderPath: 'folder1/folder2'},
-		{vaultPath: 'folder2/mynote.md', expectedFolderPath: 'folder2'},
-		{vaultPath: 'mynote.md', expectedFolderPath: ''},
-	])('does not contain file name in folder path when vault path is $vaultPath', ({vaultPath, expectedFolderPath}) => {
-		const suggestion = new Suggestion(vaultPath);
+		{trigger: 'folder1/folder2/mynote.md', expectedFolderPath: 'folder1/folder2'},
+		{trigger: 'folder1/folder2/note 1|other name', expectedFolderPath: 'folder1/folder2'},
+		{trigger: 'folder2/mynote.md', expectedFolderPath: 'folder2'},
+		{trigger: 'mynote.md', expectedFolderPath: ''},
+	])('does not contain file name in folder path when trigger is $trigger', ({trigger, expectedFolderPath}) => {
+		const suggestion = new Suggestion(trigger);
 
 		expect(suggestion.FolderPath).toBe(expectedFolderPath)
 	})
 
 	it.each([
-		{vaultPath: 'folder1/folder2/mynote.md', expectedTitle: 'mynote'}, // normal link
-		{vaultPath: 'folder1/folder2/some note', expectedTitle: 'some note'}, // link without extension
-		{vaultPath: 'folder1/folder2/with some extension.exe', expectedTitle: 'with some extension'}, // wrong extension given
-		{vaultPath: 'My note|With another name', expectedTitle: 'My note'}, // alias given
-		{vaultPath: 'My note.md|With another name', expectedTitle: 'My note'}, // alias given with extension in path
-	])('uses title $expectedTitle when vault path is $vaultPath', ({vaultPath, expectedTitle}) => {
-		const suggestion = new Suggestion(vaultPath);
+		{trigger: 'folder1/folder2/mynote.md', expectedTitle: 'mynote'}, // normal link
+		{trigger: 'folder1/folder2/some note', expectedTitle: 'some note'}, // link without extension
+		{trigger: 'folder1/folder2/with some extension.exe', expectedTitle: 'with some extension'}, // wrong extension given
+		{trigger: 'My note|With another name', expectedTitle: 'My note'}, // alias given
+		{trigger: 'My note.md|With another name', expectedTitle: 'My note'}, // alias given with extension in path
+	])('uses title $expectedTitle when trigger is $trigger', ({trigger, expectedTitle}) => {
+		const suggestion = new Suggestion(trigger);
 
 		expect(suggestion.Title).toBe(expectedTitle)
 	})
 
 	it.each([
-		{vaultPath: 'folder1/folder2/.md'},
-		{vaultPath: 'folder1/'},
-		{vaultPath: ''},
-		{vaultPath: '/'},
-		{vaultPath: '/|some non empty name'},
-	])('has empty title when vault path is $vaultPath', ({vaultPath}) => {
-		const suggestion = new Suggestion(vaultPath);
+		{trigger: 'folder1/folder2/.md'},
+		{trigger: 'folder1/'},
+		{trigger: ''},
+		{trigger: '/'},
+		{trigger: '/|some non empty name'},
+	])('has empty title when trigger is $trigger', ({trigger}) => {
+		const suggestion = new Suggestion(trigger);
 
 		expect(suggestion.Title).toBe('')
 	})
 
 	it.each([
-		{vaultPath: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'},
-		{vaultPath: 'folder1/note ', expected: 'folder1/note'},
-		{vaultPath: ' folder/name ', expected: 'folder/name'},
-	])('has no extra white space in paths when vault path is $vaultPath', ({vaultPath, expected}) => {
-		const suggestion = new Suggestion(vaultPath);
+		{trigger: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'},
+		{trigger: 'folder1/note ', expected: 'folder1/note'},
+		{trigger: ' folder/name ', expected: 'folder/name'},
+	])('has no extra white space in trigger when trigger is $trigger', ({trigger, expected}) => {
+		const suggestion = new Suggestion(trigger);
+
+		expect(suggestion.Trigger).toBe(expected)
+	})
+
+	it.each([
+		{trigger: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'},
+		{trigger: 'folder1/note ', expected: 'folder1/note'},
+		{trigger: ' folder/name ', expected: 'folder/name'},
+		{trigger: 'folder1/myNote|With another name', expected: 'folder1/myNote'},
+		{trigger: 'myNote.md', expected: 'myNote.md'},
+		{trigger: 'myNote', expected: 'myNote'},
+		{trigger: 'folder1/folder2/folder3/', expected: 'folder1/folder2/folder3/'},
+	])('stores vault path as $expected when trigger is $trigger', ({trigger, expected}) => {
+		const suggestion = new Suggestion(trigger);
 
 		expect(suggestion.VaultPath).toBe(expected)
 	})
 
 	it.each([
-		{vaultPath: 'folder1/folder2/mynote.md'},
-		{vaultPath: 'folder1/folder2/some note'},
-		{vaultPath: 'reading/books/short-stories/how I Won.md'},
-		{vaultPath: 'note.md'},
-		{vaultPath: 'folder1/myNote|With another name'},
-	])('stores $vaultPath as vault path', ({vaultPath}) => {
-		const suggestion = new Suggestion(vaultPath);
+		{trigger: 'folder1/folder2/mynote.md'},
+		{trigger: 'folder1/folder2/some note'},
+		{trigger: 'reading/books/short-stories/how I Won.md'},
+		{trigger: 'note.md'},
+	])('stores $trigger as trigger', ({trigger}) => {
+		const suggestion = new Suggestion(trigger);
 
-		expect(suggestion.VaultPath).toBe(vaultPath)
+		expect(suggestion.Trigger).toBe(trigger)
 	})
 
 	it.each([
-		{vaultPath: 'folder1/myNote|With another name', expectedAlias: 'With another name'},
-		{vaultPath: 'My nice note|With another name', expectedAlias: 'With another name'},
-		{vaultPath: 'My nice note|', expectedAlias: undefined},
-		{vaultPath: 'My nice note', expectedAlias: undefined},
-	])('uses alias $expectedAlias when vault path $vaultPath is given', ({vaultPath, expectedAlias}) => {
-		const suggestion = new Suggestion(vaultPath);
+		{trigger: 'folder1/myNote|With another name', expectedAlias: 'With another name'},
+		{trigger: 'My nice note|With another name', expectedAlias: 'With another name'},
+		{trigger: 'My nice note|', expectedAlias: undefined},
+		{trigger: 'My nice note', expectedAlias: undefined},
+	])('uses alias $expectedAlias when trigger $trigger is given', ({trigger, expectedAlias}) => {
+		const suggestion = new Suggestion(trigger);
 		expect(suggestion.Alias).toBe(expectedAlias)
 	})
 });
