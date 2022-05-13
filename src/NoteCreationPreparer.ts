@@ -26,7 +26,7 @@ export class NoteCreationPreparer {
 			PathToNewFolder: folderCreationNeeded ? suggestion.FolderPath : undefined,
 			FileCreationNeeded: fileCreationNeeded,
 			FolderCreationNeeded: folderCreationNeeded,
-			NoteContent: `# ${suggestion.Title}`,
+			NoteContent: '',
 			Alias: suggestion.Alias
 		}
 	}
