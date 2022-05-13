@@ -47,13 +47,13 @@ describe('a single suggestion', function () {
 	})
 
 	it.each([
-		{trigger: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'},
-		{trigger: 'folder1/note ', expected: 'folder1/note'},
-		{trigger: ' folder/name ', expected: 'folder/name'},
-		{trigger: 'folder1/myNote|With another name', expected: 'folder1/myNote'},
-		{trigger: 'myNote.md', expected: 'myNote.md'},
-		{trigger: 'myNote', expected: 'myNote'},
-		{trigger: 'folder1/folder2/folder3/', expected: 'folder1/folder2/folder3/'},
+		{trigger: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'}, // space before trigger
+		{trigger: 'folder1/note ', expected: 'folder1/note'}, // space after trigger
+		{trigger: ' folder/name ', expected: 'folder/name'}, // space before and after the trigger
+		{trigger: 'folder1/myNote|With another name', expected: 'folder1/myNote'}, // alias included
+		{trigger: 'myNote.md', expected: 'myNote.md'}, // file with extension
+		{trigger: 'myNote', expected: 'myNote'}, // file without extension
+		{trigger: 'folder1/folder2/folder3/', expected: 'folder1/folder2/folder3/'}, // only folder
 	])('stores vault path as $expected when trigger is $trigger', ({trigger, expected}) => {
 		const suggestion = new Suggestion(trigger);
 

@@ -106,7 +106,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion);
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
-		let linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path);
+		let linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, suggestion.Alias);
 		this.replaceSuggestionWithLink(linkToInsert);
 	}
 
