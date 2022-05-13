@@ -1,1 +1,3 @@
-
+.setting-item-control.setting-warning input {
+	border-color: yellow;
+}
