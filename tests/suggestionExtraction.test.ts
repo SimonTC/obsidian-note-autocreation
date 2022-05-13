@@ -74,17 +74,18 @@ describe('a suggestion trigger using multi-letter trigger symbols', function () 
 	})
 
 	it.each([
-		{triggerSymbols: '@@', input: '@@My note', expectedQuery: 'My note'},
-		{triggerSymbols: '@@', input: 'This is @@My note', expectedQuery: 'My note'},
-		{triggerSymbols: '@@', input: 'This is @@My note with double $$symbols', expectedQuery: 'My note with double $$symbols'},
-		{triggerSymbols: '@@', input: 'This will be empty @@', expectedQuery: ""},
-		{triggerSymbols: '$$', input: 'I am $$using double dollars', expectedQuery: 'using double dollars'},
-		{triggerSymbols: '&&&', input: 'this should &&& be picked up', expectedQuery: ' be picked up'},
-	])('triggers correctly if input is $input', ({triggerSymbols, input, expectedQuery}) => {
+		{triggerSymbols: '@@', input: '@@My note', expectedQuery: 'My note', expectedStart: 2},
+		{triggerSymbols: '@@', input: 'This is @@My note', expectedQuery: 'My note', expectedStart: 10},
+		{triggerSymbols: '@@', input: 'This is @@My note with double @@symbols', expectedQuery: 'My note with double @@symbols', expectedStart: 10},
+		{triggerSymbols: '@@', input: 'This will be empty @@', expectedQuery: "", expectedStart: 21},
+		{triggerSymbols: '$$', input: 'I am $$using double dollars', expectedQuery: 'using double dollars', expectedStart: 7},
+		{triggerSymbols: '&&&', input: 'this should &&& be picked up', expectedQuery: ' be picked up', expectedStart: 15},
+	])('triggers correctly if input is $input', ({triggerSymbols, input, expectedQuery, expectedStart}) => {
 		const observedTrigger = extractSuggestionTrigger(input, {line: 1, ch: input.length}, triggerSymbols)
 
 		expect(observedTrigger).not.toBeNull()
 		expect(observedTrigger.query).toEqual(expectedQuery);
+		expect(observedTrigger.start).toEqual({line: 1, ch: expectedStart});
 	})
 });
 
