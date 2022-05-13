@@ -144,7 +144,6 @@ class SettingTab extends PluginSettingTab {
 				'Avoid using characters / strings you often use while writing or that might be used by Obsidian or by other plugins to trigger actions. ' +
 				'Some examples of strings to avoid: "[", "|", "#"');
 		trigger.addText(component => component
-			.setPlaceholder('@')
 			.setValue(this.plugin.settings.triggerSymbol)
 			.onChange(async (value) => {
 				this.removeValidationWarning(component, trigger);
@@ -156,8 +155,8 @@ class SettingTab extends PluginSettingTab {
 
 	private warnIfTriggerIsProblematic(value: string, trigger: Setting, component: TextComponent) {
 		const triggerStartsWithProblematicCharacter = this.problematicSymbols.some(problem => value.startsWith(problem));
-		const triggerIsOnlyWhitespace = value.length > 0 && value.trim().length === 0;
-		const triggerIsProblematic = triggerStartsWithProblematicCharacter || triggerIsOnlyWhitespace;
+		const triggerIsEmptyOrOnlyWhitespace = value.trim().length === 0;
+		const triggerIsProblematic = triggerStartsWithProblematicCharacter || triggerIsEmptyOrOnlyWhitespace;
 		if (triggerIsProblematic) {
 			trigger.controlEl.addClass('setting-warning')
 			component.inputEl.setCustomValidity(`Using '${value}' as the trigger for inserting links might not work as intended`)
