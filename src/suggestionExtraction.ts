@@ -9,10 +9,11 @@ export type SuggestionTrigger = {
 	query: string
 }
 
-const regex = new RegExp(/(?:^| )@(?!.*]])(.*)/, "d"); // d flag is necessary to get the indices of the groups
 
-export function extractSuggestionTrigger(lineText: string, cursorPosition: DocumentLocation): SuggestionTrigger {
-	const triggerSymbolIndex = lineText.indexOf('@')
+export function extractSuggestionTrigger(lineText: string, cursorPosition: DocumentLocation, triggerSymbol: string): SuggestionTrigger {
+	const safeTriggerSymbol = triggerSymbol.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'); // this will escape any symbols that are unsafe in a regex expression
+	const regex = new RegExp(`(?:^| )${safeTriggerSymbol}(?!.*]])(.*)`, "d"); // d flag is necessary to get the indices of the groups
+	const triggerSymbolIndex = lineText.indexOf(triggerSymbol)
 	if (lineText.length === 0 || cursorPosition.ch === 0 || triggerSymbolIndex == -1){
 		return null;
 	}

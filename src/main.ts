@@ -18,11 +18,12 @@ import {NoteCreationPreparer} from "./NoteCreationPreparer";
 import {ObsidianInterop} from "./ObsidianInterop";
 
 interface NoteAutoCreatorSettings {
-	useWikiLinks: boolean
+	triggerSymbol: string
+
 }
 
 const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
-	useWikiLinks: true
+	triggerSymbol: '@'
 }
 
 export default class NoteAutoCreator extends Plugin {
@@ -76,7 +77,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
 		const line = editor.getLine( cursor.line );
-		this.currentTrigger = extractSuggestionTrigger(line, {...cursor});
+		this.currentTrigger = extractSuggestionTrigger(line, {...cursor}, this.settings.triggerSymbol);
 		return this.currentTrigger
 	}
 
@@ -135,12 +136,12 @@ class SettingTab extends PluginSettingTab {
 		containerEl.createEl('h2', {text: 'Settings for the Note Auto Creator plugin'});
 
 		new Setting(containerEl)
-			.setName('Use [[Wikilinks]]')
-			.setDesc('Generate Wikilinks when creating new links. Disable this option to generate Markdown links instead')
-			.addToggle(component => component
-				.setValue(this.plugin.settings.useWikiLinks)
+			.setName('Trigger icon for link insertion')
+			.setDesc('The icon that will trigger link selection. @ by default.')
+			.addText(component => component
+				.setValue(this.plugin.settings.triggerSymbol)
 				.onChange(async (value) => {
-					this.plugin.settings.useWikiLinks = value;
+					this.plugin.settings.triggerSymbol = value;
 					await this.plugin.saveSettings();
 				}));
 	}
