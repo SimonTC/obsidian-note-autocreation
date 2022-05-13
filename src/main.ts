@@ -65,7 +65,6 @@ class LinkSuggestor extends EditorSuggest<string>{
 		this.settings = settings;
 
 		const instructions = [
-			{command: 'Type #', purpose: 'to link heading'},
 			{command: 'Type |', purpose: 'to change display text'},
 		]
 		this.setInstructions(instructions)
