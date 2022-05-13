@@ -20,9 +20,9 @@ This plugin makes it possible to automatically create notes when links are creat
 
 #### Manual testing
 - Open the test vault `tests/Note Auto Creation Test Vault`
+- Enable Note Auto Creator
 - Enable the [Hot-Reload](https://github.com/pjeby/hot-reload) plugin in the vault. With this enabled our plugin is always reloaded when the Hot-Reload plugin observed changes to `main.js` or `styles.css`. 
 - Run `npm run dev` to compile the plugin and automatically recompile when changes have been made.
-- You can now begin testing manually. Note Auto Creator is automatically enabled by the Hot-Reload plugin.
 
 #### Automated testing
 
