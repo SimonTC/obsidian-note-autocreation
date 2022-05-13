@@ -31,7 +31,7 @@ export default class NoteAutoCreator extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new SettingTab(this.app, this));
 		this.registerEditorSuggest( new LinkSuggestor( this.app, this.settings ) );
 
 	}
@@ -119,7 +119,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class SettingTab extends PluginSettingTab {
 	plugin: NoteAutoCreator;
 
 	constructor(app: App, plugin: NoteAutoCreator) {
