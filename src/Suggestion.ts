@@ -1,8 +1,30 @@
 export class Suggestion {
 
+	/**
+	 * The string that triggered the suggestion.
+	 */
+	readonly Trigger: string
+
+	/**
+	 * The full obsidian vault path to the note that would be created or chosen if this suggestion is selected.
+	 * Does not necessarily include the extension of the note.
+	 */
 	readonly VaultPath: string;
+
+	/**
+	 * The title of the note. This is used as the file name of the note if it created.
+	 * Extension is not included in the title.
+	 */
 	readonly Title: string;
+
+	/**
+	 * The path to the folder where the note of the suggestion is stored.
+	 */
 	readonly FolderPath: string
+
+	/**
+	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
+	 */
 	readonly Alias: string
 
 	constructor(vaultPath: string) {
