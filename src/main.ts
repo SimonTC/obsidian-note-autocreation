@@ -100,14 +100,12 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	private async selectSuggestionAsync(suggestionString: string, currentFile: TFile) {
 		const suggestion = new Suggestion(suggestionString)
-		console.debug('NAC: selecting suggestion', suggestion)
 
 		if (suggestion.Title === "") {
 			return
 		}
 
 		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion);
-		console.log('Selecting suggestion from command', creationCommand)
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
 		let linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.Alias);
 		this.replaceSuggestionWithLink(linkToInsert);
