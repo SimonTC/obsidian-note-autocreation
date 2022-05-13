@@ -25,7 +25,7 @@ export class Suggestion {
 	/**
 	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
 	 */
-	readonly Alias: string
+	readonly Alias: string | undefined
 
 	constructor(trigger: string) {
 		const fullPath = trigger.trim();
@@ -48,7 +48,7 @@ export class Suggestion {
 		const title = extensionStartsAt === -1
 			? fileNameWithPossibleExtension
 			: fileNameWithPossibleExtension.slice(0, extensionStartsAt);
-		alias = alias?.length === 0 ? undefined : alias
+		alias = alias?.length === 0 ? undefined : alias?.trim()
 		return {vaultPath, folderPath, title, alias};
 	}
 }

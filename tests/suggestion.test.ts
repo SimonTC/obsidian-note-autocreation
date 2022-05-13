@@ -75,6 +75,9 @@ describe('a single suggestion', function () {
 	it.each([
 		{trigger: 'folder1/myNote|With another name', expectedAlias: 'With another name'},
 		{trigger: 'My nice note|With another name', expectedAlias: 'With another name'},
+		{trigger: 'My nice note| name', expectedAlias: 'name'},
+		{trigger: 'My nice note| name ', expectedAlias: 'name'},
+		{trigger: 'My nice note|name ', expectedAlias: 'name'},
 		{trigger: 'My nice note|', expectedAlias: undefined},
 		{trigger: 'My nice note', expectedAlias: undefined},
 	])('uses alias $expectedAlias when trigger $trigger is given', ({trigger, expectedAlias}) => {

@@ -15,6 +15,8 @@ describe('a suggestion trigger', function () {
 		{inputLine: "My @name is [[James]]", cursorPosition:{line: 1, ch: 8}, expectedTrigger: {startIndex: 4, endIndex: 8, query: 'name'}, description: 'trigger symbol and cursor is before obsidian link'},
 		{inputLine: "My email is James@testing.com", cursorPosition:{line: 1, ch: 29}, expectedTrigger: null, description: 'trigger symbol is in the middle of a word'},
 		{inputLine: "My email is James@", cursorPosition:{line: 1, ch: 18}, expectedTrigger: null, description: 'trigger symbol is in the end of a word'},
+		{inputLine: "this is @trigger|a trigger", cursorPosition:{line: 1, ch: 26}, expectedTrigger: {startIndex: 9, endIndex: 26, query: 'trigger|a trigger'}, description: 'alias included in trigger'},
+		{inputLine: "this is @trigger|", cursorPosition:{line: 1, ch: 17}, expectedTrigger: {startIndex: 9, endIndex: 17, query: 'trigger|'}, description: 'empty alias included in trigger'},
 	])('has trigger $expectedTrigger when $description', (testData) => {
 		const observedTrigger = extractSuggestionTrigger(testData.inputLine, testData.cursorPosition);
 

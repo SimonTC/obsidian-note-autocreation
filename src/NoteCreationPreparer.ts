@@ -2,11 +2,12 @@ import {Suggestion} from "./Suggestion";
 import {IFileSystem} from "./ObsidianInterfaces";
 
 export type NoteCreationCommand = {
-	NoteContent: string;
-	PathToNewFolder: string;
-	PathToNewFile: string;
+	NoteContent: string,
+	PathToNewFolder: string | undefined,
+	PathToNewFile: string | undefined,
 	FileCreationNeeded: boolean,
 	FolderCreationNeeded: boolean,
+	Alias: string | undefined,
 }
 
 export class NoteCreationPreparer {
@@ -25,7 +26,8 @@ export class NoteCreationPreparer {
 			PathToNewFolder: folderCreationNeeded ? suggestion.FolderPath : undefined,
 			FileCreationNeeded: fileCreationNeeded,
 			FolderCreationNeeded: folderCreationNeeded,
-			NoteContent: `# ${suggestion.Title}`
+			NoteContent: `# ${suggestion.Title}`,
+			Alias: suggestion.Alias
 		}
 	}
 

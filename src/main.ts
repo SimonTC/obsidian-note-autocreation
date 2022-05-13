@@ -71,7 +71,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
-		return this.suggestionsCollector.getSuggestions(context.query).map(s => s.VaultPath)
+		return this.suggestionsCollector.getSuggestions(context.query).map(s => s.Trigger)
 	}
 
 	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
@@ -99,14 +99,16 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	private async selectSuggestionAsync(suggestionString: string, currentFile: TFile) {
 		const suggestion = new Suggestion(suggestionString)
+		console.debug('NAC: selecting suggestion', suggestion)
 
 		if (suggestion.Title === "") {
 			return
 		}
 
 		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion);
+		console.log('Selecting suggestion from command', creationCommand)
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
-		let linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, suggestion.Alias);
+		let linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.Alias);
 		this.replaceSuggestionWithLink(linkToInsert);
 	}
 
