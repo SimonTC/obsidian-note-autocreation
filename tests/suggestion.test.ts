@@ -6,6 +6,7 @@ describe('a single suggestion', function () {
 		{trigger: 'folder1/folder2/note 1|other name', expectedFolderPath: 'folder1/folder2'},
 		{trigger: 'folder2/mynote.md', expectedFolderPath: 'folder2'},
 		{trigger: 'mynote.md', expectedFolderPath: ''},
+		{trigger: '/', expectedFolderPath: ''},
 	])('does not contain file name in folder path when trigger is $trigger', ({trigger, expectedFolderPath}) => {
 		const suggestion = new Suggestion(trigger);
 

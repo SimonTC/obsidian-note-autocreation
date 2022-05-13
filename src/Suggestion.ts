@@ -30,29 +30,25 @@ export class Suggestion {
 	constructor(trigger: string) {
 		const fullPath = trigger.trim();
 		this.Trigger = fullPath;
-		let {vaultPath, title, alias} = this.extractTitleAndAlias(fullPath);
+		let {vaultPath, folderPath, title, alias} = this.extractSuggestionParts(fullPath);
 		this.VaultPath = vaultPath;
 		this.Title = title
 		this.Alias = alias
-		this.FolderPath = this.extractFolderPath(vaultPath);
+		this.FolderPath = folderPath;
 	}
 
-	private extractFolderPath(trigger: string): string {
-		const fileNameStartsAt = trigger.lastIndexOf('/')
-		return fileNameStartsAt === -1
-			? ''
-			: trigger.slice(0, fileNameStartsAt);
-	}
-
-	private extractTitleAndAlias(trigger: string): {vaultPath: string, title: string, alias: string} {
+	private extractSuggestionParts(trigger: string): {vaultPath: string, folderPath: string, title: string, alias: string} {
 		let [vaultPath, alias] = trigger.split('|')
+		const fileNameStartsAt = vaultPath.lastIndexOf('/')
+		let [folderPath, fileNameWithPossibleExtension] = fileNameStartsAt === -1
+			? ['', vaultPath]
+			: [vaultPath.slice(0, fileNameStartsAt), vaultPath.slice(fileNameStartsAt + 1) ]
 
-		const fileNameWithPossibleExtension = vaultPath.split('/').pop();
 		const extensionStartsAt = fileNameWithPossibleExtension.lastIndexOf('.')
 		const title = extensionStartsAt === -1
 			? fileNameWithPossibleExtension
 			: fileNameWithPossibleExtension.slice(0, extensionStartsAt);
 		alias = alias?.length === 0 ? undefined : alias
-		return {vaultPath, title, alias};
+		return {vaultPath, folderPath, title, alias};
 	}
 }
