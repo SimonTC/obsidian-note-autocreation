@@ -63,6 +63,31 @@ describe('a suggestion trigger using a single letter trigger symbol', function (
 	})
 });
 
+describe('a suggestion trigger using multi-letter trigger symbols', function () {
+	it.each([
+		{triggerSymbols: '@@', input: '@ @'},
+		{triggerSymbols: '@@', input: '@ some text @ some other text'},
+		{triggerSymbols: '$$', input: '$ some text $ some other text'},
+	])('does not trigger if symbols are separated in $input', ({triggerSymbols, input}) => {
+	  	const observedTrigger = extractSuggestionTrigger(input, {line: 1, ch: input.length}, triggerSymbols)
+		expect(observedTrigger).toBeNull()
+	})
+
+	it.each([
+		{triggerSymbols: '@@', input: '@@My note', expectedQuery: 'My note'},
+		{triggerSymbols: '@@', input: 'This is @@My note', expectedQuery: 'My note'},
+		{triggerSymbols: '@@', input: 'This is @@My note with double $$symbols', expectedQuery: 'My note with double $$symbols'},
+		{triggerSymbols: '@@', input: 'This will be empty @@', expectedQuery: ""},
+		{triggerSymbols: '$$', input: 'I am $$using double dollars', expectedQuery: 'using double dollars'},
+		{triggerSymbols: '&&&', input: 'this should &&& be picked up', expectedQuery: ' be picked up'},
+	])('triggers correctly if input is $input', ({triggerSymbols, input, expectedQuery}) => {
+		const observedTrigger = extractSuggestionTrigger(input, {line: 1, ch: input.length}, triggerSymbols)
+
+		expect(observedTrigger).not.toBeNull()
+		expect(observedTrigger.query).toEqual(expectedQuery);
+	})
+});
+
 
 
 
