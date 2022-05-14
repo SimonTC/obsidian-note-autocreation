@@ -103,13 +103,13 @@ describe('when the file in the suggestion does not exist', function () {
 		expect(cmd.FolderCreationNeeded).toBeFalsy()
 	})
 
-	test('the file will contain the suggestion title as header 1', () => {
+	test('the file will be empty', () => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true};
 		const noteCreator = new NoteCreationPreparer(fileSystem)
 		const suggestion = new Suggestion('My note.md')
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion)
 
-		expect(cmd.NoteContent).toBe('# My note')
+		expect(cmd.NoteContent).toBe('')
 	})
 });
