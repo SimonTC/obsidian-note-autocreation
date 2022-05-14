@@ -113,6 +113,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 	renderSuggestion(value: string, el: HTMLElement): void {
 		const suggestion = new Suggestion(value)
 		let div = el.createDiv({
+			cls: "nac-suggestion-trigger",
 			text: suggestion.Trigger,
 		})
 		div.hidden = true
