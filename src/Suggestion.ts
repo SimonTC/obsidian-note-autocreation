@@ -23,6 +23,11 @@ export class Suggestion {
 	readonly FolderPath: string
 
 	/**
+	 * True if the suggested note wil be placed in the root folder.
+	 */
+	readonly NoteIsInRoot: boolean
+
+	/**
 	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
 	 */
 	readonly Alias: string | undefined
@@ -35,6 +40,7 @@ export class Suggestion {
 		this.Title = title
 		this.Alias = alias
 		this.FolderPath = folderPath;
+		this.NoteIsInRoot = folderPath === '/' || folderPath === ''
 	}
 
 	private extractSuggestionParts(trigger: string): {vaultPath: string, folderPath: string, title: string, alias: string} {
