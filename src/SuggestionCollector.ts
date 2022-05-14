@@ -24,6 +24,11 @@ export class SuggestionCollector {
 					.includes(lowerCaseQueryAsSuggestion.Title))
 			.sort((a, b) => a.Title.localeCompare(b.Title));
 
+		if (suggestions.some(su => su.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryAsSuggestion.VaultPathWithoutExtension)){
+			// Do not add the query as a separate suggestion since it already exist
+			return suggestions
+		}
+
 		if (query !== '') {
 			suggestions.unshift(new Suggestion(query))
 		}

@@ -166,6 +166,11 @@ describe('the list of suggestions', function () {
 		{query: 's', expectedFiles: ['s', 'Simon.md']},
 		{query: '', expectedFiles: ['bob.md', 'bobby.md', 'jack.md', 'Simon.md']},
 		{query: 'p', expectedFiles: ['p']},
+		{query: 'simon', expectedFiles: ['Simon.md']},
+		{query: 'Simon', expectedFiles: ['Simon.md']},
+		{query: 'bob', expectedFiles: ['bob.md', 'bobby.md']},
+		{query: 'Bob', expectedFiles: ['bob.md', 'bobby.md']},
+		{query: 'bob.md', expectedFiles: ['bob.md','bobby.md']},
 	])('filtered with "$query" returns $expectedFiles', ({query, expectedFiles}) => {
 		const unresolvedLinks = {
 			'bob.md': {},
