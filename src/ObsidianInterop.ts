@@ -20,8 +20,8 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 	}
 
 	noteExists(notePath: string): boolean {
-		const foundItem = app.metadataCache.getFirstLinkpathDest(notePath, "")
-		return foundItem !== null
+		const foundItem = app.vault.getAbstractFileByPath(notePath)
+		return foundItem && foundItem instanceof TFile
 	}
 
 	async getOrCreateFileAndFoldersInPath(creationCommand: NoteCreationCommand, suggestion: Suggestion): Promise<TFile>{
