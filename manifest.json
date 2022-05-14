@@ -3,8 +3,8 @@
 	"name": "Note Auto Creator",
 	"version": "0.0.1",
 	"minAppVersion": "0.14.6",
-	"description": "This plugin makes it possible to automatically create notes when links are created to them.",
+	"description": "Automatically create notes when links are created to them.",
 	"author": "Simon T. Clement",
-	"authorUrl": "https://simontc.com",
+	"authorUrl": "https://github.com/SimonTC",
 	"isDesktopOnly": false
 }
