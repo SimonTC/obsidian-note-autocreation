@@ -7,9 +7,15 @@ export class Suggestion {
 
 	/**
 	 * The full obsidian vault path to the note that would be created or chosen if this suggestion is selected.
-	 * Does not necessarily include the extension of the note.
+	 * Might include the extension of the note.
 	 */
 	readonly VaultPath: string;
+
+	/**
+	 * The full obsidian vault path to the note that would be created or chosen if this suggestion is selected.
+	 * Will never include the .md extension of the note.
+	 */
+	readonly VaultPathWithoutExtension: string
 
 	/**
 	 * The title of the note. This is used as the file name of the note if it created.
@@ -41,6 +47,7 @@ export class Suggestion {
 		this.Alias = alias
 		this.FolderPath = folderPath;
 		this.NoteIsInRoot = folderPath === '/' || folderPath === ''
+		this.VaultPathWithoutExtension = vaultPath.replace('.md', '')
 	}
 
 	private extractSuggestionParts(trigger: string): {vaultPath: string, folderPath: string, title: string, alias: string} {
