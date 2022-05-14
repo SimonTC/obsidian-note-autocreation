@@ -112,11 +112,13 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	renderSuggestion(value: string, el: HTMLElement): void {
 		const suggestion = new Suggestion(value)
-		let div = el.createDiv({
+
+		let triggerDiv = el.createDiv({
 			cls: "nac-suggestion-trigger",
 			text: suggestion.Trigger,
 		})
-		div.hidden = true
+		triggerDiv.hidden = true
+
 		el.createDiv({
 			cls: "suggestion-content",
 			text: suggestion.Title
@@ -161,7 +163,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 	private updateSuggestionLine() {
 		const editor = this.context.editor;
-		const text = this.currentSuggestion.Trigger;
+		const text = this.currentSuggestion.VaultPathWithoutExtension;
 		const finalCursorPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch + text.length}
 		editor.replaceRange(text, this.currentTrigger.start, this.currentTrigger.end);
 		editor.setCursor(finalCursorPosition)
