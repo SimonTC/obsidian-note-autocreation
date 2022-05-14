@@ -53,9 +53,15 @@ esbuild.build({
 	plugins: [copyFilePlugin({
 		before:{},
 		after: { // copy after bundling (target, source)
+			// Copying to the test vault
 			'./tests/Note Auto Creation Test Vault/.obsidian/plugins/obsidian-note-autocreation/styles.css': './styles.css',
 			'./tests/Note Auto Creation Test Vault/.obsidian/plugins/obsidian-note-autocreation/manifest.json': './manifest.json',
-			'./tests/Note Auto Creation Test Vault/.obsidian/plugins/obsidian-note-autocreation/main.js': './src/main.js'
+			'./tests/Note Auto Creation Test Vault/.obsidian/plugins/obsidian-note-autocreation/main.js': './src/main.js',
+
+			// Copy to release folder
+			'./Release/styles.css': './styles.css',
+			'./Release/manifest.json': './manifest.json',
+			'./Release/main.js': './src/main.js'
 		}
 	})]
 }).catch(() => process.exit(1));

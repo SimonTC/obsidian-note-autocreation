@@ -29,5 +29,8 @@ data.json
 /tests/**/obsidian-note-autocreation/manifest.json
 /tests/**/obsidian-note-autocreation/main.js
 
+# Exclude anything in the Release folder
+/Release/*
+
 # Exclude markdown files in the test vault
 /tests/Note Auto Creation Test Vault/**/*.md
