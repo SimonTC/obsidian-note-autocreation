@@ -1,6 +1,6 @@
-import {Suggestion} from "../src/Suggestion";
-import {SuggestionCollector} from "../src/SuggestionCollector";
-import {IMetadataCollection} from "../src/ObsidianInterfaces";
+import {Suggestion} from "../src/Suggestion"
+import {SuggestionCollector} from "../src/SuggestionCollector"
+import {IMetadataCollection} from "../src/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
 
 test('the suggestion collector can deal with big vaults', () => {
@@ -19,26 +19,26 @@ test('the suggestion collector can deal with big vaults', () => {
 		collection[file] = {}
 		return collection
 	}, {})
-	const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-	const collector = new SuggestionCollector(metadata);
+	const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+	const collector = new SuggestionCollector(metadata)
 
 	const startTime = performance.now()
-	collector.getSuggestions("");
+	collector.getSuggestions("")
 	const endTime = performance.now()
 
-	const diff = endTime - startTime;
+	const diff = endTime - startTime
 	console.log(`Collecting suggestions took ${diff} ms.`)
 	expect(diff).toBeLessThan(55)
 })
 
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} }
+		const collector = new SuggestionCollector(metadata)
 
-		const suggestions = collector.getSuggestions("");
+		const suggestions = collector.getSuggestions("")
 
-		expect(suggestions).toEqual<Suggestion[]>([]);
+		expect(suggestions).toEqual<Suggestion[]>([])
 	})
 
 	test('contains all files in the vault', () => {
@@ -53,12 +53,12 @@ describe('the list of suggestions', function () {
 			collection[file] = {}
 			return collection
 		}, {})
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const suggestions = collector.getSuggestions("");
+		const suggestions = collector.getSuggestions("")
 
-		expect(suggestions.map(su => su.VaultPath).sort()).toEqual(files.sort());
+		expect(suggestions.map(su => su.VaultPath).sort()).toEqual(files.sort())
 	})
 
 	test('contains links that do not have any files created for them', () => {
@@ -71,10 +71,10 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'I have no page.md': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const suggestions = collector.getSuggestions("");
+		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Some link',
@@ -84,7 +84,7 @@ describe('the list of suggestions', function () {
 			'I have no page'
 		]
 
-		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort());
+		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
 
 	})
 
@@ -97,10 +97,10 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'Some link': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const suggestions = collector.getSuggestions("");
+		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Some link',
@@ -108,7 +108,7 @@ describe('the list of suggestions', function () {
 			'Hello world',
 		]
 
-		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort());
+		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
 	})
 
 	test('may contains multiple suggestions with same names if they are in separate locations', () => {
@@ -120,10 +120,10 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'Other folder/Some link': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const suggestions = collector.getSuggestions("");
+		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Some link',
@@ -132,7 +132,7 @@ describe('the list of suggestions', function () {
 			'Some link',
 		]
 
-		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort());
+		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
 	})
 
 	test('is sorted in alphabetical order by suggestion title', () => {
@@ -144,10 +144,10 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'Other folder/Some link': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const suggestions = collector.getSuggestions("");
+		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
 			'document 1',
 			'Hello world',
@@ -156,7 +156,7 @@ describe('the list of suggestions', function () {
 			'Some other markdown',
 		]
 
-		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles);
+		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles)
 	})
 
 	it.each([
@@ -179,10 +179,10 @@ describe('the list of suggestions', function () {
 			'Simon.md': {},
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const observedSuggestions = collector.getSuggestions(query);
+		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
@@ -198,10 +198,10 @@ describe('the list of suggestions', function () {
 			'Folder3/Item66.md': {},
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const observedSuggestions = collector.getSuggestions(query);
+		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
@@ -216,10 +216,10 @@ describe('the list of suggestions', function () {
 			'Folder2/folder item.md': {},
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const observedSuggestions = collector.getSuggestions(query);
+		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
@@ -229,18 +229,18 @@ describe('the list of suggestions', function () {
 			'jack.md': {},
 		}
 
-		const query = 'b';
+		const query = 'b'
 
 		const expectedSuggestions: Suggestion[] = [
 			new Suggestion(query),
 			new Suggestion('bob.md'),
 		]
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
-		const collector = new SuggestionCollector(metadata);
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
 
-		const observedSuggestions = collector.getSuggestions(query);
+		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions).toEqual(expectedSuggestions)
 
 	})
-});
+})

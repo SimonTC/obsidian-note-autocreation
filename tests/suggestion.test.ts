@@ -1,4 +1,4 @@
-import {Suggestion} from "../src/Suggestion";
+import {Suggestion} from "../src/Suggestion"
 
 describe('a single suggestion', function () {
 	it.each([
@@ -8,7 +8,7 @@ describe('a single suggestion', function () {
 		{trigger: 'mynote.md', expectedFolderPath: ''},
 		{trigger: '/', expectedFolderPath: ''},
 	])('does not contain file name in folder path when trigger is $trigger', ({trigger, expectedFolderPath}) => {
-		const suggestion = new Suggestion(trigger);
+		const suggestion = new Suggestion(trigger)
 
 		expect(suggestion.FolderPath).toBe(expectedFolderPath)
 	})
@@ -20,7 +20,7 @@ describe('a single suggestion', function () {
 		{trigger: 'My note|With another name', expectedTitle: 'My note'}, // alias given
 		{trigger: 'My note.md|With another name', expectedTitle: 'My note'}, // alias given with extension in path
 	])('uses title $expectedTitle when trigger is $trigger', ({trigger, expectedTitle}) => {
-		const suggestion = new Suggestion(trigger);
+		const suggestion = new Suggestion(trigger)
 
 		expect(suggestion.Title).toBe(expectedTitle)
 	})
@@ -32,7 +32,7 @@ describe('a single suggestion', function () {
 		{trigger: '/'},
 		{trigger: '/|some non empty name'},
 	])('has empty title when trigger is $trigger', ({trigger}) => {
-		const suggestion = new Suggestion(trigger);
+		const suggestion = new Suggestion(trigger)
 
 		expect(suggestion.Title).toBe('')
 	})
@@ -42,7 +42,7 @@ describe('a single suggestion', function () {
 		{trigger: 'folder1/note ', expected: 'folder1/note'},
 		{trigger: ' folder/name ', expected: 'folder/name'},
 	])('has no extra white space in trigger when trigger is $trigger', ({trigger, expected}) => {
-		const suggestion = new Suggestion(trigger);
+		const suggestion = new Suggestion(trigger)
 
 		expect(suggestion.Trigger).toBe(expected)
 	})
@@ -56,7 +56,7 @@ describe('a single suggestion', function () {
 		{trigger: 'myNote', expected: 'myNote'}, // file without extension
 		{trigger: 'folder1/folder2/folder3/', expected: 'folder1/folder2/folder3/'}, // only folder
 	])('stores vault path as $expected when trigger is $trigger', ({trigger, expected}) => {
-		const suggestion = new Suggestion(trigger);
+		const suggestion = new Suggestion(trigger)
 
 		expect(suggestion.VaultPath).toBe(expected)
 	})
@@ -67,7 +67,7 @@ describe('a single suggestion', function () {
 		{trigger: 'reading/books/short-stories/how I Won.md'},
 		{trigger: 'note.md'},
 	])('stores $trigger as trigger', ({trigger}) => {
-		const suggestion = new Suggestion(trigger);
+		const suggestion = new Suggestion(trigger)
 
 		expect(suggestion.Trigger).toBe(trigger)
 	})
@@ -81,7 +81,7 @@ describe('a single suggestion', function () {
 		{trigger: 'My nice note|', expectedAlias: undefined},
 		{trigger: 'My nice note', expectedAlias: undefined},
 	])('uses alias $expectedAlias when trigger $trigger is given', ({trigger, expectedAlias}) => {
-		const suggestion = new Suggestion(trigger);
+		const suggestion = new Suggestion(trigger)
 		expect(suggestion.Alias).toBe(expectedAlias)
 	})
-});
+})

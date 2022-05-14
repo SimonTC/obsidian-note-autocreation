@@ -1,5 +1,5 @@
-import {Suggestion} from "./Suggestion";
-import {IFileSystem} from "./ObsidianInterfaces";
+import {Suggestion} from "./Suggestion"
+import {IFileSystem} from "./ObsidianInterfaces"
 
 export type NoteCreationCommand = {
 	NoteContent: string,
@@ -14,12 +14,12 @@ export class NoteCreationPreparer {
 	private fileSystem: IFileSystem
 	
 	constructor(fileSystem: IFileSystem) {
-		this.fileSystem = fileSystem;
+		this.fileSystem = fileSystem
 	}
 	
 	prepareNoteCreationFor(suggestion: Suggestion): NoteCreationCommand{
-		const fileCreationNeeded = suggestion.Title !== '' && !this.fileSystem.noteExists(suggestion.VaultPath);
-		const folderCreationNeeded = suggestion.FolderPath !== '' && !this.fileSystem.folderExists(suggestion.FolderPath);
+		const fileCreationNeeded = suggestion.Title !== '' && !this.fileSystem.noteExists(suggestion.VaultPath)
+		const folderCreationNeeded = suggestion.FolderPath !== '' && !this.fileSystem.folderExists(suggestion.FolderPath)
 
 		return {
 			PathToNewFile: fileCreationNeeded ? this.getFileName(suggestion) : undefined,

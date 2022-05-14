@@ -1,17 +1,17 @@
-import {IFileSystem, IMetadataCollection} from "./ObsidianInterfaces";
-import {App, TFile, TFolder} from "obsidian";
-import {NoteCreationCommand} from "./NoteCreationPreparer";
-import {Suggestion} from "./Suggestion";
+import {IFileSystem, IMetadataCollection} from "./ObsidianInterfaces"
+import {App, TFile, TFolder} from "obsidian"
+import {NoteCreationCommand} from "./NoteCreationPreparer"
+import {Suggestion} from "./Suggestion"
 
 export class ObsidianInterop implements IMetadataCollection, IFileSystem {
-	private readonly app: App;
+	private readonly app: App
 
 	constructor(app: App) {
-		this.app = app;
+		this.app = app
 	}
 
 	getUnresolvedLinks(): Record<string, Record<string, number>> {
-		return app.metadataCache.unresolvedLinks;
+		return app.metadataCache.unresolvedLinks
 	}
 
 	folderExists(folderPath: string): boolean {
@@ -56,13 +56,13 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 
 	private async tryCreateFile(filePath: string, fileContent: string): Promise<TFile> {
 		try{
-			return await app.vault.create(filePath, fileContent);
+			return await app.vault.create(filePath, fileContent)
 		} catch (e) {
 			// File apparently already exists.
 			// This might happen if a file of the same name but with different casing exist
 			console.debug('NAC: Failed file creation. File probably already exist.')
 		}
 
-		return undefined;
+		return undefined
 	}
 }

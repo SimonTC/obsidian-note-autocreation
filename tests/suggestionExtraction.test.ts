@@ -1,4 +1,4 @@
-import {extractSuggestionTrigger} from "../src/suggestionExtraction";
+import {extractSuggestionTrigger} from "../src/suggestionExtraction"
 
 const baseCases = [
 	{inputLine: "", cursorPosition:{line: 1, ch: 5}, expectedTrigger: null, description: 'line is empty', triggerSymbol: ""},
@@ -24,7 +24,7 @@ describe('a suggestion trigger using a single letter trigger symbol', function (
 	const allTestCases = baseCases.flatMap(testData => triggerSymbolsToTest.map(symbol => {
 		// I'm not proud of this code, but it does the job, so I'll keep it for now.
 		// @ts-ignore
-		const inputLine = testData.inputLine.replaceAll("@", symbol);
+		const inputLine = testData.inputLine.replaceAll("@", symbol)
 
 		let expectedTrigger = testData.expectedTrigger
 
@@ -34,7 +34,7 @@ describe('a suggestion trigger using a single letter trigger symbol', function (
 				endIndex: testData.expectedTrigger.endIndex,
 				// @ts-ignore
 				query: testData.expectedTrigger.query.replaceAll("@", symbol)
-			};
+			}
 		}
 
 		return {
@@ -48,7 +48,7 @@ describe('a suggestion trigger using a single letter trigger symbol', function (
 	it.each(allTestCases)('has trigger $expectedTrigger when $description using trigger symbol $triggerSymbol', (testData) => {
 		// @ts-ignore
 		testData.inputLine = testData.inputLine.replaceAll("@", testData.triggerSymbol)
-		const observedTrigger = extractSuggestionTrigger(testData.inputLine, testData.cursorPosition, testData.triggerSymbol);
+		const observedTrigger = extractSuggestionTrigger(testData.inputLine, testData.cursorPosition, testData.triggerSymbol)
 
 		if (testData.expectedTrigger === null){
 			expect(observedTrigger).toBeNull()
@@ -57,11 +57,11 @@ describe('a suggestion trigger using a single letter trigger symbol', function (
 
 		expect(observedTrigger).not.toBeNull()
 
-		expect(observedTrigger.end).toEqual({line: testData.cursorPosition.line, ch: testData.expectedTrigger.endIndex});
-		expect(observedTrigger.start).toEqual({line: testData.cursorPosition.line, ch: testData.expectedTrigger.startIndex});
-		expect(observedTrigger.query).toEqual(testData.expectedTrigger.query);
+		expect(observedTrigger.end).toEqual({line: testData.cursorPosition.line, ch: testData.expectedTrigger.endIndex})
+		expect(observedTrigger.start).toEqual({line: testData.cursorPosition.line, ch: testData.expectedTrigger.startIndex})
+		expect(observedTrigger.query).toEqual(testData.expectedTrigger.query)
 	})
-});
+})
 
 describe('a suggestion trigger using multi-letter trigger symbols', function () {
 	it.each([
@@ -84,10 +84,10 @@ describe('a suggestion trigger using multi-letter trigger symbols', function () 
 		const observedTrigger = extractSuggestionTrigger(input, {line: 1, ch: input.length}, triggerSymbols)
 
 		expect(observedTrigger).not.toBeNull()
-		expect(observedTrigger.query).toEqual(expectedQuery);
-		expect(observedTrigger.start).toEqual({line: 1, ch: expectedStart});
+		expect(observedTrigger.query).toEqual(expectedQuery)
+		expect(observedTrigger.start).toEqual({line: 1, ch: expectedStart})
 	})
-});
+})
 
 
 

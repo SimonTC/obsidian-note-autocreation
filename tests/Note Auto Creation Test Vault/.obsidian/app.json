@@ -1,5 +1,6 @@
 {
   "legacyEditor": false,
   "livePreview": true,
-  "useMarkdownLinks": true
+  "useMarkdownLinks": false,
+  "promptDelete": false
 }
