@@ -125,7 +125,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 		});
 		el.createDiv({
 			cls: "suggestion-note",
-			text: suggestion.NoteIsInRoot ? '/' : suggestion.FolderPath
+			text: suggestion.FolderPath + '/'
 		})
 	}
 
