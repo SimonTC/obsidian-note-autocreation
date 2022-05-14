@@ -1,6 +1,45 @@
 import {Suggestion} from "./Suggestion";
 import {IMetadataCollection} from "./ObsidianInterfaces";
 
+class SuggestionCollection{
+	private readonly query: string
+	private validSuggestions: Suggestion[] = []
+	private readonly lowerCaseQueryAsSuggestion: Suggestion;
+	suggestionForQueryAlreadyExist: boolean;
+
+	private constructor(query: string) {
+		this.query = query;
+		const lowerCaseQuery = query.toLowerCase()
+		this.lowerCaseQueryAsSuggestion = new Suggestion(lowerCaseQuery);
+	}
+
+	add(suggestionString: string){
+		const suggestion = new Suggestion(suggestionString);
+		const queryIsAncestor = suggestion.FolderPath.toLowerCase().includes(this.lowerCaseQueryAsSuggestion.FolderPath)
+		const queryCouldBeForSuggestedNote = suggestion.VaultPath.toLowerCase()
+			.replace(this.lowerCaseQueryAsSuggestion.FolderPath, '')
+			.includes(this.lowerCaseQueryAsSuggestion.Title)
+
+		const queryIsForSameNoteAsSuggestion = suggestion.VaultPathWithoutExtension.toLowerCase() === this.lowerCaseQueryAsSuggestion.VaultPathWithoutExtension
+		if (queryIsForSameNoteAsSuggestion){
+			this.suggestionForQueryAlreadyExist = true
+		}
+
+		if (queryIsAncestor && queryCouldBeForSuggestedNote){
+			this.validSuggestions.push(suggestion)
+		}
+	}
+
+	getSortedSuggestions() : Suggestion[]{
+		this.validSuggestions.sort((a, b) => a.Title.localeCompare(b.Title));
+		return this.validSuggestions
+	}
+
+	static for(query: string){
+		return new SuggestionCollection(query)
+	}
+}
+
 
 export class SuggestionCollector {
 	private metadata: IMetadataCollection;
@@ -10,29 +49,18 @@ export class SuggestionCollector {
 	}
 
 	getSuggestions(query: string): Suggestion[] {
-		const lowerCaseQuery = query.toLowerCase()
-		const lowerCaseQueryAsSuggestion = new Suggestion(lowerCaseQuery);
+		const suggestionCollection = SuggestionCollection.for(query);
 		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())];
+		for (let i = 0; i < allLinks.length; i++) {
+			suggestionCollection.add(allLinks[i])
+		}
 
-		const suggestions = allLinks
-			.map(path => new Suggestion(path))
-			.filter(su => su.FolderPath.toLowerCase().includes(lowerCaseQueryAsSuggestion.FolderPath))
-			.filter(su =>
-				su.VaultPath
-					.toLowerCase()
-					.replace(lowerCaseQueryAsSuggestion.FolderPath, '')
-					.includes(lowerCaseQueryAsSuggestion.Title))
-			.sort((a, b) => a.Title.localeCompare(b.Title));
-
-		if (suggestions.some(su => su.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryAsSuggestion.VaultPathWithoutExtension)){
-			// Do not add the query as a separate suggestion since it already exist
+		const suggestions = suggestionCollection.getSortedSuggestions()
+		if(query === '' || suggestionCollection.suggestionForQueryAlreadyExist){
 			return suggestions
 		}
 
-		if (query !== '') {
-			suggestions.unshift(new Suggestion(query))
-		}
-
+		suggestions.unshift(new Suggestion(query))
 		return suggestions
 	}
 
