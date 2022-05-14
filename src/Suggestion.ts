@@ -41,7 +41,7 @@ export class Suggestion {
 	constructor(trigger: string) {
 		const fullPath = trigger.trim();
 		this.Trigger = fullPath;
-		let {vaultPath, folderPath, title, alias} = this.extractSuggestionParts(fullPath);
+		const {vaultPath, folderPath, title, alias} = this.extractSuggestionParts(fullPath);
 		this.VaultPath = vaultPath;
 		this.Title = title
 		this.Alias = alias
@@ -51,9 +51,10 @@ export class Suggestion {
 	}
 
 	private extractSuggestionParts(trigger: string): {vaultPath: string, folderPath: string, title: string, alias: string} {
+		// eslint-disable-next-line prefer-const
 		let [vaultPath, alias] = trigger.split('|')
 		const fileNameStartsAt = vaultPath.lastIndexOf('/')
-		let [folderPath, fileNameWithPossibleExtension] = fileNameStartsAt === -1
+		const [folderPath, fileNameWithPossibleExtension] = fileNameStartsAt === -1
 			? ['', vaultPath]
 			: [vaultPath.slice(0, fileNameStartsAt), vaultPath.slice(fileNameStartsAt + 1) ]
 

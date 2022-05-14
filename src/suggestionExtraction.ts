@@ -11,7 +11,7 @@ export type SuggestionTrigger = {
 
 
 export function extractSuggestionTrigger(lineText: string, cursorPosition: DocumentLocation, triggerSymbol: string): SuggestionTrigger {
-	const safeTriggerSymbol = triggerSymbol.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'); // this will escape any symbols that are unsafe in a regex expression
+	const safeTriggerSymbol = triggerSymbol.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); // this will escape any symbols that are unsafe in a regex expression
 	const regex = new RegExp(`(?:^| )${safeTriggerSymbol}(?!.*]])(.*)`, "d"); // d flag is necessary to get the indices of the groups
 	const triggerSymbolIndex = lineText.indexOf(triggerSymbol)
 	if (lineText.length === 0 || cursorPosition.ch === 0 || triggerSymbolIndex == -1){

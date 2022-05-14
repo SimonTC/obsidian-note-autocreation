@@ -69,7 +69,7 @@ describe('a suggestion trigger using multi-letter trigger symbols', function () 
 		{triggerSymbols: '@@', input: '@ some text @ some other text'},
 		{triggerSymbols: '$$', input: '$ some text $ some other text'},
 	])('does not trigger if symbols are separated in $input', ({triggerSymbols, input}) => {
-	  	const observedTrigger = extractSuggestionTrigger(input, {line: 1, ch: input.length}, triggerSymbols)
+		const observedTrigger = extractSuggestionTrigger(input, {line: 1, ch: input.length}, triggerSymbols)
 		expect(observedTrigger).toBeNull()
 	})
 

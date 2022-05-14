@@ -66,10 +66,10 @@ export class SuggestionCollector {
 
 	private* getVaultPathsOfAllLinks() {
 		const unresolvedLinks: Record<string, Record<string, number>> = this.metadata.getUnresolvedLinks();
-		for (let pathToFileWithPossibleUnresolvedLink in unresolvedLinks) {
+		for (const pathToFileWithPossibleUnresolvedLink in unresolvedLinks) {
 			yield pathToFileWithPossibleUnresolvedLink;
 
-			for (let unresolvedLink in unresolvedLinks[pathToFileWithPossibleUnresolvedLink]) {
+			for (const unresolvedLink in unresolvedLinks[pathToFileWithPossibleUnresolvedLink]) {
 				yield unresolvedLink;
 			}
 		}

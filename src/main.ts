@@ -32,7 +32,7 @@ export default class NoteAutoCreator extends Plugin {
 
 	onAttributeChange(mutations: MutationRecord[], linkSuggestor: LinkSuggestor){
 		const suggestionChange = mutations.find(m => {
-			let anyTarget : any = m.target;
+			const anyTarget : any = m.target;
 			return anyTarget.className === 'suggestion-item is-selected'
 		})
 
@@ -113,7 +113,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 	renderSuggestion(value: string, el: HTMLElement): void {
 		const suggestion = new Suggestion(value)
 
-		let triggerDiv = el.createDiv({
+		const triggerDiv = el.createDiv({
 			cls: "nac-suggestion-trigger",
 			text: suggestion.Trigger,
 		})
@@ -143,7 +143,7 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion);
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion);
-		let linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.Alias);
+		const linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.Alias);
 		this.replaceSuggestionWithLink(linkToInsert);
 		this.currentSuggestion = undefined
 		this.currentTrigger = undefined

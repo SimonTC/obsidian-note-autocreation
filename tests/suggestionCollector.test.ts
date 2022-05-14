@@ -5,12 +5,12 @@ import {faker} from "@faker-js/faker"
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeFile = () => {
-		let fakePath = faker.system.directoryPath()
-		let fakeFile = faker.system.commonFileName('md')
+		const fakePath = faker.system.directoryPath()
+		const fakeFile = faker.system.commonFileName('md')
 		return `${fakePath}/${fakeFile}`
 	}
 
-	let files = []
+	const files = []
 	for (let i = 0; i < 10000; i++) {
 		files.push(getFakeFile())
 	}
@@ -22,11 +22,11 @@ test('the suggestion collector can deal with big vaults', () => {
 	const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks };
 	const collector = new SuggestionCollector(metadata);
 
-	let startTime = performance.now()
+	const startTime = performance.now()
 	collector.getSuggestions("");
-	let endTime = performance.now()
+	const endTime = performance.now()
 
-	let diff = endTime - startTime;
+	const diff = endTime - startTime;
 	console.log(`Collecting suggestions took ${diff} ms.`)
 	expect(diff).toBeLessThan(55)
 })
