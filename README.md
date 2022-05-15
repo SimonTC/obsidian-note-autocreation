@@ -9,15 +9,15 @@ After enabling the plugin in the settings menu, you will be able to trigger an a
 The drop-down is triggered by typing the characters configured in the settings menu. By default, the trigger is `@`.
 The suggestion drop-down works as the standard link suggestion activated by typing `[[` with some notable differences:
 
-|                                                                     | Obsidian Linking   | Note Auto Creator linking     |
-|---------------------------------------------------------------------|--------------------|-------------------------------|
-| Trigger for link suggestion                                         | `[[`               | Configurable (`@` by default) |
-| Inserts link to note when Enter is pressed                          | :heavy_check_mark: | :heavy_check_mark:            |     
-| Creates new note if no note exist at the link location              | :x:                | :heavy_check_mark:            |     
-| Filters link suggestions based on the text after the trigger        | :heavy_check_mark: | :heavy_check_mark:            |     
-| Custom display text can be inserted by using the `&#124;` character | :heavy_check_mark: | :heavy_check_mark:            |     
-| Link to specific header can be inserted using the `#` character     | :heavy_check_mark: | :x:                           |
-| Link to specific block can be inserted using the `^` character      | :heavy_check_mark: | :x:                           |
+|                                                                   | Obsidian Linking   | Note Auto Creator linking     |
+|-------------------------------------------------------------------|--------------------|-------------------------------|
+| Trigger for link suggestion                                       | `[[`               | Configurable (`@` by default) |
+| Inserts link to note when Enter is pressed                        | :heavy_check_mark: | :heavy_check_mark:            |     
+| Creates new note if no note exist at the link location            | :x:                | :heavy_check_mark:            |     
+| Filters link suggestions based on the text after the trigger      | :heavy_check_mark: | :heavy_check_mark:            |     
+| Custom display text can be inserted by using the &#124; character | :heavy_check_mark: | :heavy_check_mark:            |     
+| Link to specific header can be inserted using the # character     | :heavy_check_mark: | :x:                           |
+| Link to specific block can be inserted using the ^ character      | :heavy_check_mark: | :x:                           |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -34,13 +34,13 @@ You can choose to ignore the warning and still use any of the special symbols as
 ## Compatibility
 This plugin should work on all operating systems supported by Obsidian, but has not been tested everywhere. See the table below for tested systems:
 
-| Device               | Tested 			         | Working            |
-|----------------------|--------------------|--------------------|
-| Windows 10           | :heavy_check_mark: | :heavy_check_mark: |
-| Android (11)         | :heavy_check_mark: | :heavy_check_mark: |
-| iPad (iPadOS 15.4.1) | :x:                | :grey_question:    |
-| iPhone 			           | :x:                | :grey_question:    |
-| Linux                | :x:                | :grey_question:    |
+| Device              | Tested 			         | Working            |
+|---------------------|--------------------|--------------------|
+| Windows 10          | :heavy_check_mark: | :heavy_check_mark: |
+| Android (11)        | :heavy_check_mark: | :heavy_check_mark: |
+| iPad | :x:                | :grey_question:    |
+| iPhone 			          | :x:                | :grey_question:    |
+| Linux               | :x:                | :grey_question:    |
 
 
 ## How to install
