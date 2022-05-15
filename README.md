@@ -34,13 +34,13 @@ You can choose to ignore the warning and still use any of the special symbols as
 ## Compatibility
 This plugin should work on all operating systems supported by Obsidian, but has not been tested everywhere. See the table below for tested systems:
 
-| Device              | Tested 			         | Working            |
-|---------------------|--------------------|--------------------|
-| Windows 10          | :heavy_check_mark: | :heavy_check_mark: |
-| Android (11)        | :heavy_check_mark: | :heavy_check_mark: |
-| iPad | :x:                | :grey_question:    |
-| iPhone 			          | :x:                | :grey_question:    |
-| Linux               | :x:                | :grey_question:    |
+| Device       | Tested 			         | Working            |
+|--------------|--------------------|--------------------|
+| Windows 10   | :heavy_check_mark: | :heavy_check_mark: |
+| Android (11) | :heavy_check_mark: | :heavy_check_mark: |
+| iPad         | :x:                | :grey_question:    |
+| iPhone 			   | :x:                | :grey_question:    |
+| Linux        | :x:                | :grey_question:    |
 
 
 ## How to install
@@ -54,37 +54,11 @@ You activate the plugin from within Obsidian by doing the following:
 - Click Install
 - Once installed, close the community plugins window and activate the newly installed plugin
 
-### Manually
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-note-autocreation/`.
+### From GitHub
 
-## Development
-
-### Preparing the dev environment
-- Clone this repo
-- Open the vault `tests/Note Auto Creation Test Vault` and disable safe mode to enable plugins
-- Restart the server and enable the plugin Hot-Reload (See Manual Testing)
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile this plugin from `src/main.ts` to `src/main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-
-### Testing the plugin
-
-#### Manual testing
-- Open the test vault `tests/Note Auto Creation Test Vault`
-- Enable Note Auto Creator
-- Enable the [Hot-Reload](https://github.com/pjeby/hot-reload) plugin in the vault. With this enabled our plugin is always reloaded when the Hot-Reload plugin observes changes to `main.js` or `styles.css`. 
-- Run `npm run dev` to compile the plugin and automatically recompile when changes have been made.
-
-#### Automated testing
-No end-to-end tests have been implemented, but a number of unit tests have been implemented to test the core functionality. You can find the tests in the `tests` folder.
-
-### Releasing new releases
-
-- Update the `manifest.json` with the version number, such as `1.0.1`, and the minimum Obsidian version required for the latest release.
-- Update the `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create a new GitHub release using the new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
-
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+1. Download the Latest Release from the Releases section of the GitHub Repository
+2. Put files to your vault's plugins folder: `<vault>/.obsidian/plugins/obsidian-note-autocreation`
+3. Reload Obsidian
+4. If prompted about Safe Mode, you can disable safe mode and enable the plugin.
+   Otherwise, head to Settings, third-party plugins, make sure safe mode is off and
+   enable the plugin from there.
