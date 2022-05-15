@@ -3,7 +3,7 @@
 Automatically create notes when links are created to them.
 
 ## How to use
-![](NAC demo.gif)
+<img src="NAC demo.gif" alt="Gif showing a demo of the plugin"/>
 
 After enabling the plugin in the settings menu, you will be able to trigger an alternative link suggestion drop-down. 
 The drop-down is triggered by typing the characters configured in the settings menu. By default, the trigger is `@`.
