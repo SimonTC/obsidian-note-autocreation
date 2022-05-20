@@ -1,5 +1,4 @@
-import {NoteCreationCommand} from "../core/NoteCreationPreparer"
-import {Suggestion} from "../core/Suggestion"
+import {LinkCreationCommand} from "../core/LinkCreationPreparer"
 import {TFile} from "obsidian"
 import {DocumentLocation} from "../core/suggestionExtraction"
 
@@ -32,7 +31,7 @@ export interface IFileSystem{
 	 * @param suggestion the suggestion that should be converted to a note
 	 * @param currentFile the file currently active in Obsidian
 	 */
-	getOrCreateFileAndFoldersInPath(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: IFile): Promise<TFile>
+	getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: IFile): Promise<TFile>
 }
 
 /**
@@ -61,8 +60,19 @@ export interface IFile {
 }
 
 /**
+ * Interface for getting configuration values.
+ */
+export interface IConfigurationStore{
+
+	/**
+	 * Gets the current value for the configuration with the given key.
+	 */
+	getValueFor(configKey: string): any
+}
+
+/**
  * Main interface for interacting with Obsidian
  */
-export interface IObsidianInterop extends IFileSystem, IMetadataCollection{
+export interface IObsidianInterop extends IFileSystem, IMetadataCollection, IConfigurationStore{
 
 }

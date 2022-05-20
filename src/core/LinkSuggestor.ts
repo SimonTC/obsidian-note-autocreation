@@ -1,5 +1,5 @@
 import {SuggestionCollector} from "./SuggestionCollector"
-import {NoteCreationPreparer} from "./NoteCreationPreparer"
+import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
 import {Suggestion} from "./Suggestion"
@@ -7,7 +7,7 @@ import {IEditor, IEditorSuggestContext, IFile, IObsidianInterop} from "../intero
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
-	private readonly noteCreationPreparer: NoteCreationPreparer
+	private readonly noteCreationPreparer: LinkCreationPreparer
 	private readonly obsidianInterop: IObsidianInterop
 	private settings: NoteAutoCreatorSettings
 	private currentTrigger: SuggestionTrigger
@@ -15,7 +15,7 @@ export class LinkSuggestor {
 	constructor(interop: IObsidianInterop, settings: NoteAutoCreatorSettings) {
 		this.obsidianInterop = interop
 		this.suggestionsCollector = new SuggestionCollector(this.obsidianInterop)
-		this.noteCreationPreparer = new NoteCreationPreparer(this.obsidianInterop)
+		this.noteCreationPreparer = new LinkCreationPreparer(this.obsidianInterop, this.obsidianInterop)
 		this.settings = settings
 	}
 
@@ -62,9 +62,9 @@ export class LinkSuggestor {
 			return
 		}
 
-		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion)
-		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion, currentFile)
-		const linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.Alias)
+		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion, currentFile)
+		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
+		const linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
 		this.replaceSuggestionWithLink(linkToInsert, context)
 	}
 

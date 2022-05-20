@@ -2,5 +2,8 @@
   "legacyEditor": false,
   "livePreview": true,
   "useMarkdownLinks": false,
-  "promptDelete": false
+  "promptDelete": false,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "folder2",
+  "newLinkFormat": "shortest"
 }

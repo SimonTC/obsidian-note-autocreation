@@ -18,6 +18,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Custom display text can be inserted by using the &#124; character | ✔️ | ✔️           |     
 | Link to specific header can be inserted using the # character     | ✔️ | ❌                           |
 | Link to specific block can be inserted using the ^ character      | ✔️ | ❌                           |
+| Adds new root notes in the default location specified in "Default location for new notes" | ✔ | ✔            |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.

@@ -1,9 +1,8 @@
-import {IFile, IFileSystem, IMetadataCollection} from "./ObsidianInterfaces"
+import {IFile, IObsidianInterop} from "./ObsidianInterfaces"
 import {App, TFile, TFolder} from "obsidian"
-import {NoteCreationCommand} from "../core/NoteCreationPreparer"
-import {Suggestion} from "../core/Suggestion"
+import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 
-export class ObsidianInterop implements IMetadataCollection, IFileSystem {
+export class ObsidianInterop implements IObsidianInterop {
 	private readonly app: App
 
 	constructor(app: App) {
@@ -24,27 +23,19 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 		return foundItem && foundItem instanceof TFile
 	}
 
-	async getOrCreateFileAndFoldersInPath(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: IFile): Promise<TFile>{
-		await this.createFolderIfNeeded(creationCommand)
-		return await this.createOrGetFile(creationCommand, suggestion, currentFile)
-	}
-
-	private async createOrGetFile(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: IFile): Promise<TFile>{
-		let file: TFile
-
-		if (creationCommand.FileCreationNeeded){
-			console.debug(`NAC: Note does not exist. Will be created. Path: ${creationCommand.PathToNewFile}`)
-			file = await this.tryCreateFile(creationCommand.PathToNewFile, creationCommand.NoteContent)
+	async getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: IFile): Promise<TFile>{
+		if (creationCommand.FolderCreationCommand){
+			await this.createFolderIfNeeded(creationCommand.FolderCreationCommand)
 		}
 
-		return file ? file : app.metadataCache.getFirstLinkpathDest(suggestion.VaultPath, currentFile.path)
+		if (creationCommand.NoteCreationCommand){
+			return await this.tryCreateFile(creationCommand.NoteCreationCommand)
+		} else {
+			return app.metadataCache.getFirstLinkpathDest(creationCommand.FullPath, "")
+		}
 	}
 
-	private async createFolderIfNeeded(creationCommand: NoteCreationCommand){
-		if (!creationCommand.FolderCreationNeeded){
-			return
-		}
-
+	private async createFolderIfNeeded(creationCommand: FolderCreationCommand){
 		try{
 			await app.vault.createFolder(creationCommand.PathToNewFolder)
 		} catch (e) {
@@ -54,9 +45,11 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 		}
 	}
 
-	private async tryCreateFile(filePath: string, fileContent: string): Promise<TFile> {
+	private async tryCreateFile(creationCommand: NoteCreationCommand): Promise<TFile> {
+		console.debug(`NAC: Note does not exist. Will be created. Path: ${creationCommand.PathToNewFile}`)
+
 		try{
-			return await app.vault.create(filePath, fileContent)
+			return await app.vault.create(creationCommand.PathToNewFile, creationCommand.NoteContent)
 		} catch (e) {
 			// File apparently already exists.
 			// This might happen if a file of the same name but with different casing exist
@@ -64,5 +57,10 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 		}
 
 		return undefined
+	}
+
+	getValueFor(configKey: string): any {
+		// @ts-ignore
+		return this.app.vault.getConfig(configKey)
 	}
 }
