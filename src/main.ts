@@ -7,7 +7,8 @@ import {
 	EditorSuggestTriggerInfo,
 	Plugin,
 	PluginSettingTab,
-	Setting, TextComponent,
+	Setting,
+	TextComponent,
 	TFile
 } from 'obsidian'
 
@@ -16,15 +17,7 @@ import {SuggestionCollector} from "./SuggestionCollector"
 import {extractSuggestionTrigger} from "./suggestionExtraction"
 import {NoteCreationPreparer} from "./NoteCreationPreparer"
 import {ObsidianInterop} from "./ObsidianInterop"
-
-interface NoteAutoCreatorSettings {
-	triggerSymbol: string
-
-}
-
-const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
-	triggerSymbol: '@'
-}
+import {DEFAULT_SETTINGS, NoteAutoCreatorSettings} from "./NoteAutoCreatorSettings"
 
 export default class NoteAutoCreator extends Plugin {
 	settings: NoteAutoCreatorSettings
