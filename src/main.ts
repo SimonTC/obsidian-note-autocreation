@@ -1,7 +1,7 @@
 import {Plugin} from 'obsidian'
 import {DEFAULT_SETTINGS, NoteAutoCreatorSettings} from "./settings/NoteAutoCreatorSettings"
-import {LinkSuggestor} from "./LinkSuggestor"
 import {SettingTab} from "./settings/SettingTab"
+import {LinkSuggestorInterop} from "./interop/LinkSuggestorInterop"
 
 export default class NoteAutoCreator extends Plugin {
 	settings: NoteAutoCreatorSettings
@@ -11,7 +11,7 @@ export default class NoteAutoCreator extends Plugin {
 
 		this.addSettingTab(new SettingTab(this.app, this))
 
-		const linkSuggestor = new LinkSuggestor( this.app, this.settings )
+		const linkSuggestor = new LinkSuggestorInterop( this.app, this.settings )
 		this.registerEditorSuggest( linkSuggestor )
 	}
 

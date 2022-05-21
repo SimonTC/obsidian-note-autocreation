@@ -1,4 +1,4 @@
-import {IFileSystem, IMetadataCollection} from "./ObsidianInterfaces"
+import {IFile, IFileSystem, IMetadataCollection} from "./ObsidianInterfaces"
 import {App, TFile, TFolder} from "obsidian"
 import {NoteCreationCommand} from "../core/NoteCreationPreparer"
 import {Suggestion} from "../core/Suggestion"
@@ -24,12 +24,12 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 		return foundItem && foundItem instanceof TFile
 	}
 
-	async getOrCreateFileAndFoldersInPath(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: TFile): Promise<TFile>{
+	async getOrCreateFileAndFoldersInPath(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: IFile): Promise<TFile>{
 		await this.createFolderIfNeeded(creationCommand)
 		return await this.createOrGetFile(creationCommand, suggestion, currentFile)
 	}
 
-	private async createOrGetFile(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: TFile): Promise<TFile>{
+	private async createOrGetFile(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: IFile): Promise<TFile>{
 		let file: TFile
 
 		if (creationCommand.FileCreationNeeded){
