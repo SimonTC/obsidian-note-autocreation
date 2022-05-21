@@ -29,7 +29,6 @@ export class LinkSuggestor {
 
 	onTrigger(cursor: DocumentLocation, editor: IEditor, file: IFile): SuggestionTrigger | null {
 		const line = editor.getLine(cursor.line)
-		this.currentTrigger = extractSuggestionTrigger(line, {...cursor}, this.settings.triggerSymbol)
 		this.currentTrigger = extractSuggestionTrigger(line, cursor, this.settings.triggerSymbol)
 		return this.currentTrigger
 	}
