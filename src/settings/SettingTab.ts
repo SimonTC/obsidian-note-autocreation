@@ -1,5 +1,5 @@
 import {App, PluginSettingTab, Setting, TextComponent} from "obsidian"
-import NoteAutoCreator from "./main"
+import NoteAutoCreator from "../main"
 
 export class SettingTab extends PluginSettingTab {
 	plugin: NoteAutoCreator

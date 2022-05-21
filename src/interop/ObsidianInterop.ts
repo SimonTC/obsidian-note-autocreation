@@ -1,7 +1,7 @@
 import {IFileSystem, IMetadataCollection} from "./ObsidianInterfaces"
 import {App, TFile, TFolder} from "obsidian"
-import {NoteCreationCommand} from "./NoteCreationPreparer"
-import {Suggestion} from "./Suggestion"
+import {NoteCreationCommand} from "../core/NoteCreationPreparer"
+import {Suggestion} from "../core/Suggestion"
 
 export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 	private readonly app: App

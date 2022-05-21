@@ -1,4 +1,4 @@
-import {extractSuggestionTrigger} from "../src/suggestionExtraction"
+import {extractSuggestionTrigger} from "../src/core/suggestionExtraction"
 
 const baseCases = [
 	{inputLine: "", cursorPosition:{line: 1, ch: 5}, expectedTrigger: null, description: 'line is empty', triggerSymbol: ""},

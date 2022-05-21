@@ -1,5 +1,5 @@
 import {Suggestion} from "./Suggestion"
-import {IMetadataCollection} from "./ObsidianInterfaces"
+import {IMetadataCollection} from "../interop/ObsidianInterfaces"
 
 class SuggestionCollection{
 	private readonly query: string

@@ -1,7 +1,7 @@
 import {Plugin} from 'obsidian'
-import {DEFAULT_SETTINGS, NoteAutoCreatorSettings} from "./NoteAutoCreatorSettings"
+import {DEFAULT_SETTINGS, NoteAutoCreatorSettings} from "./settings/NoteAutoCreatorSettings"
 import {LinkSuggestor} from "./LinkSuggestor"
-import {SettingTab} from "./SettingTab"
+import {SettingTab} from "./settings/SettingTab"
 
 export default class NoteAutoCreator extends Plugin {
 	settings: NoteAutoCreatorSettings

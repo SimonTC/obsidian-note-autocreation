@@ -1,4 +1,4 @@
-import {Suggestion} from "../src/Suggestion"
+import {Suggestion} from "../src/core/Suggestion"
 
 describe('a single suggestion', function () {
 	it.each([

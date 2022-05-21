@@ -7,12 +7,12 @@ import {
 	EditorSuggestTriggerInfo,
 	TFile
 } from "obsidian"
-import {SuggestionCollector} from "./SuggestionCollector"
-import {NoteCreationPreparer} from "./NoteCreationPreparer"
-import {ObsidianInterop} from "./ObsidianInterop"
-import {NoteAutoCreatorSettings} from "./NoteAutoCreatorSettings"
-import {extractSuggestionTrigger} from "./suggestionExtraction"
-import {Suggestion} from "./Suggestion"
+import {SuggestionCollector} from "./core/SuggestionCollector"
+import {NoteCreationPreparer} from "./core/NoteCreationPreparer"
+import {ObsidianInterop} from "./interop/ObsidianInterop"
+import {NoteAutoCreatorSettings} from "./settings/NoteAutoCreatorSettings"
+import {extractSuggestionTrigger} from "./core/suggestionExtraction"
+import {Suggestion} from "./core/Suggestion"
 
 export class LinkSuggestor extends EditorSuggest<string> {
 	private readonly suggestionsCollector: SuggestionCollector

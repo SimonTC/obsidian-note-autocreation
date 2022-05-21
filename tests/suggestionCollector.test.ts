@@ -1,6 +1,6 @@
-import {Suggestion} from "../src/Suggestion"
-import {SuggestionCollector} from "../src/SuggestionCollector"
-import {IMetadataCollection} from "../src/ObsidianInterfaces"
+import {Suggestion} from "../src/core/Suggestion"
+import {SuggestionCollector} from "../src/core/SuggestionCollector"
+import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
 
 test('the suggestion collector can deal with big vaults', () => {

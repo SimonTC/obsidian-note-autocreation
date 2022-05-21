@@ -1,6 +1,6 @@
-import {Suggestion} from "../src/Suggestion"
-import {IFileSystem} from "../src/ObsidianInterfaces"
-import {NoteCreationPreparer} from "../src/NoteCreationPreparer"
+import {Suggestion} from "../src/core/Suggestion"
+import {IFileSystem} from "../src/interop/ObsidianInterfaces"
+import {NoteCreationPreparer} from "../src/core/NoteCreationPreparer"
 
 test('no file is created if the suggestion name is empty', () => {
 	const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => false}

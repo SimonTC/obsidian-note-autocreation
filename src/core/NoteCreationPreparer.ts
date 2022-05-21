@@ -1,5 +1,5 @@
 import {Suggestion} from "./Suggestion"
-import {IFileSystem} from "./ObsidianInterfaces"
+import {IFileSystem} from "../interop/ObsidianInterfaces"
 
 export type NoteCreationCommand = {
 	NoteContent: string,
