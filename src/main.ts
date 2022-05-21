@@ -28,19 +28,6 @@ const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
 
 export default class NoteAutoCreator extends Plugin {
 	settings: NoteAutoCreatorSettings
-	observer: MutationObserver
-
-	onAttributeChange(mutations: MutationRecord[], linkSuggestor: LinkSuggestor){
-		const suggestionChange = mutations.find(m => {
-			const anyTarget : any = m.target
-			return anyTarget.className === 'suggestion-item is-selected'
-		})
-
-		if(suggestionChange){
-			const suggestionTrigger = suggestionChange.target.firstChild.textContent
-			linkSuggestor.onSelectionUpdate(suggestionTrigger)
-		}
-	}
 
 	async onload() {
 		await this.loadSettings()
@@ -49,13 +36,10 @@ export default class NoteAutoCreator extends Plugin {
 
 		const linkSuggestor = new LinkSuggestor( this.app, this.settings )
 		this.registerEditorSuggest( linkSuggestor )
-
-		this.observer = new MutationObserver(mutations => this.onAttributeChange(mutations, linkSuggestor))
-		this.observer.observe(document, {subtree: true, attributes:true, childList: false, attributeOldValue: false})
 	}
 
 	onunload() {
-		this.observer.disconnect()
+
 	}
 
 	async loadSettings() {
@@ -73,7 +57,6 @@ class LinkSuggestor extends EditorSuggest<string>{
 	private readonly obsidianInterop: ObsidianInterop
 	private currentTrigger: EditorSuggestTriggerInfo
 	private settings: NoteAutoCreatorSettings
-	private currentSuggestion: Suggestion
 
 	constructor( app: App, settings: NoteAutoCreatorSettings ) {
 		super( app )
@@ -89,21 +72,17 @@ class LinkSuggestor extends EditorSuggest<string>{
 
 		// @ts-ignore
 		this.scope.register([], 'Tab', (event) => {
-			this.maybeSetSelection()
+			// @ts-ignore
+			// Undocumented field
+			const suggestionCollection = this.suggestions
+			const idOfHighlightedSuggestion = suggestionCollection.selectedItem
+			const highlightedSuggestion = suggestionCollection.values[idOfHighlightedSuggestion]
+			this.updateSuggestionLine(highlightedSuggestion)
 		})
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
 		return this.suggestionsCollector.getSuggestions(context.query).map(s => s.Trigger)
-	}
-
-	onSelectionUpdate(trigger: string) {
-		const suggestion = new Suggestion(trigger)
-		if (suggestion.Trigger === this.currentSuggestion?.Trigger){
-			return
-		}
-
-		this.currentSuggestion = suggestion
 	}
 
 	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
@@ -147,7 +126,6 @@ class LinkSuggestor extends EditorSuggest<string>{
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, suggestion, currentFile)
 		const linkToInsert = app.fileManager.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.Alias)
 		this.replaceSuggestionWithLink(linkToInsert)
-		this.currentSuggestion = undefined
 		this.currentTrigger = undefined
 	}
 
@@ -157,17 +135,12 @@ class LinkSuggestor extends EditorSuggest<string>{
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end)
 	}
 
-	maybeSetSelection () {
-		if(this.currentSuggestion){
-			this.updateSuggestionLine()
-		}
-	}
-
-	private updateSuggestionLine() {
+	updateSuggestionLine(text: string) {
 		const editor = this.context.editor
-		const text = this.currentSuggestion.VaultPathWithoutExtension
-		const finalCursorPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch + text.length}
-		editor.replaceRange(text, this.currentTrigger.start, this.currentTrigger.end)
+		const newSuggestion = new Suggestion(text)
+		const textToInsert = newSuggestion.VaultPathWithoutExtension
+		const finalCursorPosition = {line: this.currentTrigger.start.line, ch: this.currentTrigger.start.ch + textToInsert.length}
+		editor.replaceRange(textToInsert, this.currentTrigger.start, this.currentTrigger.end)
 		editor.setCursor(finalCursorPosition)
 	}
 }
