@@ -24,12 +24,12 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 		return foundItem && foundItem instanceof TFile
 	}
 
-	async getOrCreateFileAndFoldersInPath(creationCommand: NoteCreationCommand, suggestion: Suggestion): Promise<TFile>{
+	async getOrCreateFileAndFoldersInPath(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: TFile): Promise<TFile>{
 		await this.createFolderIfNeeded(creationCommand)
-		return await this.createOrGetFile(creationCommand, suggestion)
+		return await this.createOrGetFile(creationCommand, suggestion, currentFile)
 	}
 
-	private async createOrGetFile(creationCommand: NoteCreationCommand, suggestion: Suggestion): Promise<TFile>{
+	private async createOrGetFile(creationCommand: NoteCreationCommand, suggestion: Suggestion, currentFile: TFile): Promise<TFile>{
 		let file: TFile
 
 		if (creationCommand.FileCreationNeeded){
@@ -37,7 +37,7 @@ export class ObsidianInterop implements IMetadataCollection, IFileSystem {
 			file = await this.tryCreateFile(creationCommand.PathToNewFile, creationCommand.NoteContent)
 		}
 
-		return file ? file : app.metadataCache.getFirstLinkpathDest(suggestion.VaultPath, "")
+		return file ? file : app.metadataCache.getFirstLinkpathDest(suggestion.VaultPath, currentFile.path)
 	}
 
 	private async createFolderIfNeeded(creationCommand: NoteCreationCommand){
