@@ -14,7 +14,7 @@ import {NoteAutoCreatorSettings} from "./settings/NoteAutoCreatorSettings"
 import {extractSuggestionTrigger} from "./core/suggestionExtraction"
 import {Suggestion} from "./core/Suggestion"
 
-export class LinkSuggestor extends EditorSuggest<string> {
+export class LinkSuggestor extends EditorSuggest<Suggestion> {
 	private readonly suggestionsCollector: SuggestionCollector
 	private readonly noteCreationPreparer: NoteCreationPreparer
 	private readonly obsidianInterop: ObsidianInterop
@@ -44,8 +44,8 @@ export class LinkSuggestor extends EditorSuggest<string> {
 		})
 	}
 
-	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
-		return this.suggestionsCollector.getSuggestions(context.query).map(s => s.Trigger)
+	getSuggestions(context: EditorSuggestContext): Suggestion[] | Promise<Suggestion[]> {
+		return this.suggestionsCollector.getSuggestions(context.query)
 	}
 
 	onTrigger(cursor: EditorPosition, editor: Editor, file: TFile): EditorSuggestTriggerInfo | null {
@@ -54,33 +54,30 @@ export class LinkSuggestor extends EditorSuggest<string> {
 		return this.currentTrigger
 	}
 
-	renderSuggestion(value: string, el: HTMLElement): void {
-		const suggestion = new Suggestion(value)
+	renderSuggestion(value: Suggestion, el: HTMLElement): void {
 
 		const triggerDiv = el.createDiv({
 			cls: "nac-suggestion-trigger",
-			text: suggestion.Trigger,
+			text: value.Trigger,
 		})
 		triggerDiv.hidden = true
 
 		el.createDiv({
 			cls: "suggestion-content",
-			text: suggestion.Title
+			text: value.Title
 		})
 		el.createDiv({
 			cls: "suggestion-note",
-			text: suggestion.FolderPath + '/'
+			text: value.FolderPath + '/'
 		})
 	}
 
-	selectSuggestion(value: string, evt: MouseEvent | KeyboardEvent) {
+	selectSuggestion(value: Suggestion, evt: MouseEvent | KeyboardEvent) {
 		const currentFile = this.context.file
 		this.selectSuggestionAsync(value, currentFile)
 	}
 
-	private async selectSuggestionAsync(suggestionString: string, currentFile: TFile) {
-		const suggestion = new Suggestion(suggestionString)
-
+	private async selectSuggestionAsync(suggestion: Suggestion, currentFile: TFile) {
 		if (suggestion.Title === "") {
 			return
 		}
@@ -101,9 +98,8 @@ export class LinkSuggestor extends EditorSuggest<string> {
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end)
 	}
 
-	updateSuggestionLine(text: string) {
+	updateSuggestionLine(newSuggestion: Suggestion) {
 		const editor = this.context.editor
-		const newSuggestion = new Suggestion(text)
 		const textToInsert = newSuggestion.VaultPathWithoutExtension
 		const finalCursorPosition = {
 			line: this.currentTrigger.start.line,
