@@ -52,9 +52,6 @@ export default class NoteAutoCreator extends Plugin {
 
 		this.observer = new MutationObserver(mutations => this.onAttributeChange(mutations, linkSuggestor))
 		this.observer.observe(document, {subtree: true, attributes:true, childList: false, attributeOldValue: false})
-		this.registerScopeEvent(this.app.scope.register([], 'Tab', (event, context) => {
-			linkSuggestor.maybeSetSelection()
-		}))
 	}
 
 	onunload() {
@@ -89,6 +86,11 @@ class LinkSuggestor extends EditorSuggest<string>{
 			{command: 'Type |', purpose: 'to change display text'},
 		]
 		this.setInstructions(instructions)
+
+		// @ts-ignore
+		this.scope.register([], 'Tab', (event) => {
+			this.maybeSetSelection()
+		})
 	}
 
 	getSuggestions(context: EditorSuggestContext): string[] | Promise<string[]> {
