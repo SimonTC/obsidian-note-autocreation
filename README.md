@@ -3,23 +3,23 @@
 Automatically create notes when links are created to them.
 
 ## How to use
-![demo](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/NAC%20demo.gif)
+![demo](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/readme_assets/NAC%20demo.gif)
 
 After enabling the plugin in the settings menu, you will be able to trigger an alternative link suggestion drop-down. 
 The drop-down is triggered by typing the characters configured in the settings menu. By default, the trigger is `@`.
 The suggestion drop-down works as the standard link suggestion activated by typing `[[` with some notable differences:
 
-|                                                                   | Obsidian Linking   | Note Auto Creator linking     |
-|-------------------------------------------------------------------|--------------------|-------------------------------|
-| Trigger for link suggestion                                       | `[[`               | Configurable (`@` by default) |
-| Inserts link to note when Enter is pressed                        | ✔️ | ✔️            |     
-| Creates new note if no note exist at the link location            | ❌                | ✔️            |     
-| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | :heavy_check_mark: <br/> Triggered by `$` by default but can be configured |
-| Filters link suggestions based on the text after the trigger      | ✔️ | ✔️            |     
-| Custom display text can be inserted by using the &#124; character | ✔️ | ✔️           |     
-| Link to specific header can be inserted using the # character     | ✔️ | ❌                           |
-| Link to specific block can be inserted using the ^ character      | ✔️ | ❌                           |
-| Adds new root notes in the default location specified in "Default location for new notes" | ✔ | ✔            |
+|                                                                                                        | Obsidian Linking | Note Auto Creator linking                                  |
+|--------------------------------------------------------------------------------------------------------|------------------|------------------------------------------------------------|
+| Trigger for link suggestion                                                                            | `[[`             | Configurable (`@` by default)                              |
+| Inserts link to note when Enter is pressed                                                             | ✔️               | ✔️                                                         |     
+| Creates new note if no note exist at the link location                                                 | ❌                | ✔️                                                         |     
+| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured |
+| Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                         |     
+| Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                         |     
+| Link to specific header can be inserted using the # character                                          | ✔️               | ❌                                                          |
+| Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                          |
+| Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                         |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -28,7 +28,7 @@ Some general notes:
 - The sorting of the suggestions is note quite the same between the two link insertion methods, but the contents are the same.
 
 ### Inserting templates
-<img src="readme_assets/NAC-template demo.gif" alt="Gif showing a demo of how to insert templates"/>
+![template demo](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/readme_assets/NAC-template%20demo.gif)
 
 If you would like to apply a template to a new note you can achieve this by triggering the template selection drop-down by writing the template selection trigger (`$` by default).
 This will change the note selection drop-down to a template selection drop-down, and you will be able to select which template to insert.
@@ -37,6 +37,7 @@ When you have selected a template, the note will be created and the selected tem
 
 **Prerequisites and limitations**
 - Inserting templates only works if the Templater plugin is installed and enabled.
+- You need to have defined a template folder in Templater
 - Inserting templates does not work with templates created for the [core Templates plugin](https://help.obsidian.md/Plugins/Templates).
 - You cannot apply templates to already existing notes.
 
@@ -45,7 +46,6 @@ When you have selected a template, the note will be created and the selected tem
 ### Link suggestion trigger
 
 By default, `@` is used to trigger the link selection, but you can configure it to be any string by changing the value in `Trigger for link selection`.
-
 
 A warning is shown if the chosen trigger is either an empty string or among the [special symbols used when writing markdown](https://www.markdownguide.org/basic-syntax/#characters-you-can-escape).
 You can choose to ignore the warning and still use any of the special symbols as triggers, but it will make it harder to write normal markdown since you always will have the drop-down show up.
@@ -65,10 +65,10 @@ This plugin should work on all operating systems supported by Obsidian, but has 
 | iPhone 			   | ❌                | ❔    |
 | Linux        | ✔️                | ✔️    |
 
-## Upcoming features
-- Apply Templater templates to new notes
-- Respect default location for new notes configured in core Obsidian
-- Set specific top folders to collect note suggestions from
+## Todo
+- [ ] Set specific top folders to collect note suggestions from
+- [ ] Enable header linking if inserting a link to an existing note
+- [ ] Support searching for notes by alias
 
 ## How to install
 
