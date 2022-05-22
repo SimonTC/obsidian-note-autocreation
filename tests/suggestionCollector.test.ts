@@ -186,6 +186,22 @@ describe('the list of suggestions', function () {
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
 	})
 
+	test('includes alias if file already exist and alias is given', () => {
+		const unresolvedLinks = {
+			'bob.md': {},
+			'Simon.md': {},
+		}
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new SuggestionCollector(metadata)
+
+		const observedSuggestions = collector.getSuggestions('bob|the builder')
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBe('the builder')
+		expect(suggestion.VaultPath).toBe('bob.md')
+	})
+
 	it.each([
 		{query: 'Folder1', expectedFiles: ['Folder1', 'Folder1/Note1.md', 'Folder1/Item2.md']},
 		{query: 'Folder1/', expectedFiles: ['Folder1/', 'Folder1/Note1.md', 'Folder1/Item2.md']},

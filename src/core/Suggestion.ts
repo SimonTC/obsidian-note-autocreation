@@ -38,6 +38,11 @@ export class Suggestion {
 	 */
 	readonly Alias: string | undefined
 
+	/**
+	 * Returns true if the suggestion contains an alias.
+	 */
+	get HasAlias() {return this.Alias && this.Alias.length > 0}
+
 	constructor(trigger: string) {
 		const fullPath = trigger.trim()
 		this.Trigger = fullPath

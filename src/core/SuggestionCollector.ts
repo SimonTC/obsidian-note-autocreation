@@ -6,15 +6,17 @@ class SuggestionCollection{
 	private validSuggestions: Suggestion[] = []
 	private readonly lowerCaseQueryAsSuggestion: Suggestion
 	suggestionForQueryAlreadyExist: boolean
+	private queryAsSuggestion: Suggestion
 
 	private constructor(query: string) {
 		this.query = query
 		const lowerCaseQuery = query.toLowerCase()
 		this.lowerCaseQueryAsSuggestion = new Suggestion(lowerCaseQuery)
+		this.queryAsSuggestion = new Suggestion(query)
 	}
 
 	add(suggestionString: string){
-		const suggestion = new Suggestion(suggestionString)
+		let suggestion = new Suggestion(suggestionString)
 		const queryIsAncestor = suggestion.FolderPath.toLowerCase().includes(this.lowerCaseQueryAsSuggestion.FolderPath)
 		const queryCouldBeForSuggestedNote = suggestion.VaultPath.toLowerCase()
 			.replace(this.lowerCaseQueryAsSuggestion.FolderPath, '')
@@ -23,6 +25,9 @@ class SuggestionCollection{
 		const queryIsForSameNoteAsSuggestion = suggestion.VaultPathWithoutExtension.toLowerCase() === this.lowerCaseQueryAsSuggestion.VaultPathWithoutExtension
 		if (queryIsForSameNoteAsSuggestion){
 			this.suggestionForQueryAlreadyExist = true
+			if (this.queryAsSuggestion.HasAlias){
+				suggestion = new Suggestion(`${suggestion.VaultPath}|${this.queryAsSuggestion.Alias}`)
+			}
 		}
 
 		if (queryIsAncestor && queryCouldBeForSuggestedNote){
