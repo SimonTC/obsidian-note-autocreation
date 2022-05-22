@@ -35,7 +35,7 @@ export class ObsidianInterop implements IObsidianInterop {
 		if (creationCommand.NoteCreationCommand){
 			return await this.tryCreateFile(creationCommand.NoteCreationCommand)
 		} else {
-			return app.metadataCache.getFirstLinkpathDest(creationCommand.FullPath, "")
+			return app.metadataCache.getFirstLinkpathDest(creationCommand.FullPath, currentFile.path)
 		}
 	}
 
