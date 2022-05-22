@@ -34,13 +34,6 @@ export class LinkSuggestor {
 	}
 
 	renderSuggestion(value: Suggestion, el: HTMLElement): void {
-
-		const triggerDiv = el.createDiv({
-			cls: "nac-suggestion-trigger",
-			text: value.Trigger,
-		})
-		triggerDiv.hidden = true
-
 		el.createDiv({
 			cls: "suggestion-content",
 			text: value.Title
