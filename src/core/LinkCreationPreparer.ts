@@ -1,5 +1,6 @@
 import {Suggestion} from "./Suggestion"
-import {IConfigurationStore, IFile, IFileSystem} from "../interop/ObsidianInterfaces"
+import {IConfigurationStore, IFileSystem} from "../interop/ObsidianInterfaces"
+import {TFile} from "obsidian"
 
 export type FolderCreationCommand = {
 	PathToNewFolder: string
@@ -26,7 +27,7 @@ export class LinkCreationPreparer {
 		this.configStore = configStore
 	}
 
-	prepareNoteCreationFor(suggestion: Suggestion, currentFile: IFile): LinkCreationCommand{
+	prepareNoteCreationFor(suggestion: Suggestion, currentFile: TFile): LinkCreationCommand{
 		const noteExists = this.fileSystem.noteExists(suggestion.VaultPath)
 
 		if (noteExists){
@@ -60,7 +61,7 @@ export class LinkCreationPreparer {
 		}
 	}
 
-	private createLinkToNoteInDefaultLocation(suggestion: Suggestion, currentFile: IFile): LinkCreationCommand {
+	private createLinkToNoteInDefaultLocation(suggestion: Suggestion, currentFile: TFile): LinkCreationCommand {
 		const noteCreationCmd = {
 			NoteContent: '',
 			PathToNewFile: this.getPathToFileInDefaultFolder(suggestion, currentFile)
@@ -88,7 +89,7 @@ export class LinkCreationPreparer {
 			: `${suggestion.VaultPath}.md`
 	}
 
-	private getPathToFileInDefaultFolder(suggestion: Suggestion, currentFile: IFile): string{
+	private getPathToFileInDefaultFolder(suggestion: Suggestion, currentFile: TFile): string{
 		const defaultNoteLocation = this.configStore.getValueFor('newFileLocation')
 		console.debug(`NAC: default note location is ${defaultNoteLocation}`)
 

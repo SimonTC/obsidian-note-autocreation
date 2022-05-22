@@ -3,7 +3,8 @@ import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
 import {Suggestion} from "./Suggestion"
-import {IEditor, IEditorSuggestContext, IFile, IObsidianInterop} from "../interop/ObsidianInterfaces"
+import {IEditor, IEditorSuggestContext, IObsidianInterop} from "../interop/ObsidianInterfaces"
+import {TFile} from "obsidian"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
@@ -27,7 +28,7 @@ export class LinkSuggestor {
 		return this.suggestionsCollector.getSuggestions(context.query)
 	}
 
-	onTrigger(cursor: DocumentLocation, editor: IEditor, file: IFile): SuggestionTrigger | null {
+	onTrigger(cursor: DocumentLocation, editor: IEditor, file: TFile): SuggestionTrigger | null {
 		const line = editor.getLine(cursor.line)
 		this.currentTrigger = extractSuggestionTrigger(line, cursor, this.settings.triggerSymbol)
 		return this.currentTrigger
@@ -49,7 +50,7 @@ export class LinkSuggestor {
 		this.selectSuggestionAsync(value, currentFile, context)
 	}
 
-	private async selectSuggestionAsync(suggestion: Suggestion, currentFile: IFile, context: IEditorSuggestContext) {
+	private async selectSuggestionAsync(suggestion: Suggestion, currentFile: TFile, context: IEditorSuggestContext) {
 		if (suggestion.Title === "") {
 			return
 		}

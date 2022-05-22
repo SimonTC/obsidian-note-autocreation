@@ -31,7 +31,7 @@ export interface IFileSystem{
 	 * @param suggestion the suggestion that should be converted to a note
 	 * @param currentFile the file currently active in Obsidian
 	 */
-	getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: IFile): Promise<TFile>
+	getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>
 }
 
 /**
@@ -39,7 +39,7 @@ export interface IFileSystem{
  */
 export interface IEditorSuggestContext {
 	editor: IEditor
-	file: IFile
+	file: TFile
 	query: string
 }
 
@@ -50,13 +50,6 @@ export interface IEditor {
 	getLine(line: number): string
 	replaceRange(replacement: string, from: DocumentLocation, to?: DocumentLocation, origin?: string): void;
 	setCursor(pos: DocumentLocation | number, ch?: number): void;
-}
-
-/**
- * Interface for the obsidian type TFile
- */
-export interface IFile {
-	path: string
 }
 
 /**

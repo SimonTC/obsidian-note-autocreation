@@ -1,4 +1,4 @@
-import {IFile, IObsidianInterop} from "./ObsidianInterfaces"
+import {IObsidianInterop} from "./ObsidianInterfaces"
 import {App, TFile, TFolder} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 
@@ -23,7 +23,7 @@ export class ObsidianInterop implements IObsidianInterop {
 		return foundItem && foundItem instanceof TFile
 	}
 
-	async getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: IFile): Promise<TFile>{
+	async getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>{
 		if (creationCommand.FolderCreationCommand){
 			await this.createFolderIfNeeded(creationCommand.FolderCreationCommand)
 		}

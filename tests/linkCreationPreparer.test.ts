@@ -1,9 +1,10 @@
 import {Suggestion} from "../src/core/Suggestion"
-import {IConfigurationStore, IFile, IFileSystem} from "../src/interop/ObsidianInterfaces"
+import {IConfigurationStore, IFileSystem} from "../src/interop/ObsidianInterfaces"
 import {LinkCreationPreparer} from "../src/core/LinkCreationPreparer"
+import {TFile} from "obsidian"
 
 const defaultConfigStore = <IConfigurationStore>{getValueFor: (s) => s === 'newFileLocation' ? 'root' : undefined}
-const fakeFile = <IFile>{}
+const fakeFile = <TFile>{}
 
 test('no file is created if the suggestion name is empty', () => {
 	const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => false}
@@ -130,7 +131,7 @@ describe('when the file in the suggestion does not exist', function () {
 				const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
 				const suggestion = new Suggestion(triggerText)
 				const expected = new Suggestion(expectedVaultPath)
-				const file = <IFile>{path: triggeredIn}
+				const file = <TFile>{path: triggeredIn}
 
 				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
 
@@ -152,7 +153,7 @@ describe('when the file in the suggestion does not exist', function () {
 				const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
 				const suggestion = new Suggestion(triggerText)
 				const expected = new Suggestion(expectedVaultPath)
-				const file = <IFile>{path: triggeredIn}
+				const file = <TFile>{path: triggeredIn}
 
 				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
 
@@ -184,7 +185,7 @@ describe('when the file in the suggestion does not exist', function () {
 				const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
 				const suggestion = new Suggestion(triggerText)
 				const expected = new Suggestion(expectedVaultPath)
-				const file = <IFile>{path: triggeredIn}
+				const file = <TFile>{path: triggeredIn}
 
 				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
 
