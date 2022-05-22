@@ -9,6 +9,10 @@ export class ObsidianInterop implements IObsidianInterop {
 		this.app = app
 	}
 
+	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string {
+        return this.app.fileManager.generateMarkdownLink(file, sourcePath, subpath, alias)
+    }
+
 	getUnresolvedLinks(): Record<string, Record<string, number>> {
 		return app.metadataCache.unresolvedLinks
 	}
