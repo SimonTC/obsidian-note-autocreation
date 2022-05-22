@@ -1,4 +1,4 @@
-import {Suggestion} from "../src/core/Suggestion"
+import {NoteSuggestion} from "../src/core/NoteSuggestion"
 import {SuggestionCollector} from "../src/core/SuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
@@ -38,7 +38,7 @@ describe('the list of suggestions', function () {
 
 		const suggestions = collector.getSuggestions("")
 
-		expect(suggestions).toEqual<Suggestion[]>([])
+		expect(suggestions).toEqual<NoteSuggestion[]>([])
 	})
 
 	test('contains all files in the vault', () => {
@@ -247,9 +247,9 @@ describe('the list of suggestions', function () {
 
 		const query = 'b'
 
-		const expectedSuggestions: Suggestion[] = [
-			new Suggestion(query),
-			new Suggestion('bob.md'),
+		const expectedSuggestions: NoteSuggestion[] = [
+			new NoteSuggestion(query),
+			new NoteSuggestion('bob.md'),
 		]
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }

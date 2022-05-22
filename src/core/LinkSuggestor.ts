@@ -2,9 +2,10 @@ import {SuggestionCollector} from "./SuggestionCollector"
 import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
-import {Suggestion} from "./Suggestion"
+import {NoteSuggestion} from "./NoteSuggestion"
 import {IEditor, IEditorSuggestContext, IObsidianInterop} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
+import {Suggestion} from "./Suggestion"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
@@ -55,6 +56,13 @@ export class LinkSuggestor {
 			return
 		}
 
+		if (suggestion instanceof NoteSuggestion){
+			await this.selectNoteSuggestion(suggestion, currentFile, context)
+		}
+
+	}
+
+	private async selectNoteSuggestion(suggestion: NoteSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
 		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion, currentFile)
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
 		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
@@ -70,7 +78,7 @@ export class LinkSuggestor {
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end)
 	}
 
-	updateSuggestionLine(newSuggestion: Suggestion, context: IEditorSuggestContext) {
+	updateSuggestionLine(newSuggestion: NoteSuggestion, context: IEditorSuggestContext) {
 		const editor = context.editor
 		const textToInsert = newSuggestion.VaultPathWithoutExtension
 		const finalCursorPosition = {

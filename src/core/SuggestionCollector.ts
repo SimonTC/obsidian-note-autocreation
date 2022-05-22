@@ -1,22 +1,22 @@
-import {Suggestion} from "./Suggestion"
+import {NoteSuggestion} from "./NoteSuggestion"
 import {IMetadataCollection} from "../interop/ObsidianInterfaces"
 
 class SuggestionCollection{
 	private readonly query: string
-	private validSuggestions: Suggestion[] = []
-	private readonly lowerCaseQueryAsSuggestion: Suggestion
+	private validSuggestions: NoteSuggestion[] = []
+	private readonly lowerCaseQueryAsSuggestion: NoteSuggestion
 	suggestionForQueryAlreadyExist: boolean
-	private queryAsSuggestion: Suggestion
+	private queryAsSuggestion: NoteSuggestion
 
 	private constructor(query: string) {
 		this.query = query
 		const lowerCaseQuery = query.toLowerCase()
-		this.lowerCaseQueryAsSuggestion = new Suggestion(lowerCaseQuery)
-		this.queryAsSuggestion = new Suggestion(query)
+		this.lowerCaseQueryAsSuggestion = new NoteSuggestion(lowerCaseQuery)
+		this.queryAsSuggestion = new NoteSuggestion(query)
 	}
 
 	add(suggestionString: string){
-		let suggestion = new Suggestion(suggestionString)
+		let suggestion = new NoteSuggestion(suggestionString)
 		const queryIsAncestor = suggestion.FolderPath.toLowerCase().includes(this.lowerCaseQueryAsSuggestion.FolderPath)
 		const queryCouldBeForSuggestedNote = suggestion.VaultPath.toLowerCase()
 			.replace(this.lowerCaseQueryAsSuggestion.FolderPath, '')
@@ -26,7 +26,7 @@ class SuggestionCollection{
 		if (queryIsForSameNoteAsSuggestion){
 			this.suggestionForQueryAlreadyExist = true
 			if (this.queryAsSuggestion.HasAlias){
-				suggestion = new Suggestion(`${suggestion.VaultPath}|${this.queryAsSuggestion.Alias}`)
+				suggestion = new NoteSuggestion(`${suggestion.VaultPath}|${this.queryAsSuggestion.Alias}`)
 			}
 		}
 
@@ -35,7 +35,7 @@ class SuggestionCollection{
 		}
 	}
 
-	getSortedSuggestions() : Suggestion[]{
+	getSortedSuggestions() : NoteSuggestion[]{
 		this.validSuggestions.sort((a, b) => a.Title.localeCompare(b.Title))
 		return this.validSuggestions
 	}
@@ -53,7 +53,7 @@ export class SuggestionCollector {
 		this.metadata = metadata
 	}
 
-	getSuggestions(query: string): Suggestion[] {
+	getSuggestions(query: string): NoteSuggestion[] {
 		const suggestionCollection = SuggestionCollection.for(query)
 		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())]
 		for (let i = 0; i < allLinks.length; i++) {
@@ -65,7 +65,7 @@ export class SuggestionCollector {
 			return suggestions
 		}
 
-		suggestions.unshift(new Suggestion(query))
+		suggestions.unshift(new NoteSuggestion(query))
 		return suggestions
 	}
 

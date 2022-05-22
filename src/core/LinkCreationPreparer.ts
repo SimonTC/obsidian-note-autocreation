@@ -1,4 +1,4 @@
-import {Suggestion} from "./Suggestion"
+import {NoteSuggestion} from "./NoteSuggestion"
 import {IConfigurationStore, IFileSystem} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 
@@ -27,7 +27,7 @@ export class LinkCreationPreparer {
 		this.configStore = configStore
 	}
 
-	prepareNoteCreationFor(suggestion: Suggestion, currentFile: TFile): LinkCreationCommand{
+	prepareNoteCreationFor(suggestion: NoteSuggestion, currentFile: TFile): LinkCreationCommand{
 		const noteExists = this.fileSystem.noteExists(suggestion.VaultPath)
 
 		if (noteExists){
@@ -41,7 +41,7 @@ export class LinkCreationPreparer {
 		return this.createLinkToNoteInSubfolder(suggestion, noteExists)
 	}
 
-	private createLinkToNoteInSubfolder(suggestion: Suggestion, noteExists: boolean) {
+	private createLinkToNoteInSubfolder(suggestion: NoteSuggestion, noteExists: boolean) {
 		const fileCreationNeeded = suggestion.Title !== '' && !noteExists
 		const folderCreationNeeded = suggestion.FolderPath !== '' && !this.fileSystem.folderExists(suggestion.FolderPath)
 
@@ -61,7 +61,7 @@ export class LinkCreationPreparer {
 		}
 	}
 
-	private createLinkToNoteInDefaultLocation(suggestion: Suggestion, currentFile: TFile): LinkCreationCommand {
+	private createLinkToNoteInDefaultLocation(suggestion: NoteSuggestion, currentFile: TFile): LinkCreationCommand {
 		const noteCreationCmd = {
 			NoteContent: '',
 			PathToNewFile: this.getPathToFileInDefaultFolder(suggestion, currentFile)
@@ -74,7 +74,7 @@ export class LinkCreationPreparer {
 		}
 	}
 
-	private createLinkToExistingNote(suggestion: Suggestion): LinkCreationCommand {
+	private createLinkToExistingNote(suggestion: NoteSuggestion): LinkCreationCommand {
 		return {
 			FolderCreationCommand: undefined,
 			NoteCreationCommand: undefined,
@@ -83,13 +83,13 @@ export class LinkCreationPreparer {
 		}
 	}
 
-	private getFileName(suggestion: Suggestion): string{
+	private getFileName(suggestion: NoteSuggestion): string{
 		return suggestion.VaultPath.endsWith('.md')
 			? suggestion.VaultPath
 			: `${suggestion.VaultPath}.md`
 	}
 
-	private getPathToFileInDefaultFolder(suggestion: Suggestion, currentFile: TFile): string{
+	private getPathToFileInDefaultFolder(suggestion: NoteSuggestion, currentFile: TFile): string{
 		const defaultNoteLocation = this.configStore.getValueFor('newFileLocation')
 		console.debug(`NAC: default note location is ${defaultNoteLocation}`)
 
@@ -97,7 +97,7 @@ export class LinkCreationPreparer {
 		switch (defaultNoteLocation) {
 			case 'current':
 			{
-				const suggestionForCurrentFile = new Suggestion(currentFile.path)
+				const suggestionForCurrentFile = new NoteSuggestion(currentFile.path)
 				return suggestionForCurrentFile.NoteIsInRoot
 					? pathInRoot
 					: `${suggestionForCurrentFile.FolderPath}/${suggestion.Title}.md`

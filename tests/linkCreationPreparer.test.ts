@@ -1,4 +1,4 @@
-import {Suggestion} from "../src/core/Suggestion"
+import {NoteSuggestion} from "../src/core/NoteSuggestion"
 import {IConfigurationStore, IFileSystem} from "../src/interop/ObsidianInterfaces"
 import {LinkCreationPreparer} from "../src/core/LinkCreationPreparer"
 import {TFile} from "obsidian"
@@ -9,7 +9,7 @@ const fakeFile = <TFile>{}
 test('no file is created if the suggestion name is empty', () => {
 	const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => false}
 	const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-	const suggestion = new Suggestion("")
+	const suggestion = new NoteSuggestion("")
 
 	const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -21,7 +21,7 @@ describe('when the file in the suggestion exists', function () {
 
 	test('file and folder creation is not requested', () => {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion("my file")
+		const suggestion = new NoteSuggestion("my file")
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -34,7 +34,7 @@ describe('when the file in the suggestion does not exist', function () {
 	test('creation of the file is requested', () => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion("My Note.md")
+		const suggestion = new NoteSuggestion("My Note.md")
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -50,7 +50,7 @@ describe('when the file in the suggestion does not exist', function () {
 	])('the correct file path is given when the trigger is $trigger', ({trigger, expectedFilePath}) => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion(trigger)
+		const suggestion = new NoteSuggestion(trigger)
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -64,7 +64,7 @@ describe('when the file in the suggestion does not exist', function () {
 	])('the correct folder path is given when the trigger is $trigger and folder creation is requested when folder does not exist', ({trigger, expectedFolderPath: expectedFolderPath}) => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => false}
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion(trigger)
+		const suggestion = new NoteSuggestion(trigger)
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -80,7 +80,7 @@ describe('when the file in the suggestion does not exist', function () {
 	])('the correct alias is given when the trigger is $trigger', ({trigger, expectedAlias: expectedAlias}) => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => true, folderExists: (s) => true}
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion(trigger)
+		const suggestion = new NoteSuggestion(trigger)
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -90,7 +90,7 @@ describe('when the file in the suggestion does not exist', function () {
 	test('creation of missing folders in the link path are not requested if they do exist', () => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion('my/non/existing folder/with a note')
+		const suggestion = new NoteSuggestion('my/non/existing folder/with a note')
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -100,7 +100,7 @@ describe('when the file in the suggestion does not exist', function () {
 	test('creation of a folder is not created if the suggestion is for a note in the root folder', () => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => false}
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion('my note in the root')
+		const suggestion = new NoteSuggestion('my note in the root')
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -110,7 +110,7 @@ describe('when the file in the suggestion does not exist', function () {
 	test('the file will be empty', () => {
 		const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
-		const suggestion = new Suggestion('My note.md')
+		const suggestion = new NoteSuggestion('My note.md')
 
 		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
@@ -129,8 +129,8 @@ describe('when the file in the suggestion does not exist', function () {
 				const configStore = <IConfigurationStore>{getValueFor: (s) => s === 'newFileLocation' ? 'current' : undefined}
 				const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
 				const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
-				const suggestion = new Suggestion(triggerText)
-				const expected = new Suggestion(expectedVaultPath)
+				const suggestion = new NoteSuggestion(triggerText)
+				const expected = new NoteSuggestion(expectedVaultPath)
 				const file = <TFile>{path: triggeredIn}
 
 				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
@@ -151,8 +151,8 @@ describe('when the file in the suggestion does not exist', function () {
 				const configStore = <IConfigurationStore>{getValueFor: (s) => s === 'newFileLocation' ? 'root' : undefined}
 				const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
 				const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
-				const suggestion = new Suggestion(triggerText)
-				const expected = new Suggestion(expectedVaultPath)
+				const suggestion = new NoteSuggestion(triggerText)
+				const expected = new NoteSuggestion(expectedVaultPath)
 				const file = <TFile>{path: triggeredIn}
 
 				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
@@ -183,8 +183,8 @@ describe('when the file in the suggestion does not exist', function () {
 				}
 				const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
 				const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
-				const suggestion = new Suggestion(triggerText)
-				const expected = new Suggestion(expectedVaultPath)
+				const suggestion = new NoteSuggestion(triggerText)
+				const expected = new NoteSuggestion(expectedVaultPath)
 				const file = <TFile>{path: triggeredIn}
 
 				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
@@ -205,7 +205,7 @@ describe('when the file in the suggestion does not exist', function () {
 			}
 			const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => false}
 			const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
-			const suggestion = new Suggestion('note1.md')
+			const suggestion = new NoteSuggestion('note1.md')
 
 			const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
 
