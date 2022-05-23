@@ -261,17 +261,4 @@ describe('the list of suggestions', function () {
 		expect(observedSuggestions).toEqual(expectedSuggestions)
 
 	})
-
-	describe('when the query contains the template symbol', function () {
-		test('an empty list of suggestions is returned if there are no templates', () => {
-			const query = 'my note$'
-			const expectedSuggestions: TemplateSuggestion[] = []
-
-			const interOp = Fake.Interop
-			const collector = new SuggestionCollector(interOp)
-
-			const observedSuggestions = collector.getSuggestions(query)
-			expect(observedSuggestions).toEqual(expectedSuggestions)
-		})
-	})
 })
