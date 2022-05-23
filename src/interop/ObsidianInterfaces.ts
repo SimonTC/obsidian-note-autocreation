@@ -42,6 +42,12 @@ export interface IFileSystem{
 	 * @param alias – The display text if it's to be different than the file name. Pass empty string to use file name.
 	 */
 	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string;
+
+	/**
+	 * Returns all files that are in the given folder or any of its descendant folders
+	 * @param folderPath the path to the folder to start from
+	 */
+	getAllFileDescendantsOf(folderPath: string): TFile[]
 }
 
 /**

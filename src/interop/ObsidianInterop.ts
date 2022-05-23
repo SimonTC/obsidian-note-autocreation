@@ -1,5 +1,5 @@
 import {IObsidianInterop} from "./ObsidianInterfaces"
-import {App, TFile, TFolder} from "obsidian"
+import {App, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 
 export class ObsidianInterop implements IObsidianInterop {
@@ -14,17 +14,33 @@ export class ObsidianInterop implements IObsidianInterop {
     }
 
 	getUnresolvedLinks(): Record<string, Record<string, number>> {
-		return app.metadataCache.unresolvedLinks
+		return this.app.metadataCache.unresolvedLinks
 	}
 
 	folderExists(folderPath: string): boolean {
-		const foundItem = app.vault.getAbstractFileByPath(folderPath)
+		const foundItem = this.app.vault.getAbstractFileByPath(folderPath)
 		return foundItem && foundItem instanceof TFolder
 	}
 
 	noteExists(notePath: string): boolean {
-		const foundItem = app.vault.getAbstractFileByPath(notePath)
+		const foundItem = this.app.vault.getAbstractFileByPath(notePath)
 		return foundItem && foundItem instanceof TFile
+	}
+
+	getAllFileDescendantsOf(folderPath: string): TFile[]{
+		const abstractFile = this.app.vault.getAbstractFileByPath(folderPath)
+		if (!(abstractFile instanceof TFolder)){
+			console.debug(`NAC: "${folderPath}" is not a valid path to a folder`)
+			return []
+		}
+
+		const files: TFile[] = []
+		Vault.recurseChildren(abstractFile as TFolder, file => {
+			if (file instanceof TFile){
+				files.push(file)
+			}
+		})
+		return files
 	}
 
 	async getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>{
@@ -35,13 +51,13 @@ export class ObsidianInterop implements IObsidianInterop {
 		if (creationCommand.NoteCreationCommand){
 			return await this.tryCreateFile(creationCommand.NoteCreationCommand)
 		} else {
-			return app.metadataCache.getFirstLinkpathDest(creationCommand.FullPath, currentFile.path)
+			return this.app.metadataCache.getFirstLinkpathDest(creationCommand.FullPath, currentFile.path)
 		}
 	}
 
 	private async createFolderIfNeeded(creationCommand: FolderCreationCommand){
 		try{
-			await app.vault.createFolder(creationCommand.PathToNewFolder)
+			await this.app.vault.createFolder(creationCommand.PathToNewFolder)
 		} catch (e) {
 			// Folder apparently already exists.
 			// This might happen if a folder of the same name but with different casing exist
@@ -53,7 +69,7 @@ export class ObsidianInterop implements IObsidianInterop {
 		console.debug(`NAC: Note does not exist. Will be created. Path: ${creationCommand.PathToNewFile}`)
 
 		try{
-			return await app.vault.create(creationCommand.PathToNewFile, creationCommand.NoteContent)
+			return await this.app.vault.create(creationCommand.PathToNewFile, creationCommand.NoteContent)
 		} catch (e) {
 			// File apparently already exists.
 			// This might happen if a file of the same name but with different casing exist
