@@ -2,6 +2,7 @@ import {NoteSuggestion} from "../src/core/NoteSuggestion"
 import {SuggestionCollector} from "../src/core/SuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
+import {TemplateSuggestion} from "../src/core/TemplateSuggestion"
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeFile = () => {
@@ -258,5 +259,19 @@ describe('the list of suggestions', function () {
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions).toEqual(expectedSuggestions)
 
+	})
+
+	describe('when the query contains the template symbol', function () {
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} }
+
+		test('an empty list of suggestions is returned if there are no templates', () => {
+			const query = 'my note$'
+			const expectedSuggestions: TemplateSuggestion[] = []
+
+			const collector = new SuggestionCollector(metadata)
+
+			const observedSuggestions = collector.getSuggestions(query)
+			expect(observedSuggestions).toEqual(expectedSuggestions)
+		})
 	})
 })
