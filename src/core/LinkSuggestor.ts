@@ -1,4 +1,4 @@
-import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
+import {NoteSuggestionCollector} from "./suggestionCollection/NoteSuggestionCollector"
 import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
@@ -8,7 +8,7 @@ import {TFile} from "obsidian"
 import {Suggestion} from "./Suggestion"
 
 export class LinkSuggestor {
-	private readonly suggestionsCollector: SuggestionCollector
+	private readonly suggestionsCollector: NoteSuggestionCollector
 	private readonly noteCreationPreparer: LinkCreationPreparer
 	private readonly obsidianInterop: IObsidianInterop
 	private settings: NoteAutoCreatorSettings
@@ -16,7 +16,7 @@ export class LinkSuggestor {
 
 	constructor(interop: IObsidianInterop, settings: NoteAutoCreatorSettings) {
 		this.obsidianInterop = interop
-		this.suggestionsCollector = new SuggestionCollector(this.obsidianInterop)
+		this.suggestionsCollector = new NoteSuggestionCollector(this.obsidianInterop)
 		this.noteCreationPreparer = new LinkCreationPreparer(this.obsidianInterop, this.obsidianInterop)
 		this.settings = settings
 	}

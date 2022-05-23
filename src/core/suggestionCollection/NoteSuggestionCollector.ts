@@ -1,7 +1,7 @@
 import {NoteSuggestion} from "../NoteSuggestion"
 import {IMetadataCollection} from "../../interop/ObsidianInterfaces"
 
-class SuggestionCollection{
+class NoteSuggestionCollection{
 	private readonly query: string
 	private validSuggestions: NoteSuggestion[] = []
 	private readonly lowerCaseQueryAsSuggestion: NoteSuggestion
@@ -41,12 +41,12 @@ class SuggestionCollection{
 	}
 
 	static for(query: string){
-		return new SuggestionCollection(query)
+		return new NoteSuggestionCollection(query)
 	}
 }
 
 
-export class SuggestionCollector {
+export class NoteSuggestionCollector {
 	private metadata: IMetadataCollection
 
 	constructor(metadata: IMetadataCollection) {
@@ -54,7 +54,7 @@ export class SuggestionCollector {
 	}
 
 	getSuggestions(query: string): NoteSuggestion[] {
-		const suggestionCollection = SuggestionCollection.for(query)
+		const suggestionCollection = NoteSuggestionCollection.for(query)
 		const allLinks = [...new Set(this.getVaultPathsOfAllLinks())]
 		for (let i = 0; i < allLinks.length; i++) {
 			suggestionCollection.add(allLinks[i])

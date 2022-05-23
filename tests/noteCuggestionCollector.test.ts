@@ -1,5 +1,5 @@
 import {NoteSuggestion} from "../src/core/NoteSuggestion"
-import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCollector"
+import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
 import {TemplateSuggestion} from "../src/core/TemplateSuggestion"
@@ -21,7 +21,7 @@ test('the suggestion collector can deal with big vaults', () => {
 		return collection
 	}, {})
 	const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-	const collector = new SuggestionCollector(metadata)
+	const collector = new NoteSuggestionCollector(metadata)
 
 	const startTime = performance.now()
 	collector.getSuggestions("")
@@ -35,7 +35,7 @@ test('the suggestion collector can deal with big vaults', () => {
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 
@@ -55,7 +55,7 @@ describe('the list of suggestions', function () {
 			return collection
 		}, {})
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 
@@ -73,7 +73,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
@@ -99,7 +99,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
@@ -122,7 +122,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
@@ -146,7 +146,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionTitles = [
@@ -181,7 +181,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
@@ -194,7 +194,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions('bob|the builder')
 		expect(observedSuggestions.length).toBe(1)
@@ -216,7 +216,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
@@ -234,7 +234,7 @@ describe('the list of suggestions', function () {
 		}
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
@@ -254,7 +254,7 @@ describe('the list of suggestions', function () {
 		]
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
-		const collector = new SuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions).toEqual(expectedSuggestions)
@@ -268,7 +268,7 @@ describe('the list of suggestions', function () {
 			const query = 'my note$'
 			const expectedSuggestions: TemplateSuggestion[] = []
 
-			const collector = new SuggestionCollector(metadata)
+			const collector = new NoteSuggestionCollector(metadata)
 
 			const observedSuggestions = collector.getSuggestions(query)
 			expect(observedSuggestions).toEqual(expectedSuggestions)
