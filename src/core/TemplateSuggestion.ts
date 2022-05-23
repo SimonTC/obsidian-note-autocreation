@@ -3,6 +3,7 @@ import {NoteSuggestion} from "./NoteSuggestion"
 
 export class TemplateSuggestion extends Suggestion{
 	readonly noteSuggestion: NoteSuggestion
+	readonly triggerSymbol: string = '$'
 
 	constructor(templatePath: string, noteSuggestion: NoteSuggestion) {
 		super(templatePath)
@@ -18,5 +19,9 @@ export class TemplateSuggestion extends Suggestion{
 			cls: "suggestion-note",
 			text: `Apply template to ${this.noteSuggestion.VaultPath}`
 		})
+	}
+
+	get textToInsertOnLineUpdate(): string {
+		return `${this.noteSuggestion.textToInsertOnLineUpdate}${this.triggerSymbol}${this.VaultPathWithoutExtension}`
 	}
 }

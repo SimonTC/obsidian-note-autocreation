@@ -41,4 +41,8 @@ export class NoteSuggestion extends Suggestion{
 		alias = alias?.length === 0 ? undefined : alias?.trim()
 		return {alias}
 	}
+
+	get textToInsertOnLineUpdate(): string {
+		return this.VaultPathWithoutExtension
+	}
 }

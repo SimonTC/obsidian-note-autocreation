@@ -75,7 +75,7 @@ export class LinkSuggestor {
 
 	updateSuggestionLine(newSuggestion: Suggestion, context: IEditorSuggestContext) {
 		const editor = context.editor
-		const textToInsert = newSuggestion.VaultPathWithoutExtension
+		const textToInsert = newSuggestion.textToInsertOnLineUpdate
 		const finalCursorPosition = {
 			line: this.currentTrigger.start.line,
 			ch: this.currentTrigger.start.ch + textToInsert.length

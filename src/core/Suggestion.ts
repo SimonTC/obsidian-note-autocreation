@@ -58,6 +58,11 @@ export abstract class Suggestion {
 	 */
 	abstract render(el: HTMLElement): void
 
+	/**
+	 * Returns the text to insert if this suggestion has been chosen to update the selected suggestion
+	 */
+	abstract get textToInsertOnLineUpdate(): string
+
 	protected constructor(trigger: string) {
 		this.Path = new ObsidianFilePath(trigger)
 		const fullPath = trigger.trim()
