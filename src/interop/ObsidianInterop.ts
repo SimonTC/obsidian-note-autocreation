@@ -23,7 +23,7 @@ export class ObsidianInterop implements IObsidianInterop {
 	}
 
 	noteExists(notePath: string): boolean {
-		const foundItem = this.app.vault.getAbstractFileByPath(notePath)
+		const foundItem = app.metadataCache.getFirstLinkpathDest(notePath, app.workspace.getActiveFile().path)
 		return foundItem && foundItem instanceof TFile
 	}
 
