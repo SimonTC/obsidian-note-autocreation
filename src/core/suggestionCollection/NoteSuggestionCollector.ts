@@ -1,14 +1,36 @@
 import {NoteSuggestion} from "../NoteSuggestion"
-import {IMetadataCollection} from "../../interop/ObsidianInterfaces"
-import {SuggestionCollector} from "./SuggestionCollector"
+import {IFileSystem, IMetadataCollection, IObsidianInterop} from "../../interop/ObsidianInterfaces"
+import {BaseSuggestionCollector} from "./BaseSuggestionCollector"
+import {TemplateSuggestion} from "../TemplateSuggestion"
+import {Suggestion} from "../Suggestion"
+
+export class SuggestionCollector{
+	private readonly noteSuggestionCollector: NoteSuggestionCollector
+	private readonly templateSuggestionCollector: TemplateSuggestionCollector
+
+	constructor(interOp: IObsidianInterop) {
+		this.noteSuggestionCollector = new NoteSuggestionCollector(interOp)
+		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp)
+	}
+
+	getSuggestions(query: string): Suggestion[] {
+		if (query.includes('$')){
+			const [noteQuery, templateQuery] = query.split('$')
+			const noteSuggestion = new NoteSuggestion(noteQuery)
+			return this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
+		}
+
+		return this.noteSuggestionCollector.getSuggestions(query)
+	}
+}
 
 export class NoteSuggestionCollector {
 	private metadata: IMetadataCollection
-	private collector: SuggestionCollector<NoteSuggestion>
+	private collector: BaseSuggestionCollector<NoteSuggestion>
 
 	constructor(metadata: IMetadataCollection) {
 		this.metadata = metadata
-		this.collector = new SuggestionCollector({
+		this.collector = new BaseSuggestionCollector({
 			getAllPossibleLinks: () => this.getVaultPathsOfAllLinks(),
 			createSuggestion: query => new NoteSuggestion(query),
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => new NoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
@@ -31,5 +53,24 @@ export class NoteSuggestionCollector {
 			}
 		}
 		return vaultPaths
+	}
+}
+
+export class TemplateSuggestionCollector{
+	private readonly fileSystem: IFileSystem
+	private readonly templateFolderPath = '_templates'
+
+	constructor(fileSystem: IFileSystem) {
+		this.fileSystem = fileSystem
+	}
+
+	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): Suggestion[] {
+		const collector = new BaseSuggestionCollector({
+			getAllPossibleLinks: () => new Set(this.fileSystem.getAllFileDescendantsOf(this.templateFolderPath).map(f => f.path)),
+			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion),
+			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
+		})
+
+		return collector.getSuggestions(templateQuery)
 	}
 }

@@ -1,8 +1,9 @@
 import {NoteSuggestion} from "../src/core/NoteSuggestion"
-import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
+import {NoteSuggestionCollector, SuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
 import {TemplateSuggestion} from "../src/core/TemplateSuggestion"
+import {Fake} from "./Fake"
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeFile = () => {
@@ -261,14 +262,13 @@ describe('the list of suggestions', function () {
 
 	})
 
-	describe.skip('when the query contains the template symbol', function () {
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} }
-
+	describe('when the query contains the template symbol', function () {
 		test('an empty list of suggestions is returned if there are no templates', () => {
 			const query = 'my note$'
 			const expectedSuggestions: TemplateSuggestion[] = []
 
-			const collector = new NoteSuggestionCollector(metadata)
+			const interOp = Fake.Interop
+			const collector = new SuggestionCollector(interOp)
 
 			const observedSuggestions = collector.getSuggestions(query)
 			expect(observedSuggestions).toEqual(expectedSuggestions)

@@ -7,16 +7,12 @@ export type SuggestionCollectorHelpers<TSuggestion extends Suggestion> = {
 	createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
 }
 
-export class SuggestionCollector<TSuggestion extends Suggestion> {
+export class BaseSuggestionCollector<TSuggestion extends Suggestion> {
 	private readonly getAllPossibleLinks: () => Set<string>
 	private readonly createSuggestion: (query: string) => TSuggestion
 	private readonly createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
 
-	constructor({
-					getAllPossibleLinks,
-					createSuggestion,
-					createSuggestionWhenSuggestionForQueryAlreadyExists
-				}: SuggestionCollectorHelpers<TSuggestion>) {
+	constructor({getAllPossibleLinks,createSuggestion,createSuggestionWhenSuggestionForQueryAlreadyExists}: SuggestionCollectorHelpers<TSuggestion>) {
 		this.getAllPossibleLinks = getAllPossibleLinks
 		this.createSuggestion = createSuggestion
 		this.createSuggestionWhenSuggestionForQueryAlreadyExists = createSuggestionWhenSuggestionForQueryAlreadyExists
