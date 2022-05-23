@@ -261,7 +261,7 @@ describe('the list of suggestions', function () {
 
 	})
 
-	describe('when the query contains the template symbol', function () {
+	describe.skip('when the query contains the template symbol', function () {
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} }
 
 		test('an empty list of suggestions is returned if there are no templates', () => {
