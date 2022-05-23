@@ -4,8 +4,7 @@ import {Suggestion} from "./Suggestion"
  * A suggestion for a new or existing note.
  */
 export class NoteSuggestion extends Suggestion{
-
-	/**
+    /**
 	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
 	 */
 	readonly Alias: string | undefined
@@ -20,6 +19,17 @@ export class NoteSuggestion extends Suggestion{
 		const fullPath = trigger.trim()
 		const {alias} = this.extractSuggestionParts(fullPath)
 		this.Alias = alias
+	}
+
+	render(el: HTMLElement): void {
+		el.createDiv({
+			cls: "suggestion-content",
+			text: this.Title
+		})
+		el.createDiv({
+			cls: "suggestion-note",
+			text: this.FolderPath + '/'
+		})
 	}
 
 	private extractSuggestionParts(trigger: string): {alias: string} {

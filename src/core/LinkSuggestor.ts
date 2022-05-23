@@ -1,4 +1,4 @@
-import {NoteSuggestionCollector} from "./suggestionCollection/NoteSuggestionCollector"
+import {SuggestionCollector} from "./suggestionCollection/NoteSuggestionCollector"
 import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
@@ -6,9 +6,10 @@ import {NoteSuggestion} from "./NoteSuggestion"
 import {IEditor, IEditorSuggestContext, IObsidianInterop} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 import {Suggestion} from "./Suggestion"
+import {TemplateSuggestion} from "./TemplateSuggestion"
 
 export class LinkSuggestor {
-	private readonly suggestionsCollector: NoteSuggestionCollector
+	private readonly suggestionsCollector: SuggestionCollector
 	private readonly noteCreationPreparer: LinkCreationPreparer
 	private readonly obsidianInterop: IObsidianInterop
 	private settings: NoteAutoCreatorSettings
@@ -16,7 +17,7 @@ export class LinkSuggestor {
 
 	constructor(interop: IObsidianInterop, settings: NoteAutoCreatorSettings) {
 		this.obsidianInterop = interop
-		this.suggestionsCollector = new NoteSuggestionCollector(this.obsidianInterop)
+		this.suggestionsCollector = new SuggestionCollector(this.obsidianInterop)
 		this.noteCreationPreparer = new LinkCreationPreparer(this.obsidianInterop, this.obsidianInterop)
 		this.settings = settings
 	}
@@ -36,14 +37,7 @@ export class LinkSuggestor {
 	}
 
 	renderSuggestion(value: Suggestion, el: HTMLElement): void {
-		el.createDiv({
-			cls: "suggestion-content",
-			text: value.Title
-		})
-		el.createDiv({
-			cls: "suggestion-note",
-			text: value.FolderPath + '/'
-		})
+		value.render(el)
 	}
 
 	selectSuggestion(value: Suggestion, evt: MouseEvent | KeyboardEvent, context: IEditorSuggestContext) {
@@ -58,8 +52,9 @@ export class LinkSuggestor {
 
 		if (suggestion instanceof NoteSuggestion){
 			await this.selectNoteSuggestion(suggestion, currentFile, context)
+		} else if (suggestion instanceof TemplateSuggestion){
+			await this.selectNoteSuggestion(suggestion.noteSuggestion, currentFile, context)
 		}
-
 	}
 
 	private async selectNoteSuggestion(suggestion: NoteSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
@@ -78,7 +73,7 @@ export class LinkSuggestor {
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end)
 	}
 
-	updateSuggestionLine(newSuggestion: NoteSuggestion, context: IEditorSuggestContext) {
+	updateSuggestionLine(newSuggestion: Suggestion, context: IEditorSuggestContext) {
 		const editor = context.editor
 		const textToInsert = newSuggestion.VaultPathWithoutExtension
 		const finalCursorPosition = {

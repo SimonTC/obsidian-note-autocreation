@@ -52,6 +52,12 @@ export abstract class Suggestion {
 	 */
 	readonly Path: ObsidianFilePath
 
+	/**
+	 * Renders the suggestion
+	 * @param el the parent element in the suggestion list
+	 */
+	abstract render(el: HTMLElement): void
+
 	protected constructor(trigger: string) {
 		this.Path = new ObsidianFilePath(trigger)
 		const fullPath = trigger.trim()
