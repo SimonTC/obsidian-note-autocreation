@@ -1,9 +1,7 @@
 import {NoteSuggestion} from "../src/core/NoteSuggestion"
-import {NoteSuggestionCollector, SuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
+import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
-import {TemplateSuggestion} from "../src/core/TemplateSuggestion"
-import {Fake} from "./Fake"
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeFile = () => {
