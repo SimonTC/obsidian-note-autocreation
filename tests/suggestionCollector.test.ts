@@ -1,5 +1,5 @@
 import {NoteSuggestion} from "../src/core/NoteSuggestion"
-import {SuggestionCollector} from "../src/core/SuggestionCollector"
+import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
 import {TemplateSuggestion} from "../src/core/TemplateSuggestion"

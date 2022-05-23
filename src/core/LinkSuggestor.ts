@@ -1,4 +1,4 @@
-import {SuggestionCollector} from "./SuggestionCollector"
+import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
 import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
