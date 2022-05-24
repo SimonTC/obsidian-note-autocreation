@@ -1,4 +1,4 @@
-import {NoteSuggestion} from "../suggestions/NoteSuggestion"
+import {ExistingNoteSuggestion, NewNoteSuggestion, NoteSuggestion} from "../suggestions/NoteSuggestion"
 import {IFileSystem, IMetadataCollection, IObsidianInterop} from "../../interop/ObsidianInterfaces"
 import {BaseSuggestionCollector} from "./BaseSuggestionCollector"
 import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
@@ -7,16 +7,25 @@ import {Suggestion} from "../suggestions/Suggestion"
 export class SuggestionCollector{
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
 	private readonly templateSuggestionCollector: TemplateSuggestionCollector
+	private readonly fileSystem: IFileSystem
 
 	constructor(interOp: IObsidianInterop) {
 		this.noteSuggestionCollector = new NoteSuggestionCollector(interOp)
 		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp)
+		this.fileSystem = interOp
+	}
+
+	private getNoteSuggestionFor(query: string){
+		const tempSuggestion = new ExistingNoteSuggestion(query)
+		return this.fileSystem.noteExists(tempSuggestion.VaultPath)
+			? tempSuggestion
+			: new NewNoteSuggestion(query)
 	}
 
 	getSuggestions(query: string): Suggestion[] {
 		if (query.includes('$')){
 			const [noteQuery, templateQuery] = query.split('$')
-			const noteSuggestion = new NoteSuggestion(noteQuery)
+			const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
 			return this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
 		}
 
@@ -32,8 +41,9 @@ export class NoteSuggestionCollector {
 		this.metadata = metadata
 		this.collector = new BaseSuggestionCollector({
 			getAllPossibleLinks: () => this.getVaultPathsOfAllLinks(),
-			createSuggestion: query => new NoteSuggestion(query),
-			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => new NoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
+			createSuggestion: query => new ExistingNoteSuggestion(query),
+			createSuggestionForQuery: query => new NewNoteSuggestion(query),
+			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => new ExistingNoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
 		})
 	}
 
@@ -68,6 +78,7 @@ export class TemplateSuggestionCollector{
 		const collector = new BaseSuggestionCollector({
 			getAllPossibleLinks: () => new Set(this.fileSystem.getAllFileDescendantsOf(this.templateFolderPath).map(f => f.path)),
 			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion),
+			createSuggestionForQuery: query => new TemplateSuggestion(query, noteSuggestion),
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
 		})
 

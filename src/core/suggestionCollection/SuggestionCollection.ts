@@ -10,12 +10,12 @@ export class SuggestionCollection<TSuggestion extends Suggestion> {
 	readonly queryAsSuggestion: TSuggestion
 
 
-	constructor(query: string, createSuggestion: (query: string) => TSuggestion) {
+	constructor(query: string, createSuggestion: (query: string) => TSuggestion, createSuggestionForQuery: (query: string) => TSuggestion) {
 		this.createSuggestion = createSuggestion
-		this.queryAsSuggestion = createSuggestion(query)
+		this.queryAsSuggestion = createSuggestionForQuery(query)
 		this.query = query
 		const lowerCaseQuery = query.toLowerCase()
-		this.lowerCaseQueryAsSuggestion = createSuggestion(lowerCaseQuery)
+		this.lowerCaseQueryAsSuggestion = createSuggestionForQuery(lowerCaseQuery)
 	}
 
 	/**

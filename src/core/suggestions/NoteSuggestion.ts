@@ -3,7 +3,7 @@ import {Suggestion} from "./Suggestion"
 /**
  * A suggestion for a new or existing note.
  */
-export class NoteSuggestion extends Suggestion{
+export abstract class NoteSuggestion extends Suggestion{
     /**
 	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
 	 */
@@ -45,4 +45,20 @@ export class NoteSuggestion extends Suggestion{
 	get textToInsertOnLineUpdate(): string {
 		return this.VaultPathWithoutExtension
 	}
+}
+
+/**
+ * Suggestion for a note that already exists
+ */
+export class ExistingNoteSuggestion extends NoteSuggestion{
+
+}
+
+/**
+ * Suggestion for a note that has not yet been created.
+ * This could either be an existing link to a note that has not been created,
+ * or it could be a completely new note that is not linked anywhere
+ */
+export class NewNoteSuggestion extends NoteSuggestion{
+
 }

@@ -1,4 +1,4 @@
-import {NoteSuggestion} from "./suggestions/NoteSuggestion"
+import {ExistingNoteSuggestion, NoteSuggestion} from "./suggestions/NoteSuggestion"
 import {IConfigurationStore, IFileSystem} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 
@@ -97,7 +97,7 @@ export class LinkCreationPreparer {
 		switch (defaultNoteLocation) {
 			case 'current':
 			{
-				const suggestionForCurrentFile = new NoteSuggestion(currentFile.path)
+				const suggestionForCurrentFile = new ExistingNoteSuggestion(currentFile.path)
 				return suggestionForCurrentFile.NoteIsInRoot
 					? pathInRoot
 					: `${suggestionForCurrentFile.FolderPath}/${suggestion.Title}.md`

@@ -1,4 +1,4 @@
-import {NoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
+import {ExistingNoteSuggestion, NewNoteSuggestion, NoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
@@ -135,6 +135,31 @@ describe('the list of suggestions', function () {
 		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
 	})
 
+	test('creates correct suggestion types', () => {
+		const unresolvedLinks = {
+			'document 1.md': {
+				'Some link': 1,
+			},
+			'Some other markdown.md': {},
+			'Hello world.md': {'Some other link': 1}
+		}
+
+		const expectedSuggestions: NoteSuggestion[] = [
+			new ExistingNoteSuggestion('document 1.md'),
+			new ExistingNoteSuggestion('Some other markdown.md'),
+			new ExistingNoteSuggestion('Hello world.md'),
+			new NewNoteSuggestion('Some link'),
+			new NewNoteSuggestion('Some other link'),
+		]
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new NoteSuggestionCollector(metadata)
+
+		const suggestions = collector.getSuggestions("")
+
+		expect(suggestions).toEqual(expectedSuggestions)
+	})
+
 	test('is sorted in alphabetical order by suggestion title', () => {
 		const unresolvedLinks = {
 			'document 1.md': {
@@ -248,8 +273,8 @@ describe('the list of suggestions', function () {
 		const query = 'b'
 
 		const expectedSuggestions: NoteSuggestion[] = [
-			new NoteSuggestion(query),
-			new NoteSuggestion('bob.md'),
+			new ExistingNoteSuggestion(query),
+			new ExistingNoteSuggestion('bob.md'),
 		]
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
