@@ -1,4 +1,4 @@
-import {NoteSuggestion} from "../src/core/NoteSuggestion"
+import {NoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"

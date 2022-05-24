@@ -1,4 +1,4 @@
-import {NoteSuggestion} from "./NoteSuggestion"
+import {NoteSuggestion} from "./suggestions/NoteSuggestion"
 import {IConfigurationStore, IFileSystem} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 

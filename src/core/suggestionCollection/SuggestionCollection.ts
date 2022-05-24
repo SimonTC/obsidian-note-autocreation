@@ -1,4 +1,4 @@
-import {Suggestion} from "../Suggestion"
+import {Suggestion} from "../suggestions/Suggestion"
 
 export class SuggestionCollection<TSuggestion extends Suggestion> {
 	private readonly query: string

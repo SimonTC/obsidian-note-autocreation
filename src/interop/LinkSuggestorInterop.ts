@@ -10,7 +10,7 @@ import {
 import {ObsidianInterop} from "./ObsidianInterop"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {LinkSuggestor} from "../core/LinkSuggestor"
-import {Suggestion} from "../core/Suggestion"
+import {Suggestion} from "../core/suggestions/Suggestion"
 
 /**
  * Wrapper around the Link suggestor logic.

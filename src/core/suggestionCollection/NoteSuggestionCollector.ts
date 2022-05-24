@@ -1,8 +1,8 @@
-import {NoteSuggestion} from "../NoteSuggestion"
+import {NoteSuggestion} from "../suggestions/NoteSuggestion"
 import {IFileSystem, IMetadataCollection, IObsidianInterop} from "../../interop/ObsidianInterfaces"
 import {BaseSuggestionCollector} from "./BaseSuggestionCollector"
-import {TemplateSuggestion} from "../TemplateSuggestion"
-import {Suggestion} from "../Suggestion"
+import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
+import {Suggestion} from "../suggestions/Suggestion"
 
 export class SuggestionCollector{
 	private readonly noteSuggestionCollector: NoteSuggestionCollector

@@ -1,7 +1,7 @@
-import {TemplateSuggestion} from "../src/core/TemplateSuggestion"
+import {TemplateSuggestion} from "../src/core/suggestions/TemplateSuggestion"
 import {Fake} from "./Fake"
 import {SuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
-import {NoteSuggestion} from "../src/core/NoteSuggestion"
+import {NoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 
 it.each([
 	{query: 'my note'},

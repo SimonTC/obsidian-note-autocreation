@@ -1,4 +1,4 @@
-import {Suggestion} from "../Suggestion"
+import {Suggestion} from "../suggestions/Suggestion"
 import {SuggestionCollection} from "./SuggestionCollection"
 
 export type SuggestionCollectorHelpers<TSuggestion extends Suggestion> = {

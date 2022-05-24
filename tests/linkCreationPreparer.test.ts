@@ -1,4 +1,4 @@
-import {NoteSuggestion} from "../src/core/NoteSuggestion"
+import {NoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 import {IConfigurationStore, IFileSystem} from "../src/interop/ObsidianInterfaces"
 import {LinkCreationPreparer} from "../src/core/LinkCreationPreparer"
 import {TFile} from "obsidian"

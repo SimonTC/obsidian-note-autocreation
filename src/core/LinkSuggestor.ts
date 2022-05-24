@@ -2,11 +2,11 @@ import {SuggestionCollector} from "./suggestionCollection/NoteSuggestionCollecto
 import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
-import {NoteSuggestion} from "./NoteSuggestion"
+import {NoteSuggestion} from "./suggestions/NoteSuggestion"
 import {IEditor, IEditorSuggestContext, IObsidianInterop} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
-import {Suggestion} from "./Suggestion"
-import {TemplateSuggestion} from "./TemplateSuggestion"
+import {Suggestion} from "./suggestions/Suggestion"
+import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector

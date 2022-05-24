@@ -1,4 +1,4 @@
-import {ObsidianFilePath} from "./ObsidianFilePath"
+import {ObsidianFilePath} from "../ObsidianFilePath"
 
 /**
  * Base class for all suggestion types.
