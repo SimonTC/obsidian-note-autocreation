@@ -135,7 +135,7 @@ describe('the list of suggestions', function () {
 		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
 	})
 
-	test('creates correct suggestion types', () => {
+	test.skip('creates correct suggestion types', () => {
 		const unresolvedLinks = {
 			'document 1.md': {
 				'Some link': 1,
