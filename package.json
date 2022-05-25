@@ -23,6 +23,7 @@
 		"esbuild-plugin-copy-file": "^0.0.2",
 		"eslint": "^8.15.0",
 		"jest": "^28.1.0",
+		"jest-extended": "^2.0.0",
 		"obsidian": "latest",
 		"ts-jest": "^28.0.1",
 		"tslib": "2.3.1",
