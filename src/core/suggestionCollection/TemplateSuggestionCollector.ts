@@ -15,8 +15,8 @@ export class TemplateSuggestionCollector {
 	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): Suggestion[] {
 		const collector = new BaseSuggestionCollector({
 			getAllPossibleLinks: () => new Set(this.fileSystem.getAllFileDescendantsOf(this.templateFolderPath).map(f => f.path)),
-			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion),
-			createSuggestionForQuery: query => new TemplateSuggestion(query, noteSuggestion),
+			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion, this.templateFolderPath),
+			createSuggestionForQuery: query => new TemplateSuggestion(query, noteSuggestion, this.templateFolderPath),
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
 		})
 
