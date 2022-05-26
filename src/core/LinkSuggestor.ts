@@ -12,12 +12,12 @@ export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
 	private readonly noteCreationPreparer: LinkCreationPreparer
 	private readonly obsidianInterop: IObsidianInterop
-	private settings: NoteAutoCreatorSettings
+	private readonly settings: NoteAutoCreatorSettings
 	private currentTrigger: SuggestionTrigger
 
 	constructor(interop: IObsidianInterop, settings: NoteAutoCreatorSettings) {
 		this.obsidianInterop = interop
-		this.suggestionsCollector = new SuggestionCollector(this.obsidianInterop)
+		this.suggestionsCollector = new SuggestionCollector(this.obsidianInterop, settings)
 		this.noteCreationPreparer = new LinkCreationPreparer(this.obsidianInterop, this.obsidianInterop)
 		this.settings = settings
 	}

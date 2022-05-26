@@ -1,7 +1,9 @@
 export interface NoteAutoCreatorSettings {
-	triggerSymbol: string
+	triggerSymbol: string,
+	templateTriggerSymbol: string
 }
 
 export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
-	triggerSymbol: '@'
+	triggerSymbol: '@',
+	templateTriggerSymbol: '$'
 }

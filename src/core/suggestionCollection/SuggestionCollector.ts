@@ -3,13 +3,16 @@ import {ExistingNoteSuggestion, NewNoteSuggestion} from "../suggestions/NoteSugg
 import {Suggestion} from "../suggestions/Suggestion"
 import {NoteSuggestionCollector} from "./NoteSuggestionCollector"
 import {TemplateSuggestionCollector} from "./TemplateSuggestionCollector"
+import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
 	private readonly templateSuggestionCollector: TemplateSuggestionCollector
 	private readonly fileSystem: IFileSystem
+	private readonly settings: NoteAutoCreatorSettings
 
-	constructor(interOp: IObsidianInterop) {
+	constructor(interOp: IObsidianInterop, settings: NoteAutoCreatorSettings) {
+		this.settings = settings
 		this.noteSuggestionCollector = new NoteSuggestionCollector(interOp)
 		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp)
 		this.fileSystem = interOp
@@ -23,8 +26,8 @@ export class SuggestionCollector {
 	}
 
 	getSuggestions(query: string): Suggestion[] {
-		if (query.includes('$')) {
-			const [noteQuery, templateQuery] = query.split('$')
+		if (query.includes(this.settings.templateTriggerSymbol)) {
+			const [noteQuery, templateQuery] = query.split(this.settings.templateTriggerSymbol)
 			const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
 			return this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
 		}

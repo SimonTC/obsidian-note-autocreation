@@ -1,6 +1,7 @@
 import {IFileSystem, IObsidianInterop} from "../src/interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
+import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
 
 class FakeInterop implements IObsidianInterop {
 	folderExists(folderPath: string): boolean {
@@ -84,6 +85,11 @@ class FakeFileSystem implements IFileSystem {
 
 }
 
+export class FakeSettings implements NoteAutoCreatorSettings{
+	templateTriggerSymbol = '$'
+	triggerSymbol = '@'
+}
+
 export class Fake {
 	static get Interop() {
 		return new FakeInterop()
@@ -92,4 +98,10 @@ export class Fake {
 	static get FileSystem() {
 		return new FakeFileSystem()
 	}
+
+	static get Settings(){
+		return new FakeSettings()
+	}
 }
+
+

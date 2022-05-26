@@ -32,6 +32,17 @@ export class SettingTab extends PluginSettingTab {
 				this.plugin.settings.triggerSymbol = value
 				await this.plugin.saveSettings()
 			}))
+
+		new Setting(containerEl)
+			.setName('Trigger for template execution')
+			.setDesc('The text string that will trigger template execution')
+			.addText(component => component
+				.setValue(this.plugin.settings.templateTriggerSymbol)
+				.onChange(async (value) => {
+					this.plugin.settings.templateTriggerSymbol = value
+					await this.plugin.saveSettings()
+				})
+			)
 	}
 
 	private warnIfTriggerIsProblematic(value: string, trigger: Setting, component: TextComponent) {
