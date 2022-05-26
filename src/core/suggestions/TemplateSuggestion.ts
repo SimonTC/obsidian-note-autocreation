@@ -6,21 +6,22 @@ export class TemplateSuggestion extends Suggestion{
 	readonly triggerSymbol: string = '$'
 	private readonly rootTemplateFolder
 	private readonly templateIsInTemplateFolder: boolean
+	private readonly pathFromTemplateRoot: string
 
 	constructor(templatePath: string, noteSuggestion: NoteSuggestion, rootTemplateFolder: string) {
 		super(templatePath)
 		this.rootTemplateFolder = rootTemplateFolder
 		this.templateIsInTemplateFolder = this.VaultPath.toLowerCase().includes(rootTemplateFolder.toLowerCase())
+		this.pathFromTemplateRoot = this.templateIsInTemplateFolder
+			? this.VaultPathWithoutExtension.slice(this.rootTemplateFolder.length)
+			: this.VaultPathWithoutExtension
 		this.noteSuggestion = noteSuggestion
 	}
 
 	render(el: HTMLElement): void {
-		const suggestionText = this.templateIsInTemplateFolder
-			? this.VaultPathWithoutExtension.slice(this.rootTemplateFolder.length)
-			: this.VaultPathWithoutExtension
 		el.createDiv({
 			cls: "suggestion-content",
-			text: suggestionText
+			text: this.pathFromTemplateRoot
 		})
 		el.createDiv({
 			cls: "suggestion-note",
@@ -29,6 +30,6 @@ export class TemplateSuggestion extends Suggestion{
 	}
 
 	get textToInsertOnLineUpdate(): string {
-		return `${this.noteSuggestion.textToInsertOnLineUpdate}${this.triggerSymbol}${this.VaultPathWithoutExtension}`
+		return `${this.noteSuggestion.textToInsertOnLineUpdate}${this.triggerSymbol}${this.pathFromTemplateRoot}`
 	}
 }
