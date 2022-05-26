@@ -14,18 +14,34 @@ export class TemplateSuggestionCollector {
 	}
 
 	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): Suggestion[] {
-		const templateFolderPath = this.configStore.getCoreTemplatesPath()
-		if (!templateFolderPath){
-			return []
+		const templateCollectors = this.createCollectors(noteSuggestion) // Recreating the collectors to make sure we capture any changes in template folder paths.
+
+		return templateCollectors.flatMap(collector => collector.getSuggestions(templateQuery))
+	}
+
+	private createCollectors(noteSuggestion: NoteSuggestion) {
+		const coreTemplateFolderPath = this.configStore.getCoreTemplatesPath()
+		const templaterTemplateFolderPath = this.configStore.getTemplaterTemplatesPath()
+		const templateCollectors = []
+		if (coreTemplateFolderPath) {
+			console.debug('NAC: using templates from core templates', coreTemplateFolderPath)
+			templateCollectors.push(this.createTemplateCollector(coreTemplateFolderPath, noteSuggestion))
 		}
-		const collector = new BaseSuggestionCollector({
+
+		if (templaterTemplateFolderPath) {
+			console.debug('NAC: using templates from templater', templaterTemplateFolderPath)
+			templateCollectors.push(this.createTemplateCollector(templaterTemplateFolderPath, noteSuggestion))
+		}
+		return templateCollectors
+	}
+
+	private createTemplateCollector(templateFolderPath: string, noteSuggestion: NoteSuggestion) {
+		return new BaseSuggestionCollector({
 			getAllPossibleLinks: () => this.getAllPossibleLinks(templateFolderPath),
 			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion, templateFolderPath),
 			createSuggestionForQuery: query => new TemplateSuggestion(query, noteSuggestion, templateFolderPath),
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
 		})
-
-		return collector.getSuggestions(templateQuery)
 	}
 
 	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<string>{

@@ -82,6 +82,11 @@ export interface IConfigurationStore{
 	 * Returns the root folder for the templates in the core templates plugin.
 	 */
 	getCoreTemplatesPath(): string | undefined
+
+	/**
+	 * Returns the root folder for the templates in the templater plugin.
+	 */
+	getTemplaterTemplatesPath(): string | undefined
 }
 
 /**

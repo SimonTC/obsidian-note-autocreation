@@ -53,6 +53,16 @@ export class ObsidianInterop implements IObsidianInterop {
 		}
 	}
 
+	getTemplaterTemplatesPath(): string | undefined {
+		// @ts-ignore
+		const templater = this.app.plugins.plugins["templater-obsidian"]
+		if (templater) {
+			const templateFolderPath = templater.settings["templates_folder"]
+			if (templateFolderPath)
+				return templateFolderPath
+		}
+	}
+
 	async getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>{
 		if (creationCommand.FolderCreationCommand){
 			await this.createFolderIfNeeded(creationCommand.FolderCreationCommand)

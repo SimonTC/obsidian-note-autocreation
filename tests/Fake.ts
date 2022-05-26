@@ -33,6 +33,10 @@ class FakeInterop implements IObsidianInterop {
 	getCoreTemplatesPath(): string | undefined {
 		return undefined
 	}
+
+	getTemplaterTemplatesPath(): string | undefined {
+		return undefined
+	}
 }
 
 class FakeFileSystem implements IFileSystem {
