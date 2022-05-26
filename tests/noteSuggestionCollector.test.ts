@@ -2,6 +2,7 @@ import {ExistingNoteSuggestion, NewNoteSuggestion, NoteSuggestion} from "../src/
 import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
+import 'jest-extended'
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeFile = () => {
@@ -53,12 +54,13 @@ describe('the list of suggestions', function () {
 			collection[file] = {}
 			return collection
 		}, {})
+		const expectedSuggestions = files.map(f => new ExistingNoteSuggestion(f))
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 
-		expect(suggestions.map(su => su.VaultPath).sort()).toEqual(files.sort())
+		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('contains links that do not have any files created for them', () => {
@@ -75,17 +77,16 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
-		const expectedSuggestionTitles = [
-			'document 1',
-			'Some link',
-			'another link',
-			'Some other markdown',
-			'Hello world',
-			'I have no page'
+		const expectedSuggestions = [
+			new ExistingNoteSuggestion('document 1.md'),
+			new NewNoteSuggestion('Some link'),
+			new NewNoteSuggestion('another link'),
+			new ExistingNoteSuggestion('Some other markdown.md'),
+			new ExistingNoteSuggestion('Hello world.md'),
+			new NewNoteSuggestion('I have no page.md')
 		]
 
-		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
-
+		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('contains only one suggestion per link', () => {
@@ -101,14 +102,14 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
-		const expectedSuggestionTitles = [
-			'document 1',
-			'Some link',
-			'Some other markdown',
-			'Hello world',
+		const expectedSuggestions = [
+			new ExistingNoteSuggestion('document 1.md'),
+			new NewNoteSuggestion('Some link'),
+			new ExistingNoteSuggestion('Some other markdown.md'),
+			new ExistingNoteSuggestion('Hello world.md'),
 		]
 
-		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
+		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('may contains multiple suggestions with same names if they are in separate locations', () => {
@@ -124,15 +125,15 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
-		const expectedSuggestionTitles = [
-			'document 1',
-			'Some link',
-			'Some other markdown',
-			'Hello world',
-			'Some link',
+		const expectedSuggestions = [
+			new ExistingNoteSuggestion('document 1.md'),
+			new NewNoteSuggestion('Some link'),
+			new ExistingNoteSuggestion('Some other markdown.md'),
+			new ExistingNoteSuggestion('Hello world.md'),
+			new NewNoteSuggestion('Other folder/Some link'),
 		]
 
-		expect(suggestions.map(su => su.Title).sort()).toEqual(expectedSuggestionTitles.sort())
+		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test.skip('creates correct suggestion types', () => {
@@ -157,7 +158,7 @@ describe('the list of suggestions', function () {
 
 		const suggestions = collector.getSuggestions("")
 
-		expect(suggestions).toEqual(expectedSuggestions)
+		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('is sorted in alphabetical order by suggestion title', () => {
@@ -173,15 +174,15 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
-		const expectedSuggestionTitles = [
-			'document 1',
-			'Hello world',
-			'Some link',
-			'Some link',
-			'Some other markdown',
+		const expectedSuggestions = [
+			new ExistingNoteSuggestion('document 1.md'),
+			new ExistingNoteSuggestion('Hello world.md'),
+			new NewNoteSuggestion('Some link'),
+			new NewNoteSuggestion('Other folder/Some link'),
+			new ExistingNoteSuggestion('Some other markdown.md'),
 		]
 
-		expect(suggestions.map(su => su.Title)).toEqual(expectedSuggestionTitles)
+		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	it.each([
@@ -203,12 +204,12 @@ describe('the list of suggestions', function () {
 			'jack.md': {},
 			'Simon.md': {},
 		}
-
+		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
-		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
+		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('includes alias if file already exist and alias is given', () => {
@@ -241,9 +242,10 @@ describe('the list of suggestions', function () {
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
 		const collector = new NoteSuggestionCollector(metadata)
+		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
 		const observedSuggestions = collector.getSuggestions(query)
-		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
+		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	it.each([
@@ -259,9 +261,10 @@ describe('the list of suggestions', function () {
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
 		const collector = new NoteSuggestionCollector(metadata)
+		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
 		const observedSuggestions = collector.getSuggestions(query)
-		expect(observedSuggestions.map(su => su.VaultPath).sort()).toEqual(expectedFiles.sort())
+		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('Query is first in returned suggestions', () => {
@@ -281,7 +284,6 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
-		expect(observedSuggestions).toEqual(expectedSuggestions)
-
+		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 })
