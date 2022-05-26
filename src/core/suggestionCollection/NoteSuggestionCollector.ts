@@ -43,7 +43,11 @@ export class NoteSuggestionCollector {
 			getAllPossibleLinks: () => this.getVaultPathsOfAllLinks(),
 			createSuggestion: query => new ExistingNoteSuggestion(query),
 			createSuggestionForQuery: query => new NewNoteSuggestion(query),
-			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => new ExistingNoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
+			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => {
+				return collection.queryAsSuggestion.HasAlias
+					? new ExistingNoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
+					: collection.existingSuggestionForQuery
+			}
 		})
 	}
 
