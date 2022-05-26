@@ -17,7 +17,7 @@ export class NoteSuggestionCollector {
 					? new ExistingNoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
 					: collection.existingSuggestionForQuery
 			}
-		})
+		}, true)
 	}
 
 	getSuggestions(query: string): NoteSuggestion[] {

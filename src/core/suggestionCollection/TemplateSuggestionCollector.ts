@@ -56,7 +56,7 @@ export class TemplateSuggestionCollector {
 			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion, templateFolderPath),
 			createSuggestionForQuery: query => new TemplateSuggestion(query, noteSuggestion, templateFolderPath),
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
-		})
+		}, false)
 	}
 
 	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<string>{

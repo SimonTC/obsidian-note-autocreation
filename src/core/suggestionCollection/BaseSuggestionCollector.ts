@@ -13,12 +13,14 @@ export class BaseSuggestionCollector<TSuggestion extends Suggestion> {
 	private readonly createSuggestion: (query: string) => TSuggestion
 	private readonly createSuggestionForQuery: (query: string) => TSuggestion
 	private readonly createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
+	private readonly includeQueryIfNoLinkExistsForIt: boolean
 
-	constructor({getAllPossibleLinks,createSuggestion, createSuggestionForQuery, createSuggestionWhenSuggestionForQueryAlreadyExists}: SuggestionCollectorHelpers<TSuggestion>) {
-		this.getAllPossibleLinks = getAllPossibleLinks
-		this.createSuggestion = createSuggestion
-		this.createSuggestionWhenSuggestionForQueryAlreadyExists = createSuggestionWhenSuggestionForQueryAlreadyExists
-		this.createSuggestionForQuery = createSuggestionForQuery
+	constructor(helpers: SuggestionCollectorHelpers<TSuggestion>, includeQueryIfNoLinkExistsForIt: boolean) {
+		this.getAllPossibleLinks = helpers.getAllPossibleLinks
+		this.createSuggestion = helpers.createSuggestion
+		this.createSuggestionWhenSuggestionForQueryAlreadyExists = helpers.createSuggestionWhenSuggestionForQueryAlreadyExists
+		this.createSuggestionForQuery = helpers.createSuggestionForQuery
+		this.includeQueryIfNoLinkExistsForIt = includeQueryIfNoLinkExistsForIt
 	}
 
 	getSuggestions(query: string): TSuggestion[] {
@@ -32,11 +34,14 @@ export class BaseSuggestionCollector<TSuggestion extends Suggestion> {
 			return suggestions
 		}
 
-		const suggestionForQuery = suggestionCollection.suggestionForQueryAlreadyExist
-			? this.createSuggestionWhenSuggestionForQueryAlreadyExists(suggestionCollection)
-			: suggestionCollection.queryAsSuggestion
+		if (suggestionCollection.suggestionForQueryAlreadyExist){
+			suggestions.unshift(this.createSuggestionWhenSuggestionForQueryAlreadyExists(suggestionCollection))
+		} else{
+			if(this.includeQueryIfNoLinkExistsForIt){
+				suggestions.unshift(suggestionCollection.queryAsSuggestion)
+			}
+		}
 
-		suggestions.unshift(suggestionForQuery)
 		return suggestions
 	}
 }
