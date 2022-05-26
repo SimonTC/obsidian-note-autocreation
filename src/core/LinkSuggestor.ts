@@ -3,7 +3,7 @@ import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
 import {NoteSuggestion} from "./suggestions/NoteSuggestion"
 import {IEditor, IEditorSuggestContext, IObsidianInterop} from "../interop/ObsidianInterfaces"
-import {TFile} from "obsidian"
+import {Notice, TFile} from "obsidian"
 import {Suggestion} from "./suggestions/Suggestion"
 import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
 import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
@@ -53,6 +53,10 @@ export class LinkSuggestor {
 		if (suggestion instanceof NoteSuggestion){
 			await this.selectNoteSuggestion(suggestion, currentFile, context)
 		} else if (suggestion instanceof TemplateSuggestion){
+			if (!this.obsidianInterop.noteExists(suggestion.VaultPath)){
+				new Notice(`Cannot execute a non-existing template "${suggestion.VaultPath}". Note was not created`)
+				return
+			}
 			await this.selectNoteSuggestion(suggestion.noteSuggestion, currentFile, context)
 		}
 	}
