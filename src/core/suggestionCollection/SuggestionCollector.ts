@@ -11,7 +11,7 @@ export class SuggestionCollector {
 
 	constructor(interOp: IObsidianInterop) {
 		this.noteSuggestionCollector = new NoteSuggestionCollector(interOp)
-		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp)
+		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp)
 		this.fileSystem = interOp
 	}
 

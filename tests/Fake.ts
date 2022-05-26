@@ -1,8 +1,8 @@
-import {IObsidianInterop} from "../src/interop/ObsidianInterfaces"
+import {IFileSystem, IObsidianInterop} from "../src/interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 
-class FakeInterop implements IObsidianInterop{
+class FakeInterop implements IObsidianInterop {
 	folderExists(folderPath: string): boolean {
 		return false
 	}
@@ -30,8 +30,50 @@ class FakeInterop implements IObsidianInterop{
 		return false
 	}
 
+	getCoreTemplatesPath(): string | undefined {
+		return undefined
+	}
+}
+
+class FakeFileSystem implements IFileSystem {
+	folderExists(folderPath: string): boolean {
+		return false
+	}
+
+	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string {
+		return ""
+	}
+
+	getAllFileDescendantsOf(folderPath: string): TFile[] {
+		if (this.descendantsByFolderPath.has(folderPath)){
+			return this.descendantsByFolderPath.get(folderPath).map(filePath => <TFile>{path: filePath})
+		}
+		return []
+	}
+
+	getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile> {
+		return Promise.resolve(undefined)
+	}
+
+	noteExists(notePath: string): boolean {
+		return false
+	}
+
+	private descendantsByFolderPath = new Map<string, string[]>()
+
+	withDescendantsOf(folderPath: string, fileNames: string[]): FakeFileSystem{
+		this.descendantsByFolderPath.set(folderPath, fileNames)
+		return this
+	}
+
 }
 
 export class Fake {
-	static get Interop(){return new FakeInterop()}
+	static get Interop() {
+		return new FakeInterop()
+	}
+
+	static get FileSystem() {
+		return new FakeFileSystem()
+	}
 }

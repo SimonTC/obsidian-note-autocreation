@@ -77,6 +77,11 @@ export interface IConfigurationStore{
 	 * Gets the current value for the configuration with the given key.
 	 */
 	getValueFor(configKey: string): any
+
+	/**
+	 * Returns the root folder for the templates in the core templates plugin.
+	 */
+	getCoreTemplatesPath(): string | undefined
 }
 
 /**
