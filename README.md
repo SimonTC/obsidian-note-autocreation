@@ -14,6 +14,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Trigger for link suggestion                                       | `[[`               | Configurable (`@` by default) |
 | Inserts link to note when Enter is pressed                        | ✔️ | ✔️            |     
 | Creates new note if no note exist at the link location            | ❌                | ✔️            |     
+| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | :heavy_check_mark: <br/> Triggered by `$` by default but can be configured |
 | Filters link suggestions based on the text after the trigger      | ✔️ | ✔️            |     
 | Custom display text can be inserted by using the &#124; character | ✔️ | ✔️           |     
 | Link to specific header can be inserted using the # character     | ✔️ | ❌                           |
@@ -23,14 +24,35 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
 - The type of link that is created by the Note Auto Creator is the same type of link that is created when using the standard Obsidian way. If [[Wikilinks]] have been enabled, then wikilinks are used. Otherwise markdown links are used. 
-- The new note that is created when using the Note Auto Creator will be an empty note.
+- The new note that is created when using the Note Auto Creator will be an empty note unless a template is applied.
 - The sorting of the suggestions is note quite the same between the two link insertion methods, but the contents are the same.
 
+### Inserting templates
+<img src="readme_assets/NAC-template demo.gif" alt="Gif showing a demo of how to insert templates"/>
+
+If you would like to apply a template to a new note you can achieve this by triggering the template selection drop-down by writing the template selection trigger (`$` by default).
+This will change the note selection drop-down to a template selection drop-down, and you will be able to select which template to insert.
+When you have selected a template, the note will be created and the selected template will be applied to the note.
+[Templater](https://github.com/SilentVoid13/Templater) is used to apply the template. 
+
+**Prerequisites and limitations**
+- Inserting templates only works if the Templater plugin is installed and enabled.
+- Inserting templates does not work with templates created for the [core Templates plugin](https://help.obsidian.md/Plugins/Templates).
+- You cannot apply templates to already existing notes.
+
 ## Settings
-In the settings tab you can configure what string to use to trigger the link suggestion drop-down.
-By default, `@` is used to trigger the link selection, but you can configure it to be any string.
+
+### Link suggestion trigger
+
+By default, `@` is used to trigger the link selection, but you can configure it to be any string by changing the value in `Trigger for link selection`.
+
+
 A warning is shown if the chosen trigger is either an empty string or among the [special symbols used when writing markdown](https://www.markdownguide.org/basic-syntax/#characters-you-can-escape).
 You can choose to ignore the warning and still use any of the special symbols as triggers, but it will make it harder to write normal markdown since you always will have the drop-down show up.
+
+### Template insertion trigger
+Any symbol can be used to trigger the selection of a template to insert. By default, the trigger symbol is `$`. This symbol can be configured by changing the value in `Trigger for template execution`.
+This setting is only shown when Templater is installed and enabled.
 
 ## Compatibility
 This plugin should work on all operating systems supported by Obsidian, but has not been tested everywhere. See the table below for tested systems:
