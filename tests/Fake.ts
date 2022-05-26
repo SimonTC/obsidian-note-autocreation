@@ -37,6 +37,10 @@ class FakeInterop implements IObsidianInterop {
 	getTemplaterTemplatesPath(): string | undefined {
 		return undefined
 	}
+
+	getFileContentOf(filePath: string): Promise<string> {
+		return Promise.resolve("")
+	}
 }
 
 class FakeFileSystem implements IFileSystem {
@@ -68,6 +72,10 @@ class FakeFileSystem implements IFileSystem {
 	withDescendantsOf(folderPath: string, fileNames: string[]): FakeFileSystem{
 		this.descendantsByFolderPath.set(folderPath, fileNames)
 		return this
+	}
+
+	getFileContentOf(filePath: string): Promise<string> {
+		return Promise.resolve("")
 	}
 
 }

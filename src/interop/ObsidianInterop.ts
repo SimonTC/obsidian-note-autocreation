@@ -1,5 +1,5 @@
 import {IObsidianInterop} from "./ObsidianInterfaces"
-import {App, TFile, TFolder, Vault} from "obsidian"
+import {App, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 
 export class ObsidianInterop implements IObsidianInterop {
@@ -8,6 +8,13 @@ export class ObsidianInterop implements IObsidianInterop {
 	constructor(app: App) {
 		this.app = app
 	}
+
+	async getFileContentOf(filePath: string): Promise<string> {
+		const file: TAbstractFile = this.app.vault.getAbstractFileByPath(filePath)
+		if (!(file instanceof TFile)) return
+
+		return await this.app.vault.cachedRead(file)
+    }
 
 	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string {
         return this.app.fileManager.generateMarkdownLink(file, sourcePath, subpath, alias)

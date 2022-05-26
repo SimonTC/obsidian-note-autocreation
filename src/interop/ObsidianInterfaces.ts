@@ -48,6 +48,12 @@ export interface IFileSystem{
 	 * @param folderPath the path to the folder to start from
 	 */
 	getAllFileDescendantsOf(folderPath: string): TFile[]
+
+	/**
+	 * Returns the file content for the given file
+	 * @param filePath the path to the file
+	 */
+	getFileContentOf(filePath: string): Promise<string>
 }
 
 /**

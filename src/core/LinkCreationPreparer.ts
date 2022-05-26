@@ -1,6 +1,7 @@
 import {ExistingNoteSuggestion, NoteSuggestion} from "./suggestions/NoteSuggestion"
 import {IConfigurationStore, IFileSystem} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
+import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
 
 export type FolderCreationCommand = {
 	PathToNewFolder: string
@@ -27,21 +28,30 @@ export class LinkCreationPreparer {
 		this.configStore = configStore
 	}
 
-	prepareNoteCreationForEmptyNote(suggestion: NoteSuggestion, currentFile: TFile): LinkCreationCommand{
+	async prepareNoteCreationForEmptyNote(suggestion: NoteSuggestion, currentFile: TFile): Promise<LinkCreationCommand>{
+		return this.prepareNoteCreation(suggestion, currentFile, () => '')
+	}
+
+	async prepareNoteCreationForTemplateNote(suggestion: TemplateSuggestion, currentFile: TFile): Promise<LinkCreationCommand>{
+		const templateContent = await this.fileSystem.getFileContentOf(suggestion.VaultPath)
+		return this.prepareNoteCreation(suggestion.noteSuggestion, currentFile, () => templateContent)
+	}
+
+	private prepareNoteCreation(suggestion: NoteSuggestion, currentFile: TFile, getNoteContent: () => string) {
 		const noteExists = this.fileSystem.noteExists(suggestion.VaultPath)
 
-		if (noteExists){
+		if (noteExists) {
 			return this.createLinkToExistingNote(suggestion)
 		}
 
-		if(suggestion.NoteIsInRoot && suggestion.Title !== '' && !suggestion.Trigger.startsWith('/')){
-			return this.createLinkToNoteInDefaultLocation(suggestion, currentFile)
+		if (suggestion.NoteIsInRoot && suggestion.Title !== '' && !suggestion.Trigger.startsWith('/')) {
+			return this.createLinkToNoteInDefaultLocation(suggestion, currentFile, getNoteContent)
 		}
 
-		return this.createLinkToNoteInSubfolder(suggestion, noteExists)
+		return this.createLinkToNoteInSubfolder(suggestion, noteExists, getNoteContent)
 	}
 
-	private createLinkToNoteInSubfolder(suggestion: NoteSuggestion, noteExists: boolean) {
+	private createLinkToNoteInSubfolder(suggestion: NoteSuggestion, noteExists: boolean, getNoteContent: () => string) {
 		const fileCreationNeeded = suggestion.Title !== '' && !noteExists
 		const folderCreationNeeded = suggestion.FolderPath !== '' && !this.fileSystem.folderExists(suggestion.FolderPath)
 
@@ -50,7 +60,7 @@ export class LinkCreationPreparer {
 			: undefined
 
 		const noteCreationCmd = fileCreationNeeded
-			? {NoteContent: '', PathToNewFile: this.getFileName(suggestion)}
+			? {NoteContent: getNoteContent(), PathToNewFile: this.getFileName(suggestion)}
 			: undefined
 
 		return {
@@ -61,9 +71,9 @@ export class LinkCreationPreparer {
 		}
 	}
 
-	private createLinkToNoteInDefaultLocation(suggestion: NoteSuggestion, currentFile: TFile): LinkCreationCommand {
+	private createLinkToNoteInDefaultLocation(suggestion: NoteSuggestion, currentFile: TFile, getNoteContent: () => string): LinkCreationCommand {
 		const noteCreationCmd = {
-			NoteContent: '',
+			NoteContent: getNoteContent(),
 			PathToNewFile: this.getPathToFileInDefaultFolder(suggestion, currentFile)
 		}
 		return {

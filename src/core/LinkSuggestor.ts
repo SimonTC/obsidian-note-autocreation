@@ -63,14 +63,14 @@ export class LinkSuggestor {
 			return
 		}
 
-		const creationCommand = this.noteCreationPreparer.prepareNoteCreationForEmptyNote(templateSuggestion.noteSuggestion, currentFile)
+		const creationCommand = await this.noteCreationPreparer.prepareNoteCreationForTemplateNote(templateSuggestion, currentFile)
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
 		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
 		this.replaceSuggestionWithLink(linkToInsert, context)
 	}
 
 	private async selectNoteSuggestion(suggestion: NoteSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
-		const creationCommand = this.noteCreationPreparer.prepareNoteCreationForEmptyNote(suggestion, currentFile)
+		const creationCommand = await this.noteCreationPreparer.prepareNoteCreationForEmptyNote(suggestion, currentFile)
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
 		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
 		this.replaceSuggestionWithLink(linkToInsert, context)
