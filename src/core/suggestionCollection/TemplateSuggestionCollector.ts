@@ -32,7 +32,6 @@ export class TemplateSuggestionCollector {
 	}
 
 	private createCollectors(noteSuggestion: NoteSuggestion) {
-		const coreTemplateFolderPath = this.configStore.getCoreTemplatesPath()
 		const templaterTemplateFolderPath = this.configStore.getTemplaterTemplatesPath()
 		const templateCollectors = []
 
@@ -43,10 +42,6 @@ export class TemplateSuggestionCollector {
 			templateCollectors.push(this.createTemplateCollector(templaterTemplateFolderPath, noteSuggestion))
 		}
 
-		if (coreTemplateFolderPath) {
-			console.debug('NAC: using templates from core templates', coreTemplateFolderPath)
-			templateCollectors.push(this.createTemplateCollector(coreTemplateFolderPath, noteSuggestion))
-		}
 		return templateCollectors
 	}
 
