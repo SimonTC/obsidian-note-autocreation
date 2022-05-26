@@ -46,6 +46,16 @@ class FakeInterop implements IObsidianInterop {
 	runTemplaterOn(file: TFile): Promise<void> {
 		return Promise.resolve(undefined)
 	}
+
+	private _templaterIsEnabled = false
+
+	enableTemplater(){
+		this._templaterIsEnabled = true
+	}
+
+	get templaterIsEnabled(): boolean {
+		return this._templaterIsEnabled
+	}
 }
 
 class FakeFileSystem implements IFileSystem {

@@ -119,4 +119,9 @@ export class ObsidianInterop implements IObsidianInterop {
 			await templater.templater.overwrite_file_commands(file)
 		}
 	}
+
+	get templaterIsEnabled(): boolean {
+		// @ts-ignore
+		return this.app.plugins.plugins["templater-obsidian"]
+	}
 }

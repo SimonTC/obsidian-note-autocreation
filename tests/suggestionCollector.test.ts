@@ -25,6 +25,7 @@ it.each([
 	const settings = Fake.Settings
 	settings.templateTriggerSymbol = trigger
 	const interOp = Fake.Interop
+	interOp.enableTemplater()
 	const collector = new SuggestionCollector(interOp, settings)
 
 	const observedSuggestions = collector.getSuggestions(query)

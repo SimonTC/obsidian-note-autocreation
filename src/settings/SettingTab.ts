@@ -17,6 +17,16 @@ export class SettingTab extends PluginSettingTab {
 		const {containerEl} = this
 		containerEl.empty()
 
+		this.addSuggestionTriggerSetting(containerEl)
+
+		// @ts-ignore
+		// No need to show the setting if templater does not exist
+		if (this.app.plugins.plugins["templater-obsidian"]){
+			this.addTemplateTriggerSetting(containerEl)
+		}
+	}
+
+	private addSuggestionTriggerSetting(containerEl: HTMLElement) {
 		const trigger = new Setting(containerEl)
 			.setName('Trigger for link insertion')
 			.setDesc('The text string that will trigger link selection.')
@@ -32,7 +42,9 @@ export class SettingTab extends PluginSettingTab {
 				this.plugin.settings.triggerSymbol = value
 				await this.plugin.saveSettings()
 			}))
+	}
 
+	private addTemplateTriggerSetting(containerEl: HTMLElement) {
 		new Setting(containerEl)
 			.setName('Trigger for template execution')
 			.setDesc('The text string that will trigger template execution')

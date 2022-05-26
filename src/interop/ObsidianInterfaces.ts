@@ -93,6 +93,11 @@ export interface IConfigurationStore{
 	 * Returns the root folder for the templates in the templater plugin.
 	 */
 	getTemplaterTemplatesPath(): string | undefined
+
+	/**
+	 * Returns true if templater is enabled
+	 */
+	get templaterIsEnabled(): boolean
 }
 
 /**
