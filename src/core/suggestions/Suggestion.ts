@@ -68,4 +68,8 @@ export abstract class Suggestion {
 		const fullPath = trigger.trim()
 		this.Trigger = fullPath
 	}
+
+	static compare(a: Suggestion, b: Suggestion){
+		return a.Title.localeCompare(b.Title)
+	}
 }

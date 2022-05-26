@@ -73,8 +73,8 @@ describe('when only templater is enabled', function () {
 })
 
 describe('when both core templates and templater are enabled prioritize templates from templater', function () {
-	const templaterTemplates = ['template1', 'scripts/aa template']
-	const coreTemplates = ['templater/template1', 'templater/scripts/aa template', 'a core template']
+	const templaterTemplates = ['template1', 'scripts/a template']
+	const coreTemplates = ['templater/template1', 'templater/scripts/a template', 'core template']
 	const rootTemplaterFolder = 'templates/templater'
 	const rootCoreFolder = 'templates'
 	const templaterPaths = templaterTemplates.map(path => `${rootTemplaterFolder}/${path}`)
@@ -87,8 +87,8 @@ describe('when both core templates and templater are enabled prioritize template
 		.withDescendantsOf(rootCoreFolder, corePaths)
 
 	const expectedSuggestions = [
-		new TemplateSuggestion('templates/templater/scripts/aa template', fakeNote, rootTemplaterFolder),
-		new TemplateSuggestion('templates/a core template', fakeNote, rootCoreFolder),
+		new TemplateSuggestion('templates/templater/scripts/a template', fakeNote, rootTemplaterFolder),
+		new TemplateSuggestion('templates/core template', fakeNote, rootCoreFolder),
 		new TemplateSuggestion('templates/templater/template1', fakeNote, rootTemplaterFolder),
 	]
 

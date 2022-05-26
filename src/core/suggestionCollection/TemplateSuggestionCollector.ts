@@ -27,6 +27,7 @@ export class TemplateSuggestionCollector {
 			})
 		}
 
+		suggestions.sort(Suggestion.compare)
 		return suggestions
 	}
 

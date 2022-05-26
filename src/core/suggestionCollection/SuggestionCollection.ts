@@ -43,7 +43,7 @@ export class SuggestionCollection<TSuggestion extends Suggestion> {
 	}
 
 	getSortedSuggestions(): TSuggestion[] {
-		this.validSuggestions.sort((a, b) => a.Title.localeCompare(b.Title))
+		this.validSuggestions.sort(Suggestion.compare)
 		return this.validSuggestions
 	}
 }
