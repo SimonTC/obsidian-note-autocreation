@@ -1,4 +1,4 @@
-import {LinkCreationPreparer, NoteCreationCommand} from "./LinkCreationPreparer"
+import {LinkCreationPreparer} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
 import {NoteSuggestion} from "./suggestions/NoteSuggestion"
@@ -22,9 +22,12 @@ export class LinkSuggestor {
 		this.settings = settings
 	}
 
-	instructions = [
-		{command: 'Type |', purpose: 'to change display text'},
-	]
+	get instructions() {
+		return [
+			{command: 'Type |', purpose: 'to change display text'},
+			{command: `Type ${this.settings.templateTriggerSymbol}`, purpose: 'to trigger template selection'},
+		]
+	}
 
 	getSuggestions(context: IEditorSuggestContext): Suggestion[] | Promise<Suggestion[]> {
 		return this.suggestionsCollector.getSuggestions(context.query)
