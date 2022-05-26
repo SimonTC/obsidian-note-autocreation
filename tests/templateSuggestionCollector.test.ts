@@ -72,4 +72,31 @@ describe('when only templater is enabled', function () {
 	})
 })
 
+describe('when both core templates and templater are enabled prioritize templates from templater', function () {
+	const templaterTemplates = ['template1', 'scripts/aa template']
+	const coreTemplates = ['templater/template1', 'templater/scripts/aa template', 'a core template']
+	const rootTemplaterFolder = 'templates/templater'
+	const rootCoreFolder = 'templates'
+	const templaterPaths = templaterTemplates.map(path => `${rootTemplaterFolder}/${path}`)
+	const corePaths = coreTemplates.map(path => `${rootCoreFolder}/${path}`)
+	const interop = Fake.Interop
+	interop.getTemplaterTemplatesPath = () => rootTemplaterFolder
+	interop.getCoreTemplatesPath = () => rootCoreFolder
+	const fileSystem = Fake.FileSystem
+		.withDescendantsOf(rootTemplaterFolder, templaterPaths)
+		.withDescendantsOf(rootCoreFolder, corePaths)
+
+	const expectedSuggestions = [
+		new TemplateSuggestion('templates/templater/scripts/aa template', fakeNote, rootTemplaterFolder),
+		new TemplateSuggestion('templates/a core template', fakeNote, rootCoreFolder),
+		new TemplateSuggestion('templates/templater/template1', fakeNote, rootTemplaterFolder),
+	]
+
+	const templateCollector = new TemplateSuggestionCollector(fileSystem, interop)
+
+	const observedTemplates = templateCollector.getSuggestions('', fakeNote )
+
+	expect(observedTemplates).toStrictEqual(expectedSuggestions)
+})
+
 
