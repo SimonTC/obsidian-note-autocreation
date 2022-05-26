@@ -136,7 +136,7 @@ describe('the list of suggestions', function () {
 		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
-	test.skip('creates correct suggestion types', () => {
+	test('creates correct suggestion types', () => {
 		const unresolvedLinks = {
 			'document 1.md': {
 				'Some link': 1,
@@ -147,10 +147,10 @@ describe('the list of suggestions', function () {
 
 		const expectedSuggestions: NoteSuggestion[] = [
 			new ExistingNoteSuggestion('document 1.md'),
-			new ExistingNoteSuggestion('Some other markdown.md'),
 			new ExistingNoteSuggestion('Hello world.md'),
 			new NewNoteSuggestion('Some link'),
 			new NewNoteSuggestion('Some other link'),
+			new ExistingNoteSuggestion('Some other markdown.md'),
 		]
 
 		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
