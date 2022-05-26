@@ -99,5 +99,5 @@ export interface IConfigurationStore{
  * Main interface for interacting with Obsidian
  */
 export interface IObsidianInterop extends IFileSystem, IMetadataCollection, IConfigurationStore{
-
+	runTemplaterOn(file: TFile): Promise<void>
 }

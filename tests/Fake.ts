@@ -41,6 +41,10 @@ class FakeInterop implements IObsidianInterop {
 	getFileContentOf(filePath: string): Promise<string> {
 		return Promise.resolve("")
 	}
+
+	runTemplaterOn(file: TFile): Promise<void> {
+		return Promise.resolve(undefined)
+	}
 }
 
 class FakeFileSystem implements IFileSystem {

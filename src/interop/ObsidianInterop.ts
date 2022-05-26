@@ -110,4 +110,13 @@ export class ObsidianInterop implements IObsidianInterop {
 		// @ts-ignore
 		return this.app.vault.getConfig(configKey)
 	}
+
+	async runTemplaterOn(file: TFile){
+		// @ts-ignore
+		const templater = this.app.plugins.plugins["templater-obsidian"]
+
+		if (templater) {
+			await templater.templater.overwrite_file_commands(file)
+		}
+	}
 }

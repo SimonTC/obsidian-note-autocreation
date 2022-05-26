@@ -65,6 +65,9 @@ export class LinkSuggestor {
 
 		const creationCommand = await this.noteCreationPreparer.prepareNoteCreationForTemplateNote(templateSuggestion, currentFile)
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
+		if (creationCommand.NoteCreationCommand && linkedFile){
+			await this.obsidianInterop.runTemplaterOn(linkedFile)
+		}
 		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
 		this.replaceSuggestionWithLink(linkToInsert, context)
 	}
