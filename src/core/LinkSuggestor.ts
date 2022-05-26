@@ -1,4 +1,4 @@
-import {LinkCreationPreparer} from "./LinkCreationPreparer"
+import {LinkCreationPreparer, NoteCreationCommand} from "./LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./suggestionExtraction"
 import {NoteSuggestion} from "./suggestions/NoteSuggestion"
@@ -53,16 +53,24 @@ export class LinkSuggestor {
 		if (suggestion instanceof NoteSuggestion){
 			await this.selectNoteSuggestion(suggestion, currentFile, context)
 		} else if (suggestion instanceof TemplateSuggestion){
-			if (!this.obsidianInterop.noteExists(suggestion.VaultPath)){
-				new Notice(`Cannot execute a non-existing template "${suggestion.VaultPath}". Note was not created`)
-				return
-			}
-			await this.selectNoteSuggestion(suggestion.noteSuggestion, currentFile, context)
+			await this.selectTemplateSuggestion(suggestion, currentFile, context)
 		}
 	}
 
+	private async selectTemplateSuggestion(templateSuggestion: TemplateSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
+		if (!this.obsidianInterop.noteExists(templateSuggestion.VaultPath)){
+			new Notice(`Cannot execute a non-existing template "${templateSuggestion.VaultPath}". Note was not created`)
+			return
+		}
+
+		const creationCommand = this.noteCreationPreparer.prepareNoteCreationForEmptyNote(templateSuggestion.noteSuggestion, currentFile)
+		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
+		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
+		this.replaceSuggestionWithLink(linkToInsert, context)
+	}
+
 	private async selectNoteSuggestion(suggestion: NoteSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
-		const creationCommand = this.noteCreationPreparer.prepareNoteCreationFor(suggestion, currentFile)
+		const creationCommand = this.noteCreationPreparer.prepareNoteCreationForEmptyNote(suggestion, currentFile)
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
 		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
 		this.replaceSuggestionWithLink(linkToInsert, context)

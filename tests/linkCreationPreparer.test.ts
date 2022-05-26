@@ -11,7 +11,7 @@ test('no file is created if the suggestion name is empty', () => {
 	const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 	const suggestion = new NewNoteSuggestion("")
 
-	const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+	const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 	expect(cmd.NoteCreationCommand).toBeFalsy()
 })
@@ -23,7 +23,7 @@ describe('when the file in the suggestion exists', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new ExistingNoteSuggestion("my file")
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.NoteCreationCommand).toBeFalsy()
 		expect(cmd.FolderCreationCommand).toBeFalsy()
@@ -36,7 +36,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new NewNoteSuggestion("My Note.md")
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.NoteCreationCommand).toBeTruthy()
 	})
@@ -52,7 +52,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new NewNoteSuggestion(trigger)
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.NoteCreationCommand.PathToNewFile).toBe(expectedFilePath)
 	})
@@ -66,7 +66,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new NewNoteSuggestion(trigger)
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.FolderCreationCommand).toBeTruthy()
 		expect(cmd.FolderCreationCommand.PathToNewFolder).toBe(expectedFolderPath)
@@ -82,7 +82,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new NewNoteSuggestion(trigger)
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.NoteAlias).toBe(expectedAlias)
 	})
@@ -92,7 +92,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new NewNoteSuggestion('my/non/existing folder/with a note')
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.FolderCreationCommand).toBeFalsy()
 	})
@@ -102,7 +102,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new NewNoteSuggestion('my note in the root')
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.FolderCreationCommand).toBeFalsy()
 	})
@@ -112,7 +112,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const noteCreator = new LinkCreationPreparer(fileSystem, defaultConfigStore)
 		const suggestion = new NewNoteSuggestion('My note.md')
 
-		const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+		const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.NoteCreationCommand.NoteContent).toBe('')
 	})
@@ -133,7 +133,7 @@ describe('when the file in the suggestion does not exist', function () {
 				const expected = new NewNoteSuggestion(expectedVaultPath)
 				const file = <TFile>{path: triggeredIn}
 
-				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
+				const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, file)
 
 				expect(cmd.NoteCreationCommand.PathToNewFile).toBe(expected.VaultPath)
 			})
@@ -155,7 +155,7 @@ describe('when the file in the suggestion does not exist', function () {
 				const expected = new NewNoteSuggestion(expectedVaultPath)
 				const file = <TFile>{path: triggeredIn}
 
-				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
+				const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, file)
 
 				expect(cmd.NoteCreationCommand.PathToNewFile).toBe(expected.VaultPath)
 			})
@@ -187,7 +187,7 @@ describe('when the file in the suggestion does not exist', function () {
 				const expected = new NewNoteSuggestion(expectedVaultPath)
 				const file = <TFile>{path: triggeredIn}
 
-				const cmd = noteCreator.prepareNoteCreationFor(suggestion, file)
+				const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, file)
 
 				expect(cmd.NoteCreationCommand.PathToNewFile).toBe(expected.VaultPath)
 			})
@@ -207,7 +207,7 @@ describe('when the file in the suggestion does not exist', function () {
 			const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
 			const suggestion = new NewNoteSuggestion('note1.md')
 
-			const cmd = noteCreator.prepareNoteCreationFor(suggestion, fakeFile)
+			const cmd = noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 			expect(cmd.NoteCreationCommand.PathToNewFile).toBe(suggestion.VaultPath)
 		})

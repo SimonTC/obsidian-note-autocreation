@@ -27,7 +27,7 @@ export class LinkCreationPreparer {
 		this.configStore = configStore
 	}
 
-	prepareNoteCreationFor(suggestion: NoteSuggestion, currentFile: TFile): LinkCreationCommand{
+	prepareNoteCreationForEmptyNote(suggestion: NoteSuggestion, currentFile: TFile): LinkCreationCommand{
 		const noteExists = this.fileSystem.noteExists(suggestion.VaultPath)
 
 		if (noteExists){
