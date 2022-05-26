@@ -4,13 +4,15 @@ import {
 	EditorPosition,
 	EditorSuggest,
 	EditorSuggestContext,
-	EditorSuggestTriggerInfo,
+	EditorSuggestTriggerInfo, Notice,
 	TFile
 } from "obsidian"
 import {ObsidianInterop} from "./ObsidianInterop"
 import {NoteAutoCreatorSettings} from "../settings/NoteAutoCreatorSettings"
 import {LinkSuggestor} from "../core/LinkSuggestor"
 import {Suggestion} from "../core/suggestions/Suggestion"
+import {TemplateSuggestion} from "../core/suggestions/TemplateSuggestion"
+import {ExistingNoteSuggestion} from "../core/suggestions/NoteSuggestion"
 
 /**
  * Wrapper around the Link suggestor logic.
@@ -48,6 +50,10 @@ export class LinkSuggestorInterop extends EditorSuggest<Suggestion> {
 	}
 
 	selectSuggestion(value: Suggestion, evt: MouseEvent | KeyboardEvent) {
+		if (value instanceof TemplateSuggestion && value.noteSuggestion instanceof ExistingNoteSuggestion){
+			new Notice('Executing templates on existing notes is not supported')
+			return
+		}
 		this.wrapped.selectSuggestion(value, evt, this.context)
 	}
 }
