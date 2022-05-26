@@ -15,6 +15,9 @@ export class TemplateSuggestionCollector {
 
 	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): Suggestion[] {
 		const templateFolderPath = this.configStore.getCoreTemplatesPath()
+		if (!templateFolderPath){
+			return []
+		}
 		const collector = new BaseSuggestionCollector({
 			getAllPossibleLinks: () => this.getAllPossibleLinks(templateFolderPath),
 			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion, templateFolderPath),
@@ -25,7 +28,9 @@ export class TemplateSuggestionCollector {
 		return collector.getSuggestions(templateQuery)
 	}
 
-	private getAllPossibleLinks(templateFolderPath: string) : Set<string>{
-		return new Set(this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(f => f.path))
+	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<string>{
+		return templateFolderPath
+			? new Set(this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(f => f.path))
+			: new Set<string>()
 	}
 }

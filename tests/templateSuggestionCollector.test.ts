@@ -24,7 +24,18 @@ describe('when core templates are enabled', function () {
 	})
 
 	test('no templates are collected if the templates folder has not been configured', () => {
+		const coreTemplates = ['template1', 'template2', 'scripts/template4']
+		const rootTemplateFolder = 'tmp/templates'
+		const templatePaths = coreTemplates.map(path => `${rootTemplateFolder}/${path}`)
+		const interop = Fake.Interop
+		interop.getCoreTemplatesPath = () => undefined
+		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop)
+
+		const observedTemplates = templateCollector.getSuggestions('', fakeNote )
+
+		expect(observedTemplates).toBeEmpty()
 	})
 })
 
