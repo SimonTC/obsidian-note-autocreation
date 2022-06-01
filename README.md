@@ -36,6 +36,7 @@ When you have selected a template, the note will be created and the selected tem
 [Templater](https://github.com/SilentVoid13/Templater) is used to apply the template. 
 
 **Prerequisites and limitations**
+- You may need to restart Obsidian after adding Templater or Note Auto Creator. Otherwise, Note Auto Creator might not be aware of the template folder configured in Templater.
 - Inserting templates only works if the Templater plugin is installed and enabled.
 - You need to have defined a template folder in Templater
 - Inserting templates does not work with templates created for the [core Templates plugin](https://help.obsidian.md/Plugins/Templates).
