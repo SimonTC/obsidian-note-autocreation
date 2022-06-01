@@ -3,7 +3,7 @@
 Automatically create notes when links are created to them.
 
 ## How to use
-<img src="NAC demo.gif" alt="Gif showing a demo of the plugin"/>
+![demo](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/NAC%20demo.gif)
 
 After enabling the plugin in the settings menu, you will be able to trigger an alternative link suggestion drop-down. 
 The drop-down is triggered by typing the characters configured in the settings menu. By default, the trigger is `@`.
@@ -12,12 +12,12 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 |                                                                   | Obsidian Linking   | Note Auto Creator linking     |
 |-------------------------------------------------------------------|--------------------|-------------------------------|
 | Trigger for link suggestion                                       | `[[`               | Configurable (`@` by default) |
-| Inserts link to note when Enter is pressed                        | :heavy_check_mark: | :heavy_check_mark:            |     
-| Creates new note if no note exist at the link location            | :x:                | :heavy_check_mark:            |     
-| Filters link suggestions based on the text after the trigger      | :heavy_check_mark: | :heavy_check_mark:            |     
-| Custom display text can be inserted by using the &#124; character | :heavy_check_mark: | :heavy_check_mark:            |     
-| Link to specific header can be inserted using the # character     | :heavy_check_mark: | :x:                           |
-| Link to specific block can be inserted using the ^ character      | :heavy_check_mark: | :x:                           |
+| Inserts link to note when Enter is pressed                        | ✔️ | ✔️            |     
+| Creates new note if no note exist at the link location            | ❌                | ✔️            |     
+| Filters link suggestions based on the text after the trigger      | ✔️ | ✔️            |     
+| Custom display text can be inserted by using the &#124; character | ✔️ | ✔️           |     
+| Link to specific header can be inserted using the # character     | ✔️ | ❌                           |
+| Link to specific block can be inserted using the ^ character      | ✔️ | ❌                           |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -36,12 +36,16 @@ This plugin should work on all operating systems supported by Obsidian, but has 
 
 | Device       | Tested 			         | Working            |
 |--------------|--------------------|--------------------|
-| Windows 10   | :heavy_check_mark: | :heavy_check_mark: |
-| Android (11) | :heavy_check_mark: | :heavy_check_mark: |
-| iPad         | :x:                | :grey_question:    |
-| iPhone 			   | :x:                | :grey_question:    |
-| Linux        | :x:                | :grey_question:    |
+| Windows 10 + 11   | ✔️ | ✔️ |
+| Android (11) | ✔️ | ✔️ |
+| iPad         | ✔️                | ✔️    |
+| iPhone 			   | ❌                | ❔    |
+| Linux        | ✔️                | ✔️    |
 
+## Upcoming features
+- Apply Templater templates to new notes
+- Respect default location for new notes configured in core Obsidian
+- Set specific top folders to collect note suggestions from
 
 ## How to install
 
