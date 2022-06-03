@@ -102,4 +102,32 @@ describe('a single Obsidian path', function () {
 
 		expect(obsidianPath).toEqual(expectedPath)
 	})
+
+	test('can deal with dots in folder name', () => {
+		const fullPath = '000 - Folder. Inbox. Subfolder/_Templates/my note'
+		const obsidianPath = new ObsidianFilePath(fullPath)
+		const expectedPath = {
+			VaultPath: '000 - Folder. Inbox. Subfolder/_Templates/my note',
+			VaultPathWithoutExtension: '000 - Folder. Inbox. Subfolder/_Templates/my note',
+			Title: 'my note',
+			FolderPath: '000 - Folder. Inbox. Subfolder/_Templates',
+			NoteIsInRoot: false
+		}
+
+		expect(obsidianPath).toEqual(expectedPath)
+	})
+
+	test('can deal with dots in file name', () => {
+		const fullPath = '/_Templates/folder.with.dots/my note.is.awesome.md'
+		const obsidianPath = new ObsidianFilePath(fullPath)
+		const expectedPath = {
+			VaultPath: '/_Templates/folder.with.dots/my note.is.awesome.md',
+			VaultPathWithoutExtension: '/_Templates/folder.with.dots/my note.is.awesome',
+			Title: 'my note.is.awesome',
+			FolderPath: '/_Templates/folder.with.dots',
+			NoteIsInRoot: false
+		}
+
+		expect(obsidianPath).toEqual(expectedPath)
+	})
 })

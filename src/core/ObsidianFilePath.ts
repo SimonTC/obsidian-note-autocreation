@@ -42,7 +42,7 @@ export class ObsidianFilePath {
 		this.Title = title
 		this.FolderPath = folderPath
 		this.NoteIsInRoot = folderPath === '/' || folderPath === ''
-		this.VaultPathWithoutExtension = vaultPath.replace(/\..*/, '')
+		this.VaultPathWithoutExtension = this.NoteIsInRoot ? title : `${folderPath}/${title}`
 	}
 
 	private extractPathParts(fullPath: string): {vaultPath: string, folderPath: string, title: string} {
