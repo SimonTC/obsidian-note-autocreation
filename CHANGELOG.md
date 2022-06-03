@@ -1,4 +1,9 @@
-## Next release
+## 1.1.1 (2022-06-03)
+
+### Bug fixes
+- Support file and folder names containing dots (.)
+
+## 1.1.0 (2022-06-01)
 
 ### Features
 - Add support for applying Templater templates to new notes
