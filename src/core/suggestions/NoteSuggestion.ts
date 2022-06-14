@@ -21,17 +21,6 @@ export abstract class NoteSuggestion extends Suggestion{
 		this.Alias = alias
 	}
 
-	render(el: HTMLElement): void {
-		el.createDiv({
-			cls: "suggestion-content",
-			text: this.Title
-		})
-		el.createDiv({
-			cls: "suggestion-note",
-			text: this.FolderPath + '/'
-		})
-	}
-
 	private extractSuggestionParts(trigger: string): {alias: string} {
 		if (trigger.indexOf('|') === -1){
 			return {alias: undefined}
@@ -51,7 +40,16 @@ export abstract class NoteSuggestion extends Suggestion{
  * Suggestion for a note that already exists
  */
 export class ExistingNoteSuggestion extends NoteSuggestion{
-
+	render(el: HTMLElement): void {
+		el.createDiv({
+			cls: "suggestion-content",
+			text: this.Title
+		})
+		el.createDiv({
+			cls: "suggestion-note",
+			text: this.FolderPath + '/'
+		})
+	}
 }
 
 /**
@@ -60,5 +58,14 @@ export class ExistingNoteSuggestion extends NoteSuggestion{
  * or it could be a completely new note that is not linked anywhere
  */
 export class NewNoteSuggestion extends NoteSuggestion{
-
+	render(el: HTMLElement): void {
+		el.createDiv({
+			cls: "suggestion-content",
+			text: `🆕 ${this.Title}`
+		})
+		el.createDiv({
+			cls: "suggestion-note",
+			text: this.FolderPath + '/'
+		})
+	}
 }

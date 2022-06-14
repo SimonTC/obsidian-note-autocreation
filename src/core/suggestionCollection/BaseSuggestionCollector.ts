@@ -1,32 +1,34 @@
 import {Suggestion} from "../suggestions/Suggestion"
 import {SuggestionCollection} from "./SuggestionCollection"
 
+export type VaultPathInfo = {
+	path: string
+	pathIsToExistingNote: boolean
+}
+
 export type SuggestionCollectorHelpers<TSuggestion extends Suggestion> = {
-	getAllPossibleLinks: () => Set<string>
-	createSuggestion: (query: string) => TSuggestion
-	createSuggestionForQuery: (query: string) => TSuggestion
+	getAllPossibleVaultPaths: () => Set<VaultPathInfo>
+	createSuggestion: (vaultPathInfo: VaultPathInfo) => TSuggestion
 	createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
 }
 
 export class BaseSuggestionCollector<TSuggestion extends Suggestion> {
-	private readonly getAllPossibleLinks: () => Set<string>
-	private readonly createSuggestion: (query: string) => TSuggestion
-	private readonly createSuggestionForQuery: (query: string) => TSuggestion
+	private readonly getAllPossibleVaultPaths: () => Set<VaultPathInfo>
+	private readonly createSuggestion: (suggestionInfo: VaultPathInfo) => TSuggestion
 	private readonly createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
 	private readonly includeQueryIfNoLinkExistsForIt: boolean
 
 	constructor(helpers: SuggestionCollectorHelpers<TSuggestion>, includeQueryIfNoLinkExistsForIt: boolean) {
-		this.getAllPossibleLinks = helpers.getAllPossibleLinks
+		this.getAllPossibleVaultPaths = helpers.getAllPossibleVaultPaths
 		this.createSuggestion = helpers.createSuggestion
 		this.createSuggestionWhenSuggestionForQueryAlreadyExists = helpers.createSuggestionWhenSuggestionForQueryAlreadyExists
-		this.createSuggestionForQuery = helpers.createSuggestionForQuery
 		this.includeQueryIfNoLinkExistsForIt = includeQueryIfNoLinkExistsForIt
 	}
 
 	getSuggestions(query: string): TSuggestion[] {
-		const suggestionCollection = new SuggestionCollection(query, this.createSuggestion, this.createSuggestionForQuery)
-		for (const link of this.getAllPossibleLinks()) {
-			suggestionCollection.addIfDescendantOfAndNotSuggestionForQuery(link)
+		const suggestionCollection = new SuggestionCollection(query, this.createSuggestion)
+		for (const vaultPathInfo of this.getAllPossibleVaultPaths()) {
+			suggestionCollection.addIfDescendantOfAndNotSuggestionForQuery(vaultPathInfo)
 		}
 
 		const suggestions = suggestionCollection.getSortedSuggestions()

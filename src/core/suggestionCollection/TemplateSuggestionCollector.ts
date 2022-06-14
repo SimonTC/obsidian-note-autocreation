@@ -1,8 +1,9 @@
 import {IConfigurationStore, IFileSystem} from "../../interop/ObsidianInterfaces"
 import {NoteSuggestion} from "../suggestions/NoteSuggestion"
 import {Suggestion} from "../suggestions/Suggestion"
-import {BaseSuggestionCollector} from "./BaseSuggestionCollector"
+import {BaseSuggestionCollector, VaultPathInfo} from "./BaseSuggestionCollector"
 import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
+import {TFile} from "obsidian"
 
 export class TemplateSuggestionCollector {
 	private readonly fileSystem: IFileSystem
@@ -47,16 +48,16 @@ export class TemplateSuggestionCollector {
 
 	private createTemplateCollector(templateFolderPath: string, noteSuggestion: NoteSuggestion): BaseSuggestionCollector<TemplateSuggestion> {
 		return new BaseSuggestionCollector({
-			getAllPossibleLinks: () => this.getAllPossibleLinks(templateFolderPath),
-			createSuggestion: query => new TemplateSuggestion(query, noteSuggestion, templateFolderPath),
-			createSuggestionForQuery: query => new TemplateSuggestion(query, noteSuggestion, templateFolderPath),
+			getAllPossibleVaultPaths: () => this.getAllPossibleLinks(templateFolderPath),
+			createSuggestion: query => new TemplateSuggestion(query.path, noteSuggestion, templateFolderPath),
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
 		}, false)
 	}
 
-	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<string>{
+	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<VaultPathInfo>{
+		const toVaultPathInfo = (f: TFile): VaultPathInfo => { return {path: f.path, pathIsToExistingNote: true} }
 		return templateFolderPath
-			? new Set(this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(f => f.path))
-			: new Set<string>()
+			? new Set(this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(toVaultPathInfo))
+			: new Set<VaultPathInfo>()
 	}
 }

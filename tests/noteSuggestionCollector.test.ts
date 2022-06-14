@@ -89,6 +89,26 @@ describe('the list of suggestions', function () {
 		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
+	test('contains links that do not have any files created for them when there is a query', () => {
+		const unresolvedLinks = {
+			'this note.md': {
+				'this note does not exist': 1,
+			}
+		}
+
+		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const collector = new NoteSuggestionCollector(metadata)
+
+		const suggestions = collector.getSuggestions("this")
+		const expectedSuggestions = [
+			new NewNoteSuggestion('this'),
+			new ExistingNoteSuggestion('this note.md'),
+			new NewNoteSuggestion('this note does not exist'),
+		]
+
+		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
+	})
+
 	test('contains only one suggestion per link', () => {
 		const unresolvedLinks = {
 			'document 1.md': {

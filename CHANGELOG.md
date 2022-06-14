@@ -1,3 +1,8 @@
+## Next release
+
+### Improvements
+- Indicate if inserting a link will result in a new note being created
+
 ## 1.1.1 (2022-06-03)
 
 ### Bug fixes
