@@ -4,6 +4,7 @@ import {SuggestionCollection} from "./SuggestionCollection"
 export type VaultPathInfo = {
 	path: string
 	pathIsToExistingNote: boolean
+	alias: string | unknown
 }
 
 export type SuggestionCollectorHelpers<TSuggestion extends Suggestion> = {

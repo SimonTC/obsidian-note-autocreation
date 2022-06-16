@@ -1,4 +1,9 @@
-import {ExistingNoteSuggestion, NewNoteSuggestion, NoteSuggestion} from "../suggestions/NoteSuggestion"
+import {
+	AliasNoteSuggestion,
+	ExistingNoteSuggestion,
+	NewNoteSuggestion,
+	NoteSuggestion
+} from "../suggestions/NoteSuggestion"
 import {IMetadataCollection} from "../../interop/ObsidianInterfaces"
 import {BaseSuggestionCollector, VaultPathInfo} from "./BaseSuggestionCollector"
 
@@ -10,7 +15,7 @@ export class NoteSuggestionCollector {
 		this.metadata = metadata
 		this.collector = new BaseSuggestionCollector({
 			getAllPossibleVaultPaths: () => this.getVaultPathsOfAllLinks(),
-			createSuggestion: suggestionInfo => suggestionInfo.pathIsToExistingNote ? new ExistingNoteSuggestion(suggestionInfo.path) : new NewNoteSuggestion(suggestionInfo.path),
+			createSuggestion: this.createSuggestion,
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => {
 				return collection.queryAsSuggestion.HasAlias
 					? new ExistingNoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
@@ -23,25 +28,34 @@ export class NoteSuggestionCollector {
 		return this.collector.getSuggestions(query)
 	}
 
+	private createSuggestion(pathInfo: VaultPathInfo): NoteSuggestion{
+		if(pathInfo.pathIsToExistingNote){
+			if (pathInfo.alias){
+				return new AliasNoteSuggestion(pathInfo.path, pathInfo.alias as string)
+			} else {
+				return new ExistingNoteSuggestion(pathInfo.path)
+			}
+		} else {
+			return new NewNoteSuggestion(pathInfo.path)
+		}
+	}
+
 	private getVaultPathsOfAllLinks(): Set<VaultPathInfo> {
 		const unresolvedLinks: Record<string, Record<string, number>> = this.metadata.getUnresolvedLinks()
 		const observedPaths = new Set<string>()
 		const vaultPathInfos = new Set<VaultPathInfo>()
-		const addIfPathHasNotBeSeen = (path: string, exist: boolean) => {
+		const addIfPathHasNotBeSeen = (path: string, exist: boolean, alias: string | unknown) => {
 			const pathHasBeenSeen = observedPaths.has(path)
-			if (!pathHasBeenSeen){
-				vaultPathInfos.add({path: path, pathIsToExistingNote: exist})
+			if (alias || !pathHasBeenSeen){
+				vaultPathInfos.add({path: path, pathIsToExistingNote: exist, alias: alias})
 				observedPaths.add(path)
 			}
 			return !pathHasBeenSeen
 		}
 
-		for (const pathToFileWithPossibleUnresolvedLink in unresolvedLinks) {
-			addIfPathHasNotBeSeen(pathToFileWithPossibleUnresolvedLink, true)
-
-			for (const unresolvedLink in unresolvedLinks[pathToFileWithPossibleUnresolvedLink]) {
-				addIfPathHasNotBeSeen(unresolvedLink, false)
-			}
+		const linkSuggestions = this.metadata.getLinkSuggestions()
+		for (const linkSuggestion of linkSuggestions) {
+			addIfPathHasNotBeSeen(linkSuggestion.path, linkSuggestion.file !== null, linkSuggestion.alias)
 		}
 		return vaultPathInfos
 	}

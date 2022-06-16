@@ -55,7 +55,7 @@ export class TemplateSuggestionCollector {
 	}
 
 	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<VaultPathInfo>{
-		const toVaultPathInfo = (f: TFile): VaultPathInfo => { return {path: f.path, pathIsToExistingNote: true} }
+		const toVaultPathInfo = (f: TFile): VaultPathInfo => { return {path: f.path, pathIsToExistingNote: true, alias: undefined} }
 		return templateFolderPath
 			? new Set(this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(toVaultPathInfo))
 			: new Set<VaultPathInfo>()

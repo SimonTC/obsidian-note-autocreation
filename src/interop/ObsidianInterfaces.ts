@@ -3,10 +3,20 @@ import {TFile} from "obsidian"
 import {DocumentLocation} from "../core/suggestionExtraction"
 
 /**
+ * Facade for the objects returned by app.metadataCache.getLinkSuggestions()
+ */
+export type ObsidianLinkSuggestion = {
+	path: string
+	alias: string | unknown
+	file: TFile | null
+}
+
+/**
  * Interface for accessing metadata from Obsidian
  */
 export interface IMetadataCollection{
 	getUnresolvedLinks():  Record<string, Record<string, number>>
+	getLinkSuggestions(): ObsidianLinkSuggestion[]
 }
 
 /**

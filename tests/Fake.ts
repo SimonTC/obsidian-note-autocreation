@@ -1,9 +1,21 @@
-import {IFileSystem, IObsidianInterop} from "../src/interop/ObsidianInterfaces"
+import {
+	IFileSystem,
+	IMetadataCollection,
+	IObsidianInterop,
+	ObsidianLinkSuggestion
+} from "../src/interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
 
 class FakeInterop implements IObsidianInterop {
+	private metadataCollection: IMetadataCollection = Fake.MetaDataCollection
+
+	withMetadataCollection(metadataCollection: IMetadataCollection): FakeInterop{
+		this.metadataCollection = metadataCollection
+		return this
+	}
+
 	folderExists(folderPath: string): boolean {
 		return false
 	}
@@ -21,7 +33,7 @@ class FakeInterop implements IObsidianInterop {
 	}
 
 	getUnresolvedLinks(): Record<string, Record<string, number>> {
-		return undefined
+		return this.metadataCollection.getUnresolvedLinks()
 	}
 
 	getValueFor(configKey: string): any {
@@ -55,6 +67,10 @@ class FakeInterop implements IObsidianInterop {
 
 	get templaterIsEnabled(): boolean {
 		return this._templaterIsEnabled
+	}
+
+	getLinkSuggestions(): ObsidianLinkSuggestion[] {
+		return this.metadataCollection.getLinkSuggestions()
 	}
 }
 
@@ -95,6 +111,30 @@ class FakeFileSystem implements IFileSystem {
 
 }
 
+export class FakeMetadataCollection implements IMetadataCollection{
+	private linkSuggestions: ObsidianLinkSuggestion[] = []
+	private unresolvedLinks: Record<string, Record<string, number>> = {}
+
+	getLinkSuggestions(): ObsidianLinkSuggestion[] {
+		return this.linkSuggestions
+	}
+
+	getUnresolvedLinks(): Record<string, Record<string, number>> {
+		return this.unresolvedLinks
+	}
+
+	withLinkSuggestions(linkSuggestions: ObsidianLinkSuggestion[]): FakeMetadataCollection {
+		this.linkSuggestions = linkSuggestions
+		return this
+	}
+
+	withUnresolvedLinks(unresolvedLinks: Record<string, Record<string, number>>): FakeMetadataCollection{
+		this.unresolvedLinks = unresolvedLinks
+		return this
+	}
+
+}
+
 export class FakeSettings implements NoteAutoCreatorSettings{
 	templateTriggerSymbol = '$'
 	triggerSymbol = '@'
@@ -111,6 +151,10 @@ export class Fake {
 
 	static get Settings(){
 		return new FakeSettings()
+	}
+
+	static get MetaDataCollection(){
+		return new FakeMetadataCollection()
 	}
 }
 

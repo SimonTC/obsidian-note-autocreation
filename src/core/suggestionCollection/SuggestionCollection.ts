@@ -1,5 +1,6 @@
 import {Suggestion} from "../suggestions/Suggestion"
 import {VaultPathInfo} from "./BaseSuggestionCollector"
+import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
 
 export class SuggestionCollection<TSuggestion extends Suggestion> {
 	private readonly query: string
@@ -13,10 +14,10 @@ export class SuggestionCollection<TSuggestion extends Suggestion> {
 
 	constructor(query: string, createSuggestion: (vaultPathInfo: VaultPathInfo) => TSuggestion) {
 		this.createSuggestion = createSuggestion
-		this.queryAsSuggestion = createSuggestion({path: query, pathIsToExistingNote: false})
+		this.queryAsSuggestion = createSuggestion({path: query, pathIsToExistingNote: false, alias: null})
 		this.query = query
 		const lowerCaseQuery = query.toLowerCase()
-		this.lowerCaseQueryAsSuggestion = createSuggestion({path: lowerCaseQuery, pathIsToExistingNote: false})
+		this.lowerCaseQueryAsSuggestion = createSuggestion({path: lowerCaseQuery, pathIsToExistingNote: false, alias: null})
 	}
 
 	/**
@@ -31,6 +32,11 @@ export class SuggestionCollection<TSuggestion extends Suggestion> {
 			.replace(this.lowerCaseQueryAsSuggestion.FolderPath, '')
 			.includes(this.lowerCaseQueryAsSuggestion.Title)
 
+		let queryCouldBeAliasForSuggestion = false
+		if (suggestion instanceof AliasNoteSuggestion){
+			queryCouldBeAliasForSuggestion = suggestion.Alias.toLowerCase().includes(this.lowerCaseQueryAsSuggestion.Title)
+		}
+
 		const queryIsForSameNoteAsSuggestion = suggestion.VaultPathWithoutExtension.toLowerCase() === this.lowerCaseQueryAsSuggestion.VaultPathWithoutExtension
 		if (queryIsForSameNoteAsSuggestion) {
 			this.suggestionForQueryAlreadyExist = true
@@ -38,7 +44,7 @@ export class SuggestionCollection<TSuggestion extends Suggestion> {
 			return
 		}
 
-		if (queryIsAncestor && queryCouldBeForSuggestedNote) {
+		if ((queryIsAncestor && queryCouldBeForSuggestedNote) || queryCouldBeAliasForSuggestion) {
 			this.validSuggestions.push(suggestion)
 		}
 	}

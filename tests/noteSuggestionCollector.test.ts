@@ -3,6 +3,7 @@ import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSugg
 import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
 import 'jest-extended'
+import {Fake} from "./Fake"
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeFile = () => {
@@ -34,7 +35,7 @@ test('the suggestion collector can deal with big vaults', () => {
 
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => {} }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks({})
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -55,7 +56,7 @@ describe('the list of suggestions', function () {
 			return collection
 		}, {})
 		const expectedSuggestions = files.map(f => new ExistingNoteSuggestion(f))
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -73,7 +74,7 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'I have no page.md': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -96,7 +97,7 @@ describe('the list of suggestions', function () {
 			}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("this")
@@ -118,7 +119,7 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'Some link': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -141,7 +142,7 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'Other folder/Some link': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -173,7 +174,7 @@ describe('the list of suggestions', function () {
 			new ExistingNoteSuggestion('Some other markdown.md'),
 		]
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -190,7 +191,7 @@ describe('the list of suggestions', function () {
 			'Hello world.md': {'Other folder/Some link': 1}
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -225,7 +226,7 @@ describe('the list of suggestions', function () {
 			'Simon.md': {},
 		}
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
@@ -238,7 +239,7 @@ describe('the list of suggestions', function () {
 			'Simon.md': {},
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions('bob|the builder')
@@ -260,7 +261,7 @@ describe('the list of suggestions', function () {
 			'Folder3/Item66.md': {},
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
@@ -279,7 +280,7 @@ describe('the list of suggestions', function () {
 			'Folder2/folder item.md': {},
 		}
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
@@ -300,7 +301,7 @@ describe('the list of suggestions', function () {
 			new ExistingNoteSuggestion('bob.md'),
 		]
 
-		const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)

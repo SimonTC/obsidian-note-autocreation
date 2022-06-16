@@ -7,7 +7,7 @@ export abstract class NoteSuggestion extends Suggestion{
     /**
 	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
 	 */
-	readonly Alias: string | undefined
+	Alias: string | undefined
 
 	/**
 	 * Returns true if the suggestion contains an alias.
@@ -66,6 +66,30 @@ export class NewNoteSuggestion extends NoteSuggestion{
 		el.createDiv({
 			cls: "suggestion-note",
 			text: this.FolderPath + '/'
+		})
+	}
+}
+
+/**
+ * Suggestion for an alias to an existing note.
+ */
+export class AliasNoteSuggestion extends NoteSuggestion{
+
+	constructor(path: string, alias: string) {
+		super(path)
+		this.Alias = alias
+	}
+
+	render(el: HTMLElement): void {
+
+		el.createDiv({
+			cls: "suggestion-content",
+			text: `➡ ${this.Alias}`
+		})
+
+		el.createDiv({
+			cls: "suggestion-note",
+			text: this.FolderPath + '/' + this.Title
 		})
 	}
 }

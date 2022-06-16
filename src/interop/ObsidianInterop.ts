@@ -1,4 +1,4 @@
-import {IObsidianInterop} from "./ObsidianInterfaces"
+import {IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
 import {App, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 
@@ -123,5 +123,10 @@ export class ObsidianInterop implements IObsidianInterop {
 	get templaterIsEnabled(): boolean {
 		// @ts-ignore
 		return this.app.plugins.plugins["templater-obsidian"]
+	}
+
+	getLinkSuggestions(): ObsidianLinkSuggestion[] {
+		// @ts-ignore
+		return app.metadataCache.getLinkSuggestions()
 	}
 }
