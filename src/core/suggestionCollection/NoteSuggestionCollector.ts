@@ -41,7 +41,6 @@ export class NoteSuggestionCollector {
 	}
 
 	private getVaultPathsOfAllLinks(): Set<VaultPathInfo> {
-		const unresolvedLinks: Record<string, Record<string, number>> = this.metadata.getUnresolvedLinks()
 		const observedPaths = new Set<string>()
 		const vaultPathInfos = new Set<VaultPathInfo>()
 		const addIfPathHasNotBeSeen = (path: string, exist: boolean, alias: string | unknown) => {
