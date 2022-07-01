@@ -24,7 +24,7 @@ export class SuggestionCollector {
 		this.configStore = interOp
 	}
 
-	private getNoteSuggestionFor(query: string) {
+	private getNoteSuggestionFor(query: string): NewNoteSuggestion | ExistingNoteSuggestion {
 		const tempSuggestion = new ExistingNoteSuggestion(query)
 		return this.fileSystem.noteExists(tempSuggestion.VaultPath)
 			? tempSuggestion
@@ -40,11 +40,15 @@ export class SuggestionCollector {
 		} else if (query.includes('#')){
 			const [noteQuery, headerQuery] = query.split('#')
 			const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
-			suggestions = this.headerSuggestionCollector.getSuggestions(headerQuery, noteSuggestion)
+			if (noteSuggestion instanceof ExistingNoteSuggestion){
+				suggestions = this.headerSuggestionCollector.getSuggestions(headerQuery, noteSuggestion)
+			} else {
+				suggestions = [new NotFoundSuggestion(query, 'No headers to link to in non-existing notes')]
+			}
 		} else {
 			suggestions = this.noteSuggestionCollector.getSuggestions(query)
 		}
 
-		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query)]
+		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query, 'No match found')]
 	}
 }

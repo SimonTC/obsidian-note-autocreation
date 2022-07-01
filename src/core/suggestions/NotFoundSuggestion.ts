@@ -5,13 +5,15 @@ import {ISuggestion} from "./ISuggestion"
  */
 export class NotFoundSuggestion implements ISuggestion{
 	private readonly trigger: string
+	private readonly message: string
 
-	constructor(trigger: string) {
+	constructor(trigger: string, messageToShow: string) {
 		this.trigger = trigger
+		this.message = messageToShow
 	}
 
 	get Title(): string {
-		return 'No match found'
+		return this.message
 	}
 
 	render(el: HTMLElement): void {
