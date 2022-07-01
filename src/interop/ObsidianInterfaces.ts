@@ -1,5 +1,5 @@
 import {LinkCreationCommand} from "../core/LinkCreationPreparer"
-import {TFile} from "obsidian"
+import {HeadingCache, TFile} from "obsidian"
 import {DocumentLocation} from "../core/suggestionExtraction"
 
 /**
@@ -17,6 +17,7 @@ export type ObsidianLinkSuggestion = {
 export interface IMetadataCollection{
 	getUnresolvedLinks():  Record<string, Record<string, number>>
 	getLinkSuggestions(): ObsidianLinkSuggestion[]
+	getHeadersIn(filePath: string): HeadingCache[]
 }
 
 /**

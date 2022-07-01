@@ -1,5 +1,5 @@
 import {IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
-import {App, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
+import {App, HeadingCache, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 
 export class ObsidianInterop implements IObsidianInterop {
@@ -128,5 +128,12 @@ export class ObsidianInterop implements IObsidianInterop {
 	getLinkSuggestions(): ObsidianLinkSuggestion[] {
 		// @ts-ignore
 		return app.metadataCache.getLinkSuggestions()
+	}
+
+	getHeadersIn(filePath: string): HeadingCache[] {
+		const file: TAbstractFile = this.app.vault.getAbstractFileByPath(filePath)
+		if (!(file instanceof TFile)) return
+
+		return this.app.metadataCache.getFileCache(file).headings ?? []
 	}
 }

@@ -4,7 +4,7 @@ import {
 	IObsidianInterop,
 	ObsidianLinkSuggestion
 } from "../src/interop/ObsidianInterfaces"
-import {TFile} from "obsidian"
+import {HeadingCache, TFile} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
 
@@ -72,6 +72,10 @@ class FakeInterop implements IObsidianInterop {
 	getLinkSuggestions(): ObsidianLinkSuggestion[] {
 		return this.metadataCollection.getLinkSuggestions()
 	}
+
+	getHeadersIn(filePath: string): HeadingCache[] {
+		return this.metadataCollection.getHeadersIn(filePath)
+	}
 }
 
 class FakeFileSystem implements IFileSystem {
@@ -114,6 +118,7 @@ class FakeFileSystem implements IFileSystem {
 export class FakeMetadataCollection implements IMetadataCollection{
 	private linkSuggestions: ObsidianLinkSuggestion[] = []
 	private unresolvedLinks: Record<string, Record<string, number>> = {}
+	private headersByPath: Map<string, HeadingCache[]> = new Map<string, HeadingCache[]>()
 
 	getLinkSuggestions(): ObsidianLinkSuggestion[] {
 		return this.linkSuggestions
@@ -131,6 +136,18 @@ export class FakeMetadataCollection implements IMetadataCollection{
 	withUnresolvedLinks(unresolvedLinks: Record<string, Record<string, number>>): FakeMetadataCollection{
 		this.unresolvedLinks = unresolvedLinks
 		return this
+	}
+
+	withHeaders(headersByPath: Map<string, HeadingCache[]>): FakeMetadataCollection{
+		this.headersByPath = headersByPath
+		return this
+	}
+
+	getHeadersIn(filePath: string): HeadingCache[] {
+		if (this.headersByPath.has(filePath)){
+			return this.headersByPath.get(filePath)
+		}
+		return []
 	}
 
 }
