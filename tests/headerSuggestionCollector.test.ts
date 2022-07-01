@@ -1,11 +1,22 @@
 import 'jest-extended'
+import {Fake} from "./Fake"
+import {HeadingCache} from "obsidian"
+import {HeaderSuggestionCollector} from "../src/core/suggestionCollection/HeaderSuggestionCollector"
+import {ExistingNoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 
-test('no suggestions are returned when the note does not exist', () => {
+const fakeExistingNote = new ExistingNoteSuggestion('My note')
 
-})
+it.each([
+	{query: ''},
+	{query: 'he'},
+])('no suggestions are returned when there are no headers in the note and the query is "$query"', ({query}) => {
+	const headers = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, []]])
+	const metadataCollection = Fake.MetaDataCollection.withHeaders(headers)
+	const collector = new HeaderSuggestionCollector(metadataCollection)
 
-test('no suggestions are returned when there are no headers in the note', () => {
+	const observedSuggestions = collector.getSuggestions(query, fakeExistingNote)
 
+	expect(observedSuggestions).toBeEmpty()
 })
 
 describe('when there are headers in the note', function () {
