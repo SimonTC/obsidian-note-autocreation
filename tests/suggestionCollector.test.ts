@@ -37,7 +37,7 @@ test('alias suggestion is returned when query is alias for existing note', () =>
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })
 
-test('Suggestions for non existing notes are note returned if that feature has been disabled', () => {
+test('Suggestions for non existing notes are not returned if that feature has been disabled', () => {
 	const links = [
 		Fake.LinkToNotExistingNote('my note'),
 		Fake.LinkToExistingNote('my other note.md')

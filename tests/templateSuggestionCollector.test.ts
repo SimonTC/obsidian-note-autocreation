@@ -16,7 +16,7 @@ describe('when only templater is enabled', function () {
 		const expectedSuggestions = templatePaths.map(path => new TemplateSuggestion(path, fakeNote, rootTemplateFolder))
 		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
-		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop)
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings)
 
 		const observedTemplates = templateCollector.getSuggestions('', fakeNote )
 
@@ -31,7 +31,7 @@ describe('when only templater is enabled', function () {
 		interop.getTemplaterTemplatesPath = () => undefined
 		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
-		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop)
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings)
 
 		const observedTemplates = templateCollector.getSuggestions('', fakeNote )
 

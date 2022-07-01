@@ -6,12 +6,13 @@ import {
 } from "../suggestions/NoteSuggestion"
 import {IMetadataCollection} from "../../interop/ObsidianInterfaces"
 import {BaseSuggestionCollector, VaultPathInfo} from "./BaseSuggestionCollector"
+import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 
 export class NoteSuggestionCollector {
 	private metadata: IMetadataCollection
 	private collector: BaseSuggestionCollector<NoteSuggestion>
 
-	constructor(metadata: IMetadataCollection) {
+	constructor(metadata: IMetadataCollection, settings: NoteAutoCreatorSettings) {
 		this.metadata = metadata
 		this.collector = new BaseSuggestionCollector({
 			getAllPossibleVaultPaths: () => this.getVaultPathsOfAllLinks(),
@@ -21,7 +22,7 @@ export class NoteSuggestionCollector {
 					? new ExistingNoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
 					: collection.existingSuggestionForQuery
 			}
-		}, true)
+		}, true, settings)
 	}
 
 	getSuggestions(query: string): NoteSuggestion[] {

@@ -4,14 +4,17 @@ import {Suggestion} from "../suggestions/Suggestion"
 import {BaseSuggestionCollector, VaultPathInfo} from "./BaseSuggestionCollector"
 import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
 import {TFile} from "obsidian"
+import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 
 export class TemplateSuggestionCollector {
 	private readonly fileSystem: IFileSystem
 	private readonly configStore: IConfigurationStore
+	private readonly settings: NoteAutoCreatorSettings
 
-	constructor(fileSystem: IFileSystem, configStore: IConfigurationStore) {
+	constructor(fileSystem: IFileSystem, configStore: IConfigurationStore, settings: NoteAutoCreatorSettings) {
 		this.fileSystem = fileSystem
 		this.configStore = configStore
+		this.settings = settings
 	}
 
 	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): Suggestion[] {
@@ -51,7 +54,7 @@ export class TemplateSuggestionCollector {
 			getAllPossibleVaultPaths: () => this.getAllPossibleLinks(templateFolderPath),
 			createSuggestion: query => new TemplateSuggestion(query.path, noteSuggestion, templateFolderPath),
 			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
-		}, false)
+		}, false, this.settings)
 	}
 
 	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<VaultPathInfo>{

@@ -22,7 +22,7 @@ test('the suggestion collector can deal with big vaults', () => {
 	}
 
 	const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-	const collector = new NoteSuggestionCollector(metadata)
+	const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 	const startTime = performance.now()
 	collector.getSuggestions("")
@@ -36,7 +36,7 @@ test('the suggestion collector can deal with big vaults', () => {
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions([])
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const suggestions = collector.getSuggestions("")
 
@@ -53,7 +53,7 @@ describe('the list of suggestions', function () {
 
 		const expectedSuggestions = links.map(f => new ExistingNoteSuggestion(f.path))
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const suggestions = collector.getSuggestions("")
 
@@ -72,7 +72,7 @@ describe('the list of suggestions', function () {
 			]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestions = [
@@ -95,7 +95,7 @@ describe('the list of suggestions', function () {
 			]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const suggestions = collector.getSuggestions("this")
 		const expectedSuggestions = [
@@ -118,7 +118,7 @@ describe('the list of suggestions', function () {
 			]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestions = [
@@ -138,7 +138,7 @@ describe('the list of suggestions', function () {
 		]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestions = [
@@ -160,7 +160,7 @@ describe('the list of suggestions', function () {
 		]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestionPaths = [
@@ -195,7 +195,7 @@ describe('the list of suggestions', function () {
 		]
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
@@ -208,7 +208,7 @@ describe('the list of suggestions', function () {
 		]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const observedSuggestions = collector.getSuggestions('bob|the builder')
 		expect(observedSuggestions.length).toBe(1)
@@ -230,7 +230,7 @@ describe('the list of suggestions', function () {
 		]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
 		const observedSuggestions = collector.getSuggestions(query)
@@ -249,7 +249,7 @@ describe('the list of suggestions', function () {
 		]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
 		const observedSuggestions = collector.getSuggestions(query)
@@ -270,7 +270,7 @@ describe('the list of suggestions', function () {
 		]
 
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
@@ -281,7 +281,7 @@ describe('the list of suggestions', function () {
 			Fake.LinkToExistingNote('my note.md').withAlias('My Alias')
 		]
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const query = 'not'
 		const expectedSuggestions: NoteSuggestion[] = [
@@ -299,7 +299,7 @@ describe('the list of suggestions', function () {
 			Fake.LinkToExistingNote('my note.md').withAlias('My Other Alias')
 		]
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-		const collector = new NoteSuggestionCollector(metadata)
+		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 		const query = 'ali'
 		const expectedSuggestions: NoteSuggestion[] = [
