@@ -8,7 +8,6 @@ import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSugg
 import {faker} from "@faker-js/faker"
 import 'jest-extended'
 import {Fake} from "./Fake"
-import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCollector"
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeLink = () => {
@@ -256,60 +255,62 @@ describe('the list of suggestions', function () {
 		const observedSuggestions = collector.getSuggestions(query)
 		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
+
+	test('returns the query as the first suggestion', () => {
+		const links = [
+			Fake.LinkToExistingNote('bob.md'),
+			Fake.LinkToExistingNote('jack.md'),
+		]
+
+		const query = 'b'
+
+		const expectedSuggestions: NoteSuggestion[] = [
+			new NewNoteSuggestion(query),
+			new ExistingNoteSuggestion('bob.md'),
+		]
+
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
+		const collector = new NoteSuggestionCollector(metadata)
+
+		const observedSuggestions = collector.getSuggestions(query)
+		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
+	})
+
+	test('does not contain an Alias Note suggestion if note has alias but query does not fit', () => {
+		const links = [
+			Fake.LinkToExistingNote('my note.md').withAlias('My Alias')
+		]
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
+		const collector = new NoteSuggestionCollector(metadata)
+
+		const query = 'not'
+		const expectedSuggestions: NoteSuggestion[] = [
+			new NewNoteSuggestion(query),
+			new ExistingNoteSuggestion('my note.md'),
+		]
+
+		const observedSuggestions = collector.getSuggestions(query)
+		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
+	})
+
+	test('can contain multiple alias note suggestions for same note', () => {
+		const links = [
+			Fake.LinkToExistingNote('my note.md').withAlias('My Alias'),
+			Fake.LinkToExistingNote('my note.md').withAlias('My Other Alias')
+		]
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
+		const collector = new NoteSuggestionCollector(metadata)
+
+		const query = 'ali'
+		const expectedSuggestions: NoteSuggestion[] = [
+			new NewNoteSuggestion(query),
+			new AliasNoteSuggestion('my note.md', 'My Alias'),
+			new AliasNoteSuggestion('my note.md', 'My Other Alias'),
+		]
+
+		const observedSuggestions = collector.getSuggestions(query)
+		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
+	})
 })
 
-test('Query is first in returned suggestions', () => {
-	const links = [
-		Fake.LinkToExistingNote('bob.md'),
-		Fake.LinkToExistingNote('jack.md'),
-	]
 
-	const query = 'b'
-
-	const expectedSuggestions: NoteSuggestion[] = [
-		new NewNoteSuggestion(query),
-		new ExistingNoteSuggestion('bob.md'),
-	]
-
-	const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-	const collector = new NoteSuggestionCollector(metadata)
-
-	const observedSuggestions = collector.getSuggestions(query)
-	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
-})
-
-test('Alias Note suggestion is not returned if note ahs alias but query does not fit', () => {
-	const links = [
-		Fake.LinkToExistingNote('my note.md').withAlias('My Alias')
-	]
-	const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-	const collector = new NoteSuggestionCollector(metadata)
-
-	const query = 'not'
-	const expectedSuggestions: NoteSuggestion[] = [
-		new NewNoteSuggestion(query),
-		new ExistingNoteSuggestion('my note.md'),
-	]
-
-	const observedSuggestions = collector.getSuggestions(query)
-	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
-})
-
-test('Multiple alias note suggestions for same note can be returned', () => {
-	const links = [
-		Fake.LinkToExistingNote('my note.md').withAlias('My Alias'),
-		Fake.LinkToExistingNote('my note.md').withAlias('My Other Alias')
-	]
-	const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
-	const collector = new NoteSuggestionCollector(metadata)
-
-	const query = 'ali'
-	const expectedSuggestions: NoteSuggestion[] = [
-		new NewNoteSuggestion(query),
-		new AliasNoteSuggestion('my note.md', 'My Alias'),
-		new AliasNoteSuggestion('my note.md', 'My Other Alias'),
-	]
-
-	const observedSuggestions = collector.getSuggestions(query)
-	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
-})
