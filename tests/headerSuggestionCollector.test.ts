@@ -1,7 +1,4 @@
-import {ExistingNoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 import 'jest-extended'
-
-const fakeNote = new ExistingNoteSuggestion('my note')
 
 test('no suggestions are returned when the note does not exist', () => {
 
