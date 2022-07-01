@@ -35,7 +35,9 @@ export class BaseSuggestionCollector<TSuggestion extends Suggestion> {
 	getSuggestions(query: string): TSuggestion[] {
 		const suggestionCollection = new SuggestionCollection(query, this.createSuggestion)
 		for (const vaultPathInfo of this.getAllPossibleVaultPaths()) {
-			suggestionCollection.addIfDescendantOfAndNotSuggestionForQuery(vaultPathInfo)
+			if (vaultPathInfo.pathIsToExistingNote || this.settings.suggestLinksToNonExistingNotes){
+				suggestionCollection.addIfDescendantOfAndNotSuggestionForQuery(vaultPathInfo)
+			}
 		}
 
 		const suggestions = suggestionCollection.getSortedSuggestions()
