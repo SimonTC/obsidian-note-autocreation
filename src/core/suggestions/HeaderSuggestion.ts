@@ -1,27 +1,7 @@
-import {FileSuggestion} from "./FileSuggestion"
-import {ObsidianFilePath} from "../ObsidianFilePath"
+import {ISuggestion} from "./ISuggestion"
 
-export class HeaderSuggestion implements FileSuggestion{
-	readonly Path: ObsidianFilePath
-	readonly Trigger: string
-
-	get FolderPath(): string {
-		return ""
-	}
-
-	get NoteIsInRoot(): boolean {
-		return false
-	}
-
+export class HeaderSuggestion implements ISuggestion{
 	get Title(): string {
-		return ""
-	}
-
-	get VaultPath(): string {
-		return ""
-	}
-
-	get VaultPathWithoutExtension(): string {
 		return ""
 	}
 
