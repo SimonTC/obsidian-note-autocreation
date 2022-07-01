@@ -1,27 +1,22 @@
 import {ExistingNoteSuggestion, NewNoteSuggestion, NoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
-import {IMetadataCollection} from "../src/interop/ObsidianInterfaces"
 import {faker} from "@faker-js/faker"
 import 'jest-extended'
 import {Fake} from "./Fake"
 
 test('the suggestion collector can deal with big vaults', () => {
-	const getFakeFile = () => {
+	const getFakeLink = () => {
 		const fakePath = faker.system.directoryPath()
 		const fakeFile = faker.system.commonFileName('md')
-		return `${fakePath}/${fakeFile}`
+		return Fake.LinkToExistingNote(`${fakePath}/${fakeFile}`)
 	}
 
-	const files = []
+	const links = []
 	for (let i = 0; i < 10000; i++) {
-		files.push(getFakeFile())
+		links.push(getFakeLink())
 	}
 
-	const unresolvedLinks = files.reduce((collection: Record<string, Record<string, number>>, file) => {
-		collection[file] = {}
-		return collection
-	}, {})
-	const metadata = <IMetadataCollection>{getUnresolvedLinks: () => unresolvedLinks }
+	const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 	const collector = new NoteSuggestionCollector(metadata)
 
 	const startTime = performance.now()
@@ -30,7 +25,7 @@ test('the suggestion collector can deal with big vaults', () => {
 
 	const diff = endTime - startTime
 	console.log(`Collecting suggestions took ${diff} ms.`)
-	expect(diff).toBeLessThan(55)
+	expect(diff).toBeLessThan(60)
 })
 
 describe('the list of suggestions', function () {
