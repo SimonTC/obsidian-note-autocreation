@@ -1,9 +1,9 @@
-import {Suggestion} from "./Suggestion"
+import {FileSuggestion} from "./FileSuggestion"
 
 /**
  * A suggestion for a new or existing note.
  */
-export abstract class NoteSuggestion extends Suggestion{
+export abstract class NoteSuggestion extends FileSuggestion{
     /**
 	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
 	 */

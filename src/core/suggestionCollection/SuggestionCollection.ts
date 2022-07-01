@@ -1,8 +1,8 @@
-import {Suggestion} from "../suggestions/Suggestion"
+import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {VaultPathInfo} from "./BaseSuggestionCollector"
 import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
 
-export class SuggestionCollection<TSuggestion extends Suggestion> {
+export class SuggestionCollection<TSuggestion extends FileSuggestion> {
 	private readonly query: string
 	private readonly lowerCaseQuery: string
 	private validSuggestions: TSuggestion[] = []
@@ -51,7 +51,7 @@ export class SuggestionCollection<TSuggestion extends Suggestion> {
 	}
 
 	getSortedSuggestions(): TSuggestion[] {
-		this.validSuggestions.sort(Suggestion.compare)
+		this.validSuggestions.sort(FileSuggestion.compare)
 		return this.validSuggestions
 	}
 }

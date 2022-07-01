@@ -4,7 +4,7 @@ import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./s
 import {NoteSuggestion} from "./suggestions/NoteSuggestion"
 import {IEditor, IEditorSuggestContext, IObsidianInterop} from "../interop/ObsidianInterfaces"
 import {Notice, TFile} from "obsidian"
-import {Suggestion} from "./suggestions/Suggestion"
+import {FileSuggestion} from "./suggestions/FileSuggestion"
 import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
 import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
 
@@ -29,7 +29,7 @@ export class LinkSuggestor {
 		]
 	}
 
-	getSuggestions(context: IEditorSuggestContext): Suggestion[] | Promise<Suggestion[]> {
+	getSuggestions(context: IEditorSuggestContext): FileSuggestion[] | Promise<FileSuggestion[]> {
 		return this.suggestionsCollector.getSuggestions(context.query)
 	}
 
@@ -39,16 +39,16 @@ export class LinkSuggestor {
 		return this.currentTrigger
 	}
 
-	renderSuggestion(value: Suggestion, el: HTMLElement): void {
+	renderSuggestion(value: FileSuggestion, el: HTMLElement): void {
 		value.render(el)
 	}
 
-	selectSuggestion(value: Suggestion, evt: MouseEvent | KeyboardEvent, context: IEditorSuggestContext) {
+	selectSuggestion(value: FileSuggestion, evt: MouseEvent | KeyboardEvent, context: IEditorSuggestContext) {
 		const currentFile = context.file
 		this.selectSuggestionAsync(value, currentFile, context)
 	}
 
-	private async selectSuggestionAsync(suggestion: Suggestion, currentFile: TFile, context: IEditorSuggestContext) {
+	private async selectSuggestionAsync(suggestion: FileSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
 		if (suggestion.Title === "") {
 			return
 		}
@@ -91,7 +91,7 @@ export class LinkSuggestor {
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end)
 	}
 
-	updateSuggestionLine(newSuggestion: Suggestion, context: IEditorSuggestContext) {
+	updateSuggestionLine(newSuggestion: FileSuggestion, context: IEditorSuggestContext) {
 		const editor = context.editor
 		const textToInsert = newSuggestion.textToInsertOnLineUpdate
 		const finalCursorPosition = {

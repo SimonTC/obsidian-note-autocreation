@@ -1,6 +1,6 @@
 import {IConfigurationStore, IFileSystem} from "../../interop/ObsidianInterfaces"
 import {NoteSuggestion} from "../suggestions/NoteSuggestion"
-import {Suggestion} from "../suggestions/Suggestion"
+import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {BaseSuggestionCollector, VaultPathInfo} from "./BaseSuggestionCollector"
 import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
 import {TFile} from "obsidian"
@@ -17,10 +17,10 @@ export class TemplateSuggestionCollector {
 		this.settings = settings
 	}
 
-	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): Suggestion[] {
+	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): FileSuggestion[] {
 		const templateCollectors = this.createCollectors(noteSuggestion) // Recreating the collectors to make sure we capture any changes in template folder paths.
 
-		const suggestions: Suggestion[] = []
+		const suggestions: FileSuggestion[] = []
 		const observedSuggestions = new Set<string>()
 		for (const templateCollector of templateCollectors) {
 			templateCollector.getSuggestions(templateQuery).forEach(su => {
@@ -31,7 +31,7 @@ export class TemplateSuggestionCollector {
 			})
 		}
 
-		suggestions.sort(Suggestion.compare)
+		suggestions.sort(FileSuggestion.compare)
 		return suggestions
 	}
 

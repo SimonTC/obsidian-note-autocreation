@@ -1,9 +1,9 @@
 import {ObsidianFilePath} from "../ObsidianFilePath"
 
 /**
- * Base class for all suggestion types.
+ * Base class for all suggestions for any types of files.
  */
-export abstract class Suggestion {
+export abstract class FileSuggestion {
 	/**
 	 * The string that triggered the suggestion.
 	 */
@@ -69,7 +69,7 @@ export abstract class Suggestion {
 		this.Trigger = fullPath
 	}
 
-	static compare(a: Suggestion, b: Suggestion){
+	static compare(a: FileSuggestion, b: FileSuggestion){
 		return a.Title.localeCompare(b.Title)
 	}
 }

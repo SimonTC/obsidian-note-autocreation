@@ -1,7 +1,7 @@
-import {Suggestion} from "./Suggestion"
+import {FileSuggestion} from "./FileSuggestion"
 import {NoteSuggestion} from "./NoteSuggestion"
 
-export class TemplateSuggestion extends Suggestion{
+export class TemplateSuggestion extends FileSuggestion{
 	readonly noteSuggestion: NoteSuggestion
 	readonly triggerSymbol: string = '$'
 	private readonly rootTemplateFolder

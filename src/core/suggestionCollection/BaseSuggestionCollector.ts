@@ -1,4 +1,4 @@
-import {Suggestion} from "../suggestions/Suggestion"
+import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {SuggestionCollection} from "./SuggestionCollection"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 
@@ -8,13 +8,13 @@ export type VaultPathInfo = {
 	alias: string | unknown
 }
 
-export type SuggestionCollectorHelpers<TSuggestion extends Suggestion> = {
+export type SuggestionCollectorHelpers<TSuggestion extends FileSuggestion> = {
 	getAllPossibleVaultPaths: () => Set<VaultPathInfo>
 	createSuggestion: (vaultPathInfo: VaultPathInfo, trigger: string) => TSuggestion
 	createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
 }
 
-export class BaseSuggestionCollector<TSuggestion extends Suggestion> {
+export class BaseSuggestionCollector<TSuggestion extends FileSuggestion> {
 	private readonly getAllPossibleVaultPaths: () => Set<VaultPathInfo>
 	private readonly createSuggestion: (suggestionInfo: VaultPathInfo, trigger: string) => TSuggestion
 	private readonly createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion

@@ -1,7 +1,7 @@
-import {Suggestion} from "./Suggestion"
+import {FileSuggestion} from "./FileSuggestion"
 import {ObsidianFilePath} from "../ObsidianFilePath"
 
-export class HeaderSuggestion implements Suggestion{
+export class HeaderSuggestion implements FileSuggestion{
 	readonly Path: ObsidianFilePath
 	readonly Trigger: string
 
