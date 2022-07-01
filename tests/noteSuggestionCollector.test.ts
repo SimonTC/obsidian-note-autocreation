@@ -260,7 +260,7 @@ describe('the list of suggestions', function () {
 		const query = 'b'
 
 		const expectedSuggestions: NoteSuggestion[] = [
-			new ExistingNoteSuggestion(query),
+			new NewNoteSuggestion(query),
 			new ExistingNoteSuggestion('bob.md'),
 		]
 
@@ -268,6 +268,6 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
-		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
+		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 	})
 })
