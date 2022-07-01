@@ -9,18 +9,19 @@ After enabling the plugin in the settings menu, you will be able to trigger an a
 The drop-down is triggered by typing the characters configured in the settings menu. By default, the trigger is `@`.
 The suggestion drop-down works as the standard link suggestion activated by typing `[[` with some notable differences:
 
-|                                                                                                        | Obsidian Linking | Note Auto Creator linking                                  |
-|--------------------------------------------------------------------------------------------------------|------------------|------------------------------------------------------------|
-| Trigger for link suggestion                                                                            | `[[`             | Configurable (`@` by default)                              |
-| Inserts link to note when Enter is pressed                                                             | ✔️               | ✔️                                                         |     
-| Creates new note if no note exist at the link location                                                 | ❌                | ✔️                                                         |     
-| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured |
-| Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                         |     
-| Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                         |     
-| Link to specific header can be inserted using the # character                                          | ✔️               | ❌                                                          |
-| Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                          |
-| Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                         |
-| Can search for notes by alias                                                                          | ✔️               | ✔️                                                         |
+|                                                                                                        | Obsidian Linking | Note Auto Creator linking                                                             |
+|--------------------------------------------------------------------------------------------------------|------------------|---------------------------------------------------------------------------------------|
+| Trigger for link suggestion                                                                            | `[[`             | Configurable (`@` by default)                                                         |
+| Inserts link to note when Enter is pressed                                                             | ✔️               | ✔️                                                                                    |     
+| Creates new note if no note exist at the link location                                                 | ❌                | ✔️                                                                                    |     
+| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured                            |
+| Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                                                    |     
+| Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                                                    |     
+| Link to specific header can be inserted using the # character                                          | ✔️               | ❌                                                                                     |
+| Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                                                     |
+| Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                                                    |
+| Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                    |
+| Can disable suggestions for links to notes that do not exist                                           | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -51,6 +52,10 @@ By default, `@` is used to trigger the link selection, but you can configure it 
 
 A warning is shown if the chosen trigger is either an empty string or among the [special symbols used when writing markdown](https://www.markdownguide.org/basic-syntax/#characters-you-can-escape).
 You can choose to ignore the warning and still use any of the special symbols as triggers, but it will make it harder to write normal markdown since you always will have the drop-down show up.
+
+### Suggest existing links to notes that do not exist
+By default, Note Auto Creator will suggest links to notes that have not been created if such links have been inserted in other files.
+Disabling this feature will hide suggestions for links to notes that do not exist. 
 
 ### Template insertion trigger
 Any symbol can be used to trigger the selection of a template to insert. By default, the trigger symbol is `$`. This symbol can be configured by changing the value in `Trigger for template execution`.

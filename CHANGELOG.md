@@ -2,6 +2,7 @@
 
 ### Features
 - Support searching for existing notes by alias
+- Make it possible to disable suggestions for non-existing notes
 
 ### Improvements
 - Indicate if inserting a link will result in a new note being created
