@@ -140,6 +140,27 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	triggerSymbol = '@'
 }
 
+export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{
+	alias: string | unknown = undefined
+	file: TFile | null = null
+	path: string = undefined
+
+	withAlias(alias: string): FakeObsidianLinkSuggestion{
+		this.alias = alias
+		return this
+	}
+
+	withPath(path: string): FakeObsidianLinkSuggestion{
+		this.path = path
+		return this
+	}
+
+	withFile(file: TFile): FakeObsidianLinkSuggestion{
+		this.file = file
+		return this
+	}
+}
+
 export class Fake {
 	static get Interop() {
 		return new FakeInterop()
@@ -155,6 +176,14 @@ export class Fake {
 
 	static get MetaDataCollection(){
 		return new FakeMetadataCollection()
+	}
+
+	static LinkToExistingNote(notePath: string){
+		return new FakeObsidianLinkSuggestion().withPath(notePath).withFile(<TFile>{})
+	}
+
+	static LinkToNotExistingNote(notePath: string){
+		return new FakeObsidianLinkSuggestion().withPath(notePath)
 	}
 }
 
