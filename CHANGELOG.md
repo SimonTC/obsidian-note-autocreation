@@ -1,5 +1,8 @@
 ## Next release
 
+### Features
+- Support searching for existing notes by alias
+
 ### Improvements
 - Indicate if inserting a link will result in a new note being created
 

@@ -20,6 +20,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Link to specific header can be inserted using the # character                                          | ✔️               | ❌                                                          |
 | Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                          |
 | Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                         |
+| Can search for notes by alias                                                                          | ✔️               | ✔️                                                         |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -58,18 +59,18 @@ This setting is only shown when Templater is installed and enabled.
 ## Compatibility
 This plugin should work on all operating systems supported by Obsidian, but has not been tested everywhere. See the table below for tested systems:
 
-| Device       | Tested 			         | Working            |
-|--------------|--------------------|--------------------|
-| Windows 10 + 11   | ✔️ | ✔️ |
-| Android (11) | ✔️ | ✔️ |
-| iPad         | ✔️                | ✔️    |
-| iPhone 			   | ❌                | ❔    |
-| Linux        | ✔️                | ✔️    |
+| Device          | Tested 			 | Working |
+|-----------------|------------|---------|
+| Windows 10 + 11 | ✔️         | ✔️      |
+| Android (11)    | ✔️         | ✔️      |
+| iPad            | ✔️         | ✔️      |
+| iPhone 			      | ❌          | ❔       |
+| Linux           | ✔️         | ✔️      |
 
 ## Todo
 - [ ] Set specific top folders to collect note suggestions from
 - [ ] Enable header linking if inserting a link to an existing note
-- [ ] Support searching for notes by alias
+- [X] Support searching for notes by alias
 
 ## How to install
 
