@@ -5,6 +5,7 @@ import {TemplateSuggestionCollector} from "./TemplateSuggestionCollector"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {HeaderSuggestionCollector} from "./HeaderSuggestionCollector"
 import {ISuggestion} from "../suggestions/ISuggestion"
+import {NotFoundSuggestion} from "../suggestions/NotFoundSuggestion"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
@@ -31,18 +32,19 @@ export class SuggestionCollector {
 	}
 
 	getSuggestions(query: string): ISuggestion[] {
+		let suggestions: ISuggestion[] = []
 		if (this.configStore.templaterIsEnabled && query.includes(this.settings.templateTriggerSymbol)) {
 			const [noteQuery, templateQuery] = query.split(this.settings.templateTriggerSymbol)
 			const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
-			return this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
-		}
-
-		if (query.includes('#')){
+			suggestions = this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
+		} else if (query.includes('#')){
 			const [noteQuery, headerQuery] = query.split('#')
 			const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
-			return this.headerSuggestionCollector.getSuggestions(headerQuery, noteSuggestion)
+			suggestions = this.headerSuggestionCollector.getSuggestions(headerQuery, noteSuggestion)
+		} else {
+			suggestions = this.noteSuggestionCollector.getSuggestions(query)
 		}
 
-		return this.noteSuggestionCollector.getSuggestions(query)
+		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query)]
 	}
 }

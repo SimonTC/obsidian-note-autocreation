@@ -56,20 +56,3 @@ test('Suggestions for non existing notes are not returned if that feature has be
 	const observedSuggestions = collector.getSuggestions(query)
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })
-
-it.each([
-	{query: 'my note$', trigger: '$'},
-	{query: 'folder1/my note%', trigger: '%'},
-	{query: 'my note|some alias¤', trigger: '¤'},
-])('template suggestions are returned when the query is $query and template trigger is $trigger', ({query, trigger}) => {
-	const expectedSuggestions: TemplateSuggestion[] = []
-
-	const settings = Fake.Settings
-	settings.templateTriggerSymbol = trigger
-	const interOp = Fake.Interop
-	interOp.enableTemplater()
-	const collector = new SuggestionCollector(interOp, settings)
-
-	const observedSuggestions = collector.getSuggestions(query)
-	expect(observedSuggestions).toEqual(expectedSuggestions)
-})

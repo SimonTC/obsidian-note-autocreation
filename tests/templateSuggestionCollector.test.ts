@@ -20,7 +20,7 @@ describe('when only templater is enabled', function () {
 
 		const observedTemplates = templateCollector.getSuggestions('', fakeNote )
 
-		expect(observedTemplates).toIncludeSameMembers(expectedSuggestions)
+		expect(observedTemplates).toStrictEqual(expectedSuggestions)
 	})
 
 	test('no templates are collected if the templates folder has not been configured', () => {
