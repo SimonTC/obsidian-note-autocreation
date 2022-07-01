@@ -69,7 +69,7 @@ export class LinkSuggestor {
 			return
 		}
 
-		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, suggestion.AsSubPath, suggestion.ParentNote.Alias)
+		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, suggestion.AsSubPath, suggestion.Alias)
 		this.replaceSuggestionWithLink(linkToInsert, context)
 	}
 

@@ -31,11 +31,11 @@ describe('when there are headers in the note', function () {
 		]
 
 		const expectedSuggestions = [
-			new HeaderSuggestion('Duplicate Header', 1, fakeExistingNote),
-			new HeaderSuggestion('Header 1', 1, fakeExistingNote),
-			new HeaderSuggestion('Header 2', 2, fakeExistingNote),
-			new HeaderSuggestion('Other Header 2', 2, fakeExistingNote),
-			new HeaderSuggestion('Duplicate Header', 1, fakeExistingNote),
+			new HeaderSuggestion('Duplicate Header', 1, undefined, fakeExistingNote),
+			new HeaderSuggestion('Header 1', 1, undefined, fakeExistingNote),
+			new HeaderSuggestion('Header 2', 2, undefined, fakeExistingNote),
+			new HeaderSuggestion('Other Header 2', 2, undefined, fakeExistingNote),
+			new HeaderSuggestion('Duplicate Header', 1, undefined, fakeExistingNote),
 		]
 
 		const headerMap = new Map<string, HeadingCache[]>([
@@ -47,6 +47,39 @@ describe('when there are headers in the note', function () {
 		const observedSuggestions = collector.getSuggestions('', fakeExistingNote)
 
 		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
+	})
+
+	test('includes alias if alias is given after header trigger', () => {
+		const headers = [
+			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
+		]
+
+		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection)
+
+		const observedSuggestions = collector.getSuggestions('Header 1|some alias', fakeExistingNote)
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBe('some alias')
+		expect(suggestion.Title).toBe('Header 1')
+	})
+
+	test('uses the original note alias if two aliases are given', () => {
+		const headers = [
+			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
+		]
+		const note = new ExistingNoteSuggestion('My note|Note alias')
+
+		const headerMap = new Map<string, HeadingCache[]>([[note.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection)
+
+		const observedSuggestions = collector.getSuggestions('Header 1|some alias', note)
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBe('Note alias')
+		expect(suggestion.Title).toBe('Header 1')
 	})
 
 	test('suggestions are filtered when the query is not empty', () => {
