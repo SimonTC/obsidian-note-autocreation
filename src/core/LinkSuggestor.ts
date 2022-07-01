@@ -4,10 +4,10 @@ import {DocumentLocation, extractSuggestionTrigger, SuggestionTrigger} from "./s
 import {NoteSuggestion} from "./suggestions/NoteSuggestion"
 import {IEditor, IEditorSuggestContext, IObsidianInterop} from "../interop/ObsidianInterfaces"
 import {Notice, TFile} from "obsidian"
-import {FileSuggestion} from "./suggestions/FileSuggestion"
 import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
 import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
 import {ISuggestion} from "./suggestions/ISuggestion"
+import {HeaderSuggestion} from "./suggestions/HeaderSuggestion"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
@@ -30,7 +30,7 @@ export class LinkSuggestor {
 		]
 	}
 
-	getSuggestions(context: IEditorSuggestContext): FileSuggestion[] | Promise<ISuggestion[]> {
+	getSuggestions(context: IEditorSuggestContext): ISuggestion[] | Promise<ISuggestion[]> {
 		return this.suggestionsCollector.getSuggestions(context.query)
 	}
 
@@ -58,7 +58,19 @@ export class LinkSuggestor {
 			await this.selectNoteSuggestion(suggestion, currentFile, context)
 		} else if (suggestion instanceof TemplateSuggestion){
 			await this.selectTemplateSuggestion(suggestion, currentFile, context)
+		} else if (suggestion instanceof HeaderSuggestion){
+			await this.selectHeaderSuggestion(suggestion, currentFile, context)
 		}
+	}
+
+	private async selectHeaderSuggestion(suggestion: HeaderSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
+		const linkedFile = await this.obsidianInterop.getFile(suggestion.ParentNote.Path, currentFile)
+		if (linkedFile === null){
+			return
+		}
+
+		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, suggestion.AsSubPath, suggestion.ParentNote.Alias)
+		this.replaceSuggestionWithLink(linkToInsert, context)
 	}
 
 	private async selectTemplateSuggestion(templateSuggestion: TemplateSuggestion, currentFile: TFile, context: IEditorSuggestContext) {

@@ -7,6 +7,7 @@ import {
 import {HeadingCache, Pos, TFile} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
+import {ObsidianFilePath} from "../src/core/ObsidianFilePath"
 
 class FakeInterop implements IObsidianInterop {
 	private metadataCollection: IMetadataCollection = Fake.MetaDataCollection
@@ -76,6 +77,10 @@ class FakeInterop implements IObsidianInterop {
 	getHeadersIn(filePath: string): HeadingCache[] {
 		return this.metadataCollection.getHeadersIn(filePath)
 	}
+
+	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null {
+		return null
+	}
 }
 
 class FakeFileSystem implements IFileSystem {
@@ -111,6 +116,10 @@ class FakeFileSystem implements IFileSystem {
 
 	getFileContentOf(filePath: string): Promise<string> {
 		return Promise.resolve("")
+	}
+
+	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null {
+		return null
 	}
 
 }

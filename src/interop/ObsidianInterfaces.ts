@@ -1,6 +1,7 @@
 import {LinkCreationCommand} from "../core/LinkCreationPreparer"
 import {HeadingCache, TFile} from "obsidian"
 import {DocumentLocation} from "../core/suggestionExtraction"
+import {ObsidianFilePath} from "../core/ObsidianFilePath"
 
 /**
  * Facade for the objects returned by app.metadataCache.getLinkSuggestions()
@@ -43,6 +44,13 @@ export interface IFileSystem{
 	 * @param currentFile the file currently active in Obsidian
 	 */
 	getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>
+
+	/**
+	 * Returns the file if it exists. Otherwise null is returned.
+	 * @param filePath the path to the file
+	 * @param currentFile the file currently active in Obsidian
+	 */
+	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null
 
 	/**
 	 * Generate a markdown link based on the user's preferences.

@@ -31,11 +31,11 @@ describe('when there are headers in the note', function () {
 		]
 
 		const expectedSuggestions = [
-			new HeaderSuggestion('Duplicate Header', 1),
-			new HeaderSuggestion('Header 1', 1),
-			new HeaderSuggestion('Header 2', 2),
-			new HeaderSuggestion('Other Header 2', 2),
-			new HeaderSuggestion('Duplicate Header', 1),
+			new HeaderSuggestion('Duplicate Header', 1, fakeExistingNote),
+			new HeaderSuggestion('Header 1', 1, fakeExistingNote),
+			new HeaderSuggestion('Header 2', 2, fakeExistingNote),
+			new HeaderSuggestion('Other Header 2', 2, fakeExistingNote),
+			new HeaderSuggestion('Duplicate Header', 1, fakeExistingNote),
 		]
 
 		const headerMap = new Map<string, HeadingCache[]>([

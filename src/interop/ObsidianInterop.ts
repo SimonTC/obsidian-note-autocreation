@@ -1,6 +1,7 @@
 import {IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
 import {App, HeadingCache, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
+import {ObsidianFilePath} from "../core/ObsidianFilePath"
 
 export class ObsidianInterop implements IObsidianInterop {
 	private readonly app: App
@@ -82,6 +83,10 @@ export class ObsidianInterop implements IObsidianInterop {
 		}
 	}
 
+	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null{
+		return this.app.metadataCache.getFirstLinkpathDest(filePath.VaultPath, currentFile.path)
+	}
+
 	private async createFolderIfNeeded(creationCommand: FolderCreationCommand){
 		try{
 			await this.app.vault.createFolder(creationCommand.PathToNewFolder)
@@ -131,9 +136,10 @@ export class ObsidianInterop implements IObsidianInterop {
 	}
 
 	getHeadersIn(filePath: string): HeadingCache[] {
-		const file: TAbstractFile = this.app.vault.getAbstractFileByPath(filePath)
-		if (!(file instanceof TFile)) return
+		const file: TAbstractFile = app.metadataCache.getFirstLinkpathDest(filePath, app.workspace.getActiveFile().path)
+		if (!(file instanceof TFile)) return []
 
-		return this.app.metadataCache.getFileCache(file).headings ?? []
+		const headingCache = this.app.metadataCache.getFileCache(file).headings ?? []
+		return headingCache
 	}
 }
