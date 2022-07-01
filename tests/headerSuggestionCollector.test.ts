@@ -82,11 +82,26 @@ describe('when there are headers in the note', function () {
 		expect(suggestion.Title).toBe('Header 1')
 	})
 
-	test('suggestions are filtered when the query is not empty', () => {
+	it.each([
+		{query: 'he', expectedHeaders: ['Header 1', 'Header 2', 'Other Header 2']},
+		{query: 'Header', expectedHeaders: ['Header 1', 'Header 2', 'Other Header 2']},
+		{query: 'oth', expectedHeaders: ['Other Header 2']},
+		{query: 'Other', expectedHeaders: ['Other Header 2']},
+		{query: '2', expectedHeaders: ['Header 2', 'Other Header 2']},
+		{query: 'Non existing', expectedHeaders: []},
 
-	})
+	])('suggestions are correctly filtered when the query is "$query"', ({query, expectedHeaders}) => {
+		const headers = [
+			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
+			Fake.HeadingCache.withTitle('Header 2').withLevel(2),
+			Fake.HeadingCache.withTitle('Other Header 2').withLevel(2),
+		]
+		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection)
 
-	test('no suggestions are returned if no headers match the query', () => {
+		const observedSuggestions = collector.getSuggestions(query, fakeExistingNote)
 
+		expect(observedSuggestions.map(s => s.Title)).toStrictEqual(expectedHeaders)
 	})
 })

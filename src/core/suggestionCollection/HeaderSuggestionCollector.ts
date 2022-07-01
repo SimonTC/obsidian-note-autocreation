@@ -11,8 +11,11 @@ export class HeaderSuggestionCollector {
 
 	getSuggestions(headerQuery: string, noteSuggestion: ExistingNoteSuggestion): HeaderSuggestion[]{
 		const [query, alias] = headerQuery.split('|')
+		const lowerCaseQuery = query.toLowerCase()
 		const headersInNote = this.metadataCollection.getHeadersIn(noteSuggestion.Path.VaultPath)
 		const aliasToUse = noteSuggestion.Alias ? noteSuggestion.Alias : alias
-		return headersInNote.map(h => new HeaderSuggestion(h.heading, h.level, aliasToUse, noteSuggestion))
+		return headersInNote
+			.filter(h => h.heading.toLowerCase().includes(lowerCaseQuery))
+			.map(h => new HeaderSuggestion(h.heading, h.level, aliasToUse, noteSuggestion))
 	}
 }
