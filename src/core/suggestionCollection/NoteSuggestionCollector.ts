@@ -28,9 +28,9 @@ export class NoteSuggestionCollector {
 		return this.collector.getSuggestions(query)
 	}
 
-	private createSuggestion(pathInfo: VaultPathInfo): NoteSuggestion{
+	private createSuggestion(pathInfo: VaultPathInfo, trigger: string): NoteSuggestion{
 		if(pathInfo.pathIsToExistingNote){
-			if (pathInfo.alias){
+			if (pathInfo.alias && (pathInfo.alias as string).toLowerCase().includes(trigger)){
 				return new AliasNoteSuggestion(pathInfo.path, pathInfo.alias as string)
 			} else {
 				return new ExistingNoteSuggestion(pathInfo.path)

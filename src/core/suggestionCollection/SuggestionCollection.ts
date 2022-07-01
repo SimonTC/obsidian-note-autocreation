@@ -4,20 +4,21 @@ import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
 
 export class SuggestionCollection<TSuggestion extends Suggestion> {
 	private readonly query: string
+	private readonly lowerCaseQuery: string
 	private validSuggestions: TSuggestion[] = []
 	private readonly lowerCaseQueryAsSuggestion: TSuggestion
 	suggestionForQueryAlreadyExist: boolean
 	existingSuggestionForQuery: TSuggestion
-	private readonly createSuggestion: (vaultPathInfo: VaultPathInfo) => TSuggestion
+	private readonly createSuggestion: (vaultPathInfo: VaultPathInfo, trigger: string) => TSuggestion
 	readonly queryAsSuggestion: TSuggestion
 
 
-	constructor(query: string, createSuggestion: (vaultPathInfo: VaultPathInfo) => TSuggestion) {
+	constructor(query: string, createSuggestion: (vaultPathInfo: VaultPathInfo, trigger: string) => TSuggestion) {
 		this.createSuggestion = createSuggestion
-		this.queryAsSuggestion = createSuggestion({path: query, pathIsToExistingNote: false, alias: null})
+		this.queryAsSuggestion = createSuggestion({path: query, pathIsToExistingNote: false, alias: null}, query)
 		this.query = query
-		const lowerCaseQuery = query.toLowerCase()
-		this.lowerCaseQueryAsSuggestion = createSuggestion({path: lowerCaseQuery, pathIsToExistingNote: false, alias: null})
+		this.lowerCaseQuery = query.toLowerCase()
+		this.lowerCaseQueryAsSuggestion = createSuggestion({path: this.lowerCaseQuery, pathIsToExistingNote: false, alias: null}, this.lowerCaseQuery)
 	}
 
 	/**
@@ -26,7 +27,7 @@ export class SuggestionCollection<TSuggestion extends Suggestion> {
 	 * @param vaultPathInfo information about the vault path to create a suggestion for
 	 */
 	addIfDescendantOfAndNotSuggestionForQuery(vaultPathInfo: VaultPathInfo) {
-		const suggestion = this.createSuggestion(vaultPathInfo)
+		const suggestion = this.createSuggestion(vaultPathInfo, this.lowerCaseQuery)
 		const queryIsAncestor = suggestion.FolderPath.toLowerCase().includes(this.lowerCaseQueryAsSuggestion.FolderPath)
 		const queryCouldBeForSuggestedNote = suggestion.VaultPath.toLowerCase()
 			.replace(this.lowerCaseQueryAsSuggestion.FolderPath, '')

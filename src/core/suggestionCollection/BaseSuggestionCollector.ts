@@ -9,13 +9,13 @@ export type VaultPathInfo = {
 
 export type SuggestionCollectorHelpers<TSuggestion extends Suggestion> = {
 	getAllPossibleVaultPaths: () => Set<VaultPathInfo>
-	createSuggestion: (vaultPathInfo: VaultPathInfo) => TSuggestion
+	createSuggestion: (vaultPathInfo: VaultPathInfo, trigger: string) => TSuggestion
 	createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
 }
 
 export class BaseSuggestionCollector<TSuggestion extends Suggestion> {
 	private readonly getAllPossibleVaultPaths: () => Set<VaultPathInfo>
-	private readonly createSuggestion: (suggestionInfo: VaultPathInfo) => TSuggestion
+	private readonly createSuggestion: (suggestionInfo: VaultPathInfo, trigger: string) => TSuggestion
 	private readonly createSuggestionWhenSuggestionForQueryAlreadyExists: (collection: SuggestionCollection<TSuggestion>) => TSuggestion
 	private readonly includeQueryIfNoLinkExistsForIt: boolean
 
