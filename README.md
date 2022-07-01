@@ -17,7 +17,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured                            |
 | Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                                                    |     
 | Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                                                    |     
-| Link to specific header can be inserted using the # character                                          | ✔️               | ❌                                                                                     |
+| Link to specific header can be inserted using the # character                                          | ✔️               | ✔️                                                                                    |
 | Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                                                     |
 | Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                                                    |
 | Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                    |
@@ -74,7 +74,8 @@ This plugin should work on all operating systems supported by Obsidian, but has 
 
 ## Todo
 - [ ] Set specific top folders to collect note suggestions from
-- [ ] Enable header linking if inserting a link to an existing note
+- [ ] Enable block linking if inserting a link to an existing note
+- [X] Enable header linking if inserting a link to an existing note
 - [X] Support searching for notes by alias
 
 ## How to install
