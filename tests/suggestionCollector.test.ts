@@ -37,6 +37,24 @@ test('alias suggestion is returned when query is alias for existing note', () =>
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })
 
+test('Suggestions for non existing notes are note returned if that feature has been disabled', () => {
+	const links = [
+		Fake.LinkToNotExistingNote('my note'),
+		Fake.LinkToExistingNote('my other note.md')
+	]
+	const interOp = Fake.Interop.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(links))
+	const collector = new SuggestionCollector(interOp, Fake.Settings)
+
+	const query = 'note'
+	const expectedSuggestions: NoteSuggestion[] = [
+		new NewNoteSuggestion(query),
+		new ExistingNoteSuggestion('my other note.md'),
+	]
+
+	const observedSuggestions = collector.getSuggestions(query)
+	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
+})
+
 it.each([
 	{query: 'my note$', trigger: '$'},
 	{query: 'folder1/my note%', trigger: '%'},
