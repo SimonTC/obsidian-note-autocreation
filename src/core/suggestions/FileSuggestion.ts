@@ -1,9 +1,10 @@
 import {ObsidianFilePath} from "../ObsidianFilePath"
+import {ISuggestion} from "./ISuggestion"
 
 /**
  * Base class for all suggestions for any types of files.
  */
-export abstract class FileSuggestion {
+export abstract class FileSuggestion implements ISuggestion{
 	/**
 	 * The string that triggered the suggestion.
 	 */
@@ -25,10 +26,6 @@ export abstract class FileSuggestion {
 		return this.Path.VaultPathWithoutExtension
 	}
 
-	/**
-	 * The title of the item.
-	 * Extension is not included in the title.
-	 */
 	get Title(): string {
 		return this.Path.Title
 	}
@@ -52,15 +49,8 @@ export abstract class FileSuggestion {
 	 */
 	readonly Path: ObsidianFilePath
 
-	/**
-	 * Renders the suggestion
-	 * @param el the parent element in the suggestion list
-	 */
 	abstract render(el: HTMLElement): void
 
-	/**
-	 * Returns the text to insert if this suggestion has been chosen to update the selected suggestion
-	 */
 	abstract get textToInsertOnLineUpdate(): string
 
 	protected constructor(trigger: string) {

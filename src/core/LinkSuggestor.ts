@@ -7,6 +7,7 @@ import {Notice, TFile} from "obsidian"
 import {FileSuggestion} from "./suggestions/FileSuggestion"
 import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
 import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
+import {ISuggestion} from "./suggestions/ISuggestion"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
@@ -29,7 +30,7 @@ export class LinkSuggestor {
 		]
 	}
 
-	getSuggestions(context: IEditorSuggestContext): FileSuggestion[] | Promise<FileSuggestion[]> {
+	getSuggestions(context: IEditorSuggestContext): FileSuggestion[] | Promise<ISuggestion[]> {
 		return this.suggestionsCollector.getSuggestions(context.query)
 	}
 
@@ -39,16 +40,16 @@ export class LinkSuggestor {
 		return this.currentTrigger
 	}
 
-	renderSuggestion(value: FileSuggestion, el: HTMLElement): void {
+	renderSuggestion(value: ISuggestion, el: HTMLElement): void {
 		value.render(el)
 	}
 
-	selectSuggestion(value: FileSuggestion, evt: MouseEvent | KeyboardEvent, context: IEditorSuggestContext) {
+	selectSuggestion(value: ISuggestion, evt: MouseEvent | KeyboardEvent, context: IEditorSuggestContext) {
 		const currentFile = context.file
 		this.selectSuggestionAsync(value, currentFile, context)
 	}
 
-	private async selectSuggestionAsync(suggestion: FileSuggestion, currentFile: TFile, context: IEditorSuggestContext) {
+	private async selectSuggestionAsync(suggestion: ISuggestion, currentFile: TFile, context: IEditorSuggestContext) {
 		if (suggestion.Title === "") {
 			return
 		}
@@ -91,7 +92,7 @@ export class LinkSuggestor {
 		editor.replaceRange(valueToInsert, startPosition, this.currentTrigger.end)
 	}
 
-	updateSuggestionLine(newSuggestion: FileSuggestion, context: IEditorSuggestContext) {
+	updateSuggestionLine(newSuggestion: ISuggestion, context: IEditorSuggestContext) {
 		const editor = context.editor
 		const textToInsert = newSuggestion.textToInsertOnLineUpdate
 		const finalCursorPosition = {
