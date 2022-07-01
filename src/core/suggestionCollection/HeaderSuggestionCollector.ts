@@ -10,6 +10,7 @@ export class HeaderSuggestionCollector {
 	}
 
 	getSuggestions(headerQuery: string, noteSuggestion: ExistingNoteSuggestion): HeaderSuggestion[]{
-		return []
+		const headersInNote = this.metadataCollection.getHeadersIn(noteSuggestion.VaultPath)
+		return headersInNote.map(h => new HeaderSuggestion(h.heading, h.level))
 	}
 }

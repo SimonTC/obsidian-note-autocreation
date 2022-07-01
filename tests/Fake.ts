@@ -4,7 +4,7 @@ import {
 	IObsidianInterop,
 	ObsidianLinkSuggestion
 } from "../src/interop/ObsidianInterfaces"
-import {HeadingCache, TFile} from "obsidian"
+import {HeadingCache, Pos, TFile} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
 
@@ -179,6 +179,22 @@ export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{
 	}
 }
 
+export class FakeHeadingCache implements HeadingCache{
+	heading: string
+	level: number
+	position: Pos
+
+	withTitle(title: string): FakeHeadingCache{
+		this.heading = title
+		return this
+	}
+
+	withLevel(level: number): FakeHeadingCache{
+		this.level = level
+		return this
+	}
+}
+
 export class Fake {
 	static get Interop() {
 		return new FakeInterop()
@@ -202,6 +218,10 @@ export class Fake {
 
 	static LinkToNotExistingNote(notePath: string){
 		return new FakeObsidianLinkSuggestion().withPath(notePath)
+	}
+
+	static get HeadingCache(){
+		return new FakeHeadingCache()
 	}
 }
 
