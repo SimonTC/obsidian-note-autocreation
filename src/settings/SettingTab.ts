@@ -18,6 +18,7 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty()
 
 		this.addSuggestionTriggerSetting(containerEl)
+		this.addSuggestNonExistingNotesSetting(containerEl)
 
 		// @ts-ignore
 		// No need to show the setting if templater does not exist
@@ -42,6 +43,20 @@ export class SettingTab extends PluginSettingTab {
 				this.plugin.settings.triggerSymbol = value
 				await this.plugin.saveSettings()
 			}))
+	}
+
+	private addSuggestNonExistingNotesSetting(containerEl: HTMLElement){
+		new Setting(containerEl)
+			.setName('Suggest existing links to notes that do not exist')
+			.setDesc('Set this to false if you do not want to get suggestions for existing links to notes that do not exist.')
+			.addToggle(component => component
+				.setValue(this.plugin.settings.suggestLinksToNonExistingNotes)
+				.onChange(async value => {
+					this.plugin.settings.suggestLinksToNonExistingNotes = value
+					await this.plugin.saveSettings()
+				}
+			)
+		)
 	}
 
 	private addTemplateTriggerSetting(containerEl: HTMLElement) {

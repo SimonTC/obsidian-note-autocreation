@@ -43,7 +43,9 @@ test('Suggestions for non existing notes are note returned if that feature has b
 		Fake.LinkToExistingNote('my other note.md')
 	]
 	const interOp = Fake.Interop.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(links))
-	const collector = new SuggestionCollector(interOp, Fake.Settings)
+	const settings = Fake.Settings
+	settings.suggestLinksToNonExistingNotes = false
+	const collector = new SuggestionCollector(interOp, settings)
 
 	const query = 'note'
 	const expectedSuggestions: NoteSuggestion[] = [

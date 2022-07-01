@@ -138,6 +138,7 @@ export class FakeMetadataCollection implements IMetadataCollection{
 export class FakeSettings implements NoteAutoCreatorSettings{
 	templateTriggerSymbol = '$'
 	triggerSymbol = '@'
+	suggestLinksToNonExistingNotes = true
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{
