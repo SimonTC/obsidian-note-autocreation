@@ -30,7 +30,7 @@ test('the suggestion collector can deal with big vaults', () => {
 
 describe('the list of suggestions', function () {
 	test('is empty if there are no files in the vault', () => {
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks({})
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions([])
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -39,19 +39,15 @@ describe('the list of suggestions', function () {
 	})
 
 	test('contains all files in the vault', () => {
-		const files = [
-			"james bond.md",
-			"how to cook.md",
-			"articles/my happy wedding.md",
-			"notes/2022/05/02/daily.md",
+		const links = [
+			Fake.LinkToExistingNote("james bond.md"),
+			Fake.LinkToExistingNote("how to cook.md"),
+			Fake.LinkToExistingNote("articles/my happy wedding.md"),
+			Fake.LinkToExistingNote("notes/2022/05/02/daily.md"),
 		]
 
-		const unresolvedLinks = files.reduce((collection: Record<string, Record<string, number>>, file) => {
-			collection[file] = {}
-			return collection
-		}, {})
-		const expectedSuggestions = files.map(f => new ExistingNoteSuggestion(f))
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const expectedSuggestions = links.map(f => new ExistingNoteSuggestion(f.path))
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -60,16 +56,17 @@ describe('the list of suggestions', function () {
 	})
 
 	test('contains links that do not have any files created for them', () => {
-		const unresolvedLinks = {
-			'document 1.md': {
-				'Some link': 1,
-				'another link': 13
-			},
-			'Some other markdown.md': {},
-			'Hello world.md': {'I have no page.md': 1}
-		}
+		const links =
+			[
+				Fake.LinkToExistingNote('document 1.md'),
+				Fake.LinkToNotExistingNote('Some link'),
+				Fake.LinkToNotExistingNote('another link'),
+				Fake.LinkToExistingNote('Some other markdown.md'),
+				Fake.LinkToExistingNote('Hello world.md'),
+				Fake.LinkToNotExistingNote('I have no page.md'),
+			]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -86,13 +83,13 @@ describe('the list of suggestions', function () {
 	})
 
 	test('contains links that do not have any files created for them when there is a query', () => {
-		const unresolvedLinks = {
-			'this note.md': {
-				'this note does not exist': 1,
-			}
-		}
+		const links =
+			[
+				Fake.LinkToExistingNote('this note.md'),
+				Fake.LinkToNotExistingNote('this note does not exist'),
+			]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("this")
@@ -106,15 +103,16 @@ describe('the list of suggestions', function () {
 	})
 
 	test('contains only one suggestion per link', () => {
-		const unresolvedLinks = {
-			'document 1.md': {
-				'Some link': 1,
-			},
-			'Some other markdown.md': {},
-			'Hello world.md': {'Some link': 1}
-		}
+		const links =
+			[
+				Fake.LinkToExistingNote('document 1.md'),
+				Fake.LinkToNotExistingNote('Some link'),
+				Fake.LinkToExistingNote('Some other markdown.md'),
+				Fake.LinkToNotExistingNote('Some link'),
+				Fake.LinkToExistingNote('document 1.md'),
+			]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
@@ -122,83 +120,53 @@ describe('the list of suggestions', function () {
 			new ExistingNoteSuggestion('document 1.md'),
 			new NewNoteSuggestion('Some link'),
 			new ExistingNoteSuggestion('Some other markdown.md'),
-			new ExistingNoteSuggestion('Hello world.md'),
 		]
 
 		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('may contains multiple suggestions with same names if they are in separate locations', () => {
-		const unresolvedLinks = {
-			'document 1.md': {
-				'Some link': 1,
-			},
-			'Some other markdown.md': {},
-			'Hello world.md': {'Other folder/Some link': 1}
-		}
+		const links = [
+			Fake.LinkToExistingNote('document 1.md'),
+			Fake.LinkToNotExistingNote('Some link'),
+			Fake.LinkToNotExistingNote('Other folder/Some link'),
+		]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
 		const expectedSuggestions = [
 			new ExistingNoteSuggestion('document 1.md'),
 			new NewNoteSuggestion('Some link'),
-			new ExistingNoteSuggestion('Some other markdown.md'),
-			new ExistingNoteSuggestion('Hello world.md'),
 			new NewNoteSuggestion('Other folder/Some link'),
 		]
-
-		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
-	})
-
-	test('creates correct suggestion types', () => {
-		const unresolvedLinks = {
-			'document 1.md': {
-				'Some link': 1,
-			},
-			'Some other markdown.md': {},
-			'Hello world.md': {'Some other link': 1}
-		}
-
-		const expectedSuggestions: NoteSuggestion[] = [
-			new ExistingNoteSuggestion('document 1.md'),
-			new ExistingNoteSuggestion('Hello world.md'),
-			new NewNoteSuggestion('Some link'),
-			new NewNoteSuggestion('Some other link'),
-			new ExistingNoteSuggestion('Some other markdown.md'),
-		]
-
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
-		const collector = new NoteSuggestionCollector(metadata)
-
-		const suggestions = collector.getSuggestions("")
 
 		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
 	test('is sorted in alphabetical order by suggestion title', () => {
-		const unresolvedLinks = {
-			'document 1.md': {
-				'Some link': 1,
-			},
-			'Some other markdown.md': {},
-			'Hello world.md': {'Other folder/Some link': 1}
-		}
+		const links = [
+			Fake.LinkToExistingNote('document 1.md'),
+			Fake.LinkToNotExistingNote('Some link'),
+			Fake.LinkToExistingNote('Some other markdown.md'),
+			Fake.LinkToExistingNote('Hello world.md'),
+			Fake.LinkToNotExistingNote('Other folder/Some link'),
+		]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const suggestions = collector.getSuggestions("")
-		const expectedSuggestions = [
-			new ExistingNoteSuggestion('document 1.md'),
-			new ExistingNoteSuggestion('Hello world.md'),
-			new NewNoteSuggestion('Some link'),
-			new NewNoteSuggestion('Other folder/Some link'),
-			new ExistingNoteSuggestion('Some other markdown.md'),
+		const expectedSuggestionPaths = [
+			'document 1.md',
+			'Hello world.md',
+			'Some link',
+			'Other folder/Some link',
+			'Some other markdown.md',
 		]
 
-		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
+		expect(suggestions.map(s => s.Path.VaultPath)).toEqual(expectedSuggestionPaths)
 	})
 
 	it.each([
@@ -214,14 +182,14 @@ describe('the list of suggestions', function () {
 		{query: 'Bob', expectedFiles: ['bob.md', 'bobby.md']},
 		{query: 'bob.md', expectedFiles: ['bob.md','bobby.md']},
 	])('filtered with "$query" returns $expectedFiles', ({query, expectedFiles}) => {
-		const unresolvedLinks = {
-			'bob.md': {},
-			'bobby.md': {},
-			'jack.md': {},
-			'Simon.md': {},
-		}
+		const links = [
+			Fake.LinkToExistingNote('bob.md'),
+			Fake.LinkToExistingNote('bobby.md'),
+			Fake.LinkToExistingNote('jack.md'),
+			Fake.LinkToExistingNote('Simon.md'),
+		]
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
@@ -229,12 +197,12 @@ describe('the list of suggestions', function () {
 	})
 
 	test('includes alias if file already exist and alias is given', () => {
-		const unresolvedLinks = {
-			'bob.md': {},
-			'Simon.md': {},
-		}
+		const links = [
+			Fake.LinkToExistingNote('bob.md'),
+			Fake.LinkToExistingNote('Simon.md'),
+		]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions('bob|the builder')
@@ -249,14 +217,14 @@ describe('the list of suggestions', function () {
 		{query: 'Folder1/', expectedFiles: ['Folder1/', 'Folder1/Note1.md', 'Folder1/Item2.md']},
 		{query: 'Folder1/It', expectedFiles: ['Folder1/It', 'Folder1/Item2.md']}
 	])('returns $expectedFiles when query is $query', ({query, expectedFiles}) => {
-		const unresolvedLinks = {
-			'bob.md': {},
-			'Folder1/Note1.md': {},
-			'Folder1/Item2.md': {},
-			'Folder3/Item66.md': {},
-		}
+		const links = [
+			Fake.LinkToExistingNote('bob.md'),
+			Fake.LinkToExistingNote('Folder1/Note1.md'),
+			Fake.LinkToExistingNote('Folder1/Item2.md'),
+			Fake.LinkToExistingNote('Folder3/Item66.md'),
+		]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
@@ -269,13 +237,13 @@ describe('the list of suggestions', function () {
 		{query: 'Folder1/', expectedFiles: ['Folder1/', 'Folder1/item1.md', 'Folder1/item2.md']},
 		{query: 'Folder1/1', expectedFiles: ['Folder1/1', 'Folder1/item1.md']},
 	])('only returns items from subfolder when query $query is given', ({query, expectedFiles}) => {
-		const unresolvedLinks = {
-			'Folder1/item1.md': {},
-			'Folder1/item2.md': {},
-			'Folder2/folder item.md': {},
-		}
+		const links = [
+			Fake.LinkToExistingNote('Folder1/item1.md'),
+			Fake.LinkToExistingNote('Folder1/item2.md'),
+			Fake.LinkToExistingNote('Folder2/folder item.md'),
+		]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
@@ -284,10 +252,10 @@ describe('the list of suggestions', function () {
 	})
 
 	test('Query is first in returned suggestions', () => {
-		const unresolvedLinks = {
-			'bob.md': {},
-			'jack.md': {},
-		}
+		const links = [
+			Fake.LinkToExistingNote('bob.md'),
+			Fake.LinkToExistingNote('jack.md'),
+		]
 
 		const query = 'b'
 
@@ -296,7 +264,7 @@ describe('the list of suggestions', function () {
 			new ExistingNoteSuggestion('bob.md'),
 		]
 
-		const metadata = Fake.MetaDataCollection.withUnresolvedLinks(unresolvedLinks)
+		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata)
 
 		const observedSuggestions = collector.getSuggestions(query)
