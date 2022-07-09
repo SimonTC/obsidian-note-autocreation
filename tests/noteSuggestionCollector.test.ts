@@ -30,7 +30,7 @@ test('the suggestion collector can deal with big vaults', () => {
 
 	const diff = endTime - startTime
 	console.log(`Collecting suggestions took ${diff} ms.`)
-	expect(diff).toBeLessThan(60)
+	expect(diff).toBeLessThan(70)
 })
 
 describe('the list of suggestions', function () {

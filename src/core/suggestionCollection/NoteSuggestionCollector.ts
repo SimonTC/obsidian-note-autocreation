@@ -5,49 +5,77 @@ import {
 	NoteSuggestion
 } from "../suggestions/NoteSuggestion"
 import {IMetadataCollection} from "../../interop/ObsidianInterfaces"
-import {BaseSuggestionCollector, VaultPathInfo} from "./BaseSuggestionCollector"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
+import {FileSuggestion} from "../suggestions/FileSuggestion"
+import {Query} from "../queries/FileQuery"
 
 export class NoteSuggestionCollector {
 	private metadata: IMetadataCollection
-	private collector: BaseSuggestionCollector<NoteSuggestion>
+	private settings: NoteAutoCreatorSettings
 
 	constructor(metadata: IMetadataCollection, settings: NoteAutoCreatorSettings) {
 		this.metadata = metadata
-		this.collector = new BaseSuggestionCollector({
-			getAllPossibleVaultPaths: () => this.getVaultPathsOfAllLinks(),
-			createSuggestion: this.createSuggestion,
-			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => {
-				return collection.queryAsSuggestion.HasAlias
-					? new ExistingNoteSuggestion(`${collection.existingSuggestionForQuery.VaultPath}|${collection.queryAsSuggestion.Alias}`)
-					: collection.existingSuggestionForQuery
-			}
-		}, true, settings)
+		this.settings = settings
 	}
 
 	getSuggestions(query: string): NoteSuggestion[] {
-		return this.collector.getSuggestions(query)
-	}
+		const queryObject = Query.forNoteSuggestions(query)
+		let existingSuggestionForQuery: NoteSuggestion
+		const validSuggestions: NoteSuggestion[] = []
 
-	private createSuggestion(pathInfo: VaultPathInfo, trigger: string): NoteSuggestion{
-		if(pathInfo.pathIsToExistingNote){
-			if (pathInfo.alias && (pathInfo.alias as string).toLowerCase().includes(trigger)){
-				return new AliasNoteSuggestion(pathInfo.path, pathInfo.alias as string)
+		for (const suggestion of this.getAllPossibleSuggestions(query)) {
+			if (suggestion instanceof ExistingNoteSuggestion || this.settings.suggestLinksToNonExistingNotes){
+				const queryResult = queryObject.couldBeQueryFor(suggestion)
+
+				if (queryResult.isCompleteMatch){
+					existingSuggestionForQuery = suggestion
+					continue
+				}
+
+				if (queryResult.isAtLeastPartialMatch){
+					validSuggestions.push(suggestion)
+				}
+			}
+		}
+
+		validSuggestions.sort(FileSuggestion.compare)
+
+		if (query === '') {
+			return validSuggestions
+		}
+
+		const queryAsSuggestion = new NewNoteSuggestion(query)
+		if (existingSuggestionForQuery){
+			const suggestionToAdd = queryAsSuggestion.HasAlias
+				? new ExistingNoteSuggestion(`${existingSuggestionForQuery.VaultPath}|${queryAsSuggestion.Alias}`)
+				: existingSuggestionForQuery
+
+			validSuggestions.unshift(suggestionToAdd)
+		} else{
+			validSuggestions.unshift(queryAsSuggestion)
+		}
+
+		return validSuggestions
+	}
+	private createSuggestion(path: string, alias: string | unknown, pathIsToExistingNote: boolean, trigger: string): NoteSuggestion{
+		if(pathIsToExistingNote){
+			if (alias && (alias as string).toLowerCase().includes(trigger)){
+				return new AliasNoteSuggestion(path, alias as string)
 			} else {
-				return new ExistingNoteSuggestion(pathInfo.path)
+				return new ExistingNoteSuggestion(path)
 			}
 		} else {
-			return new NewNoteSuggestion(pathInfo.path)
+			return new NewNoteSuggestion(path)
 		}
 	}
 
-	private getVaultPathsOfAllLinks(): Set<VaultPathInfo> {
+	private getAllPossibleSuggestions(trigger: string): NoteSuggestion[]{
 		const observedPaths = new Set<string>()
-		const vaultPathInfos = new Set<VaultPathInfo>()
+		const suggestions: NoteSuggestion[] = []
 		const addIfPathHasNotBeSeen = (path: string, exist: boolean, alias: string | unknown) => {
 			const pathHasBeenSeen = observedPaths.has(path)
 			if (alias || !pathHasBeenSeen){
-				vaultPathInfos.add({path: path, pathIsToExistingNote: exist, alias: alias})
+				suggestions.push(this.createSuggestion(path, alias, exist, trigger))
 				observedPaths.add(path)
 			}
 			return !pathHasBeenSeen
@@ -57,7 +85,7 @@ export class NoteSuggestionCollector {
 		for (const linkSuggestion of linkSuggestions) {
 			addIfPathHasNotBeSeen(linkSuggestion.path, linkSuggestion.file !== null, linkSuggestion.alias)
 		}
-		return vaultPathInfos
+		return suggestions
 	}
 }
 

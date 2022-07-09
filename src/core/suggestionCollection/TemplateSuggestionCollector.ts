@@ -1,10 +1,9 @@
 import {IConfigurationStore, IFileSystem} from "../../interop/ObsidianInterfaces"
 import {NoteSuggestion} from "../suggestions/NoteSuggestion"
 import {FileSuggestion} from "../suggestions/FileSuggestion"
-import {BaseSuggestionCollector, VaultPathInfo} from "./BaseSuggestionCollector"
 import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
-import {TFile} from "obsidian"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
+import {Query} from "../queries/FileQuery"
 
 export class TemplateSuggestionCollector {
 	private readonly fileSystem: IFileSystem
@@ -18,49 +17,24 @@ export class TemplateSuggestionCollector {
 	}
 
 	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): FileSuggestion[] {
-		const templateCollectors = this.createCollectors(noteSuggestion) // Recreating the collectors to make sure we capture any changes in template folder paths.
-
-		const suggestions: FileSuggestion[] = []
-		const observedSuggestions = new Set<string>()
-		for (const templateCollector of templateCollectors) {
-			templateCollector.getSuggestions(templateQuery).forEach(su => {
-				if (!observedSuggestions.has(su.VaultPath)){
-					observedSuggestions.add(su.VaultPath)
-					suggestions.push(su)
-				}
-			})
-		}
-
-		suggestions.sort(FileSuggestion.compare)
-		return suggestions
-	}
-
-	private createCollectors(noteSuggestion: NoteSuggestion) {
+		const query = Query.forTemplateSuggestions(templateQuery)
 		const templaterTemplateFolderPath = this.configStore.getTemplaterTemplatesPath()
-		const templateCollectors = []
+		const validSuggestions: TemplateSuggestion[] = []
 
-		// The order of adding template collectors is important
-		// since if a suggestion already exist it will not be added when found a second time.
-		if (templaterTemplateFolderPath) {
-			console.debug('NAC: using templates from templater', templaterTemplateFolderPath)
-			templateCollectors.push(this.createTemplateCollector(templaterTemplateFolderPath, noteSuggestion))
+		for (const suggestion of this.getAllPossibleSuggestions(templaterTemplateFolderPath, noteSuggestion)){
+			const queryResult = query.couldBeQueryFor(suggestion)
+			if (queryResult.isAtLeastPartialMatch){
+				validSuggestions.push(suggestion)
+			}
 		}
 
-		return templateCollectors
+		validSuggestions.sort(FileSuggestion.compare)
+		return validSuggestions
 	}
 
-	private createTemplateCollector(templateFolderPath: string, noteSuggestion: NoteSuggestion): BaseSuggestionCollector<TemplateSuggestion> {
-		return new BaseSuggestionCollector({
-			getAllPossibleVaultPaths: () => this.getAllPossibleLinks(templateFolderPath),
-			createSuggestion: query => new TemplateSuggestion(query.path, noteSuggestion, templateFolderPath),
-			createSuggestionWhenSuggestionForQueryAlreadyExists: collection => collection.existingSuggestionForQuery
-		}, false, this.settings)
-	}
-
-	private getAllPossibleLinks(templateFolderPath: string | undefined) : Set<VaultPathInfo>{
-		const toVaultPathInfo = (f: TFile): VaultPathInfo => { return {path: f.path, pathIsToExistingNote: true, alias: undefined} }
+	private getAllPossibleSuggestions(templateFolderPath: string | undefined, noteSuggestion: NoteSuggestion ): TemplateSuggestion[]{
 		return templateFolderPath
-			? new Set(this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(toVaultPathInfo))
-			: new Set<VaultPathInfo>()
+			? this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(f => new TemplateSuggestion(f.path, noteSuggestion, templateFolderPath))
+			: []
 	}
 }
