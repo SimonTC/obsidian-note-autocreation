@@ -23,6 +23,22 @@ describe('when only templater is enabled', function () {
 		expect(observedTemplates).toStrictEqual(expectedSuggestions)
 	})
 
+	test('templates are filtered', () => {
+		const templaterTemplates = ['my first template', 'template2', 'scripts/template4']
+		const rootTemplateFolder = 'templater/templates'
+		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
+		const interop = Fake.Interop
+		interop.getTemplaterTemplatesPath = () => rootTemplateFolder
+		const expectedSuggestions = [new TemplateSuggestion(`${rootTemplateFolder}/my first template`, fakeNote, rootTemplateFolder)]
+		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
+
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings)
+
+		const observedTemplates = templateCollector.getSuggestions('fi', fakeNote )
+
+		expect(observedTemplates).toStrictEqual(expectedSuggestions)
+	})
+
 	test('no templates are collected if the templates folder has not been configured', () => {
 		const templaterTemplates = ['template1', 'template2', 'scripts/template4']
 		const rootTemplateFolder = 'templater/templates'

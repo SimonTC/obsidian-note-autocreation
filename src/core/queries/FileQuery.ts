@@ -4,6 +4,21 @@ import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
 
 type MatchChecker = (suggestion: FileSuggestion) => boolean
 
+function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath){
+	return (suggestion: FileSuggestion) => suggestion.Path.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryPath.VaultPathWithoutExtension
+}
+
+function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath){
+	return (suggestion: FileSuggestion) => {
+		const path = suggestion.Path
+		const queryIsAncestor = path.FolderPath.toLowerCase().includes(lowerCaseQueryPath.FolderPath)
+		const queryCouldBeForSuggestedNote = path.VaultPath.toLowerCase()
+			.replace(lowerCaseQueryPath.FolderPath, '')
+			.includes(lowerCaseQueryPath.Title)
+		return queryIsAncestor && queryCouldBeForSuggestedNote
+	}
+}
+
 export class Query{
 	private fullMatchFoundCheckers: MatchChecker[]
 	private partialMatchFoundCheckers: MatchChecker[]
@@ -29,18 +44,11 @@ export class Query{
 		const lowerCaseQueryPath = new ObsidianFilePath(query.toLowerCase())
 
 		const fullMatchFoundCheckers: MatchChecker[] = [
-			suggestion => suggestion.Path.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryPath.VaultPathWithoutExtension
+			getMatcherForExactMatch(lowerCaseQueryPath)
 		]
 
 		const partialMatchFoundCheckers: MatchChecker[] = [
-			suggestion => {
-				const path = suggestion.Path
-				const queryIsAncestor = path.FolderPath.toLowerCase().includes(lowerCaseQueryPath.FolderPath)
-				const queryCouldBeForSuggestedNote = path.VaultPath.toLowerCase()
-					.replace(lowerCaseQueryPath.FolderPath, '')
-					.includes(lowerCaseQueryPath.Title)
-				return queryIsAncestor && queryCouldBeForSuggestedNote
-			},
+			getMatcherForPartialMatch(lowerCaseQueryPath),
 			suggestion => {
 				if (suggestion instanceof AliasNoteSuggestion){
 					return suggestion.Alias.toLowerCase().includes(lowerCaseQueryPath.Title)
@@ -56,11 +64,11 @@ export class Query{
 		const lowerCaseQueryPath = new ObsidianFilePath(query.toLowerCase())
 
 		const fullMatchFoundCheckers: MatchChecker[] = [
-			suggestion => suggestion.Path.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryPath.VaultPathWithoutExtension
+			getMatcherForExactMatch(lowerCaseQueryPath)
 		]
 
 		const partialMatchFoundCheckers: MatchChecker[] = [
-			suggestion => true
+			getMatcherForPartialMatch(lowerCaseQueryPath),
 		]
 
 		return new Query(fullMatchFoundCheckers, partialMatchFoundCheckers)
