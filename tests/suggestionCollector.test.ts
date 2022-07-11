@@ -37,6 +37,25 @@ test('alias suggestion is returned when query is alias for existing note', () =>
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })
 
+test('alias suggestion is returned when query is alias for existing note and suggestions for non-existing files are disabled', () => {
+	const links = [
+		Fake.LinkToExistingNote('my note.md').withAlias('My Alias')
+	]
+	const interOp = Fake.Interop.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(links))
+	const settings = Fake.Settings
+	settings.suggestLinksToNonExistingNotes = false
+	const collector = new SuggestionCollector(interOp, settings)
+
+	const query = 'ali'
+	const expectedSuggestions: NoteSuggestion[] = [
+		new NewNoteSuggestion(query),
+		new AliasNoteSuggestion('my note.md', 'My Alias'),
+	]
+
+	const observedSuggestions = collector.getSuggestions(query)
+	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
+})
+
 test('Suggestions for non existing notes are not returned if that feature has been disabled', () => {
 	const links = [
 		Fake.LinkToNotExistingNote('my note'),

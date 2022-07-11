@@ -24,7 +24,7 @@ export class NoteSuggestionCollector {
 		const validSuggestions: NoteSuggestion[] = []
 
 		for (const suggestion of this.getAllPossibleSuggestions(query)) {
-			if (suggestion instanceof ExistingNoteSuggestion || this.settings.suggestLinksToNonExistingNotes){
+			if (suggestion.ForExistingNote || this.settings.suggestLinksToNonExistingNotes){
 				const queryResult = queryObject.couldBeQueryFor(suggestion)
 
 				if (queryResult.isCompleteMatch){
