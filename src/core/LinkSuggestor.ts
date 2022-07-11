@@ -26,6 +26,7 @@ export class LinkSuggestor {
 	get instructions() {
 		return [
 			{command: 'Type |', purpose: 'to change display text'},
+			{command: 'Type #', purpose: 'to link heading'},
 			{command: `Type ${this.settings.templateTriggerSymbol}`, purpose: 'to trigger template selection'},
 		]
 	}
