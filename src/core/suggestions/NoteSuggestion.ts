@@ -1,4 +1,5 @@
 import {FileSuggestion} from "./FileSuggestion"
+import {SuggestionRenderer} from "./SuggestionRenderer"
 
 /**
  * A suggestion for a new or existing note.
@@ -51,13 +52,9 @@ export class ExistingNoteSuggestion extends NoteSuggestion{
 	}
 
 	render(el: HTMLElement): void {
-		el.createDiv({
-			cls: "suggestion-content",
-			text: this.Title
-		})
-		el.createDiv({
-			cls: "suggestion-note",
-			text: this.FolderPath + '/'
+		SuggestionRenderer.RenderSuggestion(el, {
+			content: this.Title,
+			note: this.FolderPath + '/',
 		})
 	}
 }
@@ -73,13 +70,9 @@ export class NewNoteSuggestion extends NoteSuggestion{
 	}
 
 	render(el: HTMLElement): void {
-		el.createDiv({
-			cls: "suggestion-content",
-			text: `🆕 ${this.Title}`
-		})
-		el.createDiv({
-			cls: "suggestion-note",
-			text: this.FolderPath + '/'
+		SuggestionRenderer.RenderSuggestion(el, {
+			content: `🆕 ${this.Title}`,
+			note: this.FolderPath + '/',
 		})
 	}
 }
@@ -101,21 +94,13 @@ export class AliasNoteSuggestion extends NoteSuggestion{
 	}
 
 	render(el: HTMLElement): void {
-
-		const content = el.createDiv({
-			cls: "suggestion-content",
-			text: `${this.Alias}`
-		})
-
-		const flair = content.createSpan({
-			cls: "suggestion-flair"
-		})
-		flair.ariaLabel = "Alias"
-		flair.innerHTML = AliasNoteSuggestion.ALIAS_ICON
-
-		el.createDiv({
-			cls: "suggestion-note",
-			text: this.FolderPath + '/' + this.Title
+		SuggestionRenderer.RenderSuggestion(el, {
+			content: this.Alias,
+			note: this.FolderPath + '/' + this.Title,
+			flair: {
+				innerHTML: AliasNoteSuggestion.ALIAS_ICON,
+				label: "Alias"
+			}
 		})
 	}
 }

@@ -1,5 +1,6 @@
 import {FileSuggestion} from "./FileSuggestion"
 import {NoteSuggestion} from "./NoteSuggestion"
+import {SuggestionRenderer} from "./SuggestionRenderer"
 
 export class TemplateSuggestion extends FileSuggestion{
 	readonly noteSuggestion: NoteSuggestion
@@ -19,13 +20,9 @@ export class TemplateSuggestion extends FileSuggestion{
 	}
 
 	render(el: HTMLElement): void {
-		el.createDiv({
-			cls: "suggestion-content",
-			text: this.pathFromTemplateRoot
-		})
-		el.createDiv({
-			cls: "suggestion-note",
-			text: `Apply template to "${this.noteSuggestion.VaultPath}"`
+		SuggestionRenderer.RenderSuggestion(el, {
+			content: this.pathFromTemplateRoot,
+			note: `Apply template to "${this.noteSuggestion.VaultPath}"`,
 		})
 	}
 

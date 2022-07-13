@@ -1,4 +1,5 @@
 import {ISuggestion} from "./ISuggestion"
+import {SuggestionRenderer} from "./SuggestionRenderer"
 
 /**
  * Suggestion returned when nothing is found with the query.
@@ -17,9 +18,9 @@ export class NotFoundSuggestion implements ISuggestion{
 	}
 
 	render(el: HTMLElement): void {
-		el.createDiv({
-			cls: "suggestion-content",
-			text: this.Title
+		SuggestionRenderer.RenderSuggestion(el, {
+			content: this.Title,
+			note: "",
 		})
 	}
 

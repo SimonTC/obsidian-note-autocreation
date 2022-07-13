@@ -1,5 +1,6 @@
 import {ISuggestion} from "./ISuggestion"
 import {ExistingNoteSuggestion} from "./NoteSuggestion"
+import {SuggestionRenderer} from "./SuggestionRenderer"
 
 export class HeaderSuggestion implements ISuggestion{
 	private readonly level: number
@@ -31,14 +32,12 @@ export class HeaderSuggestion implements ISuggestion{
 	}
 
 	render(el: HTMLElement): void {
-		const content = el.createDiv({
-			cls: "suggestion-content",
-			text: this.Title
-		})
-
-		content.createSpan({
-			cls: "suggestion-flair",
-			text: `H${this.level}`
+		SuggestionRenderer.RenderSuggestion(el, {
+			content: this.Title,
+			note: "",
+			flair: {
+				text: `H${this.level}`
+			}
 		})
 	}
 

@@ -7,6 +7,7 @@
 
 ### Improvements
 - Indicate if inserting a link will result in a new note being created
+- Update visualization of notes to be compatible with Obsidian Desktop v0.15.6 and Mobile v1.3.0
 
 ## 1.1.1 (2022-06-03)
 
