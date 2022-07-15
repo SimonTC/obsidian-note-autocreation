@@ -1,4 +1,4 @@
-## Next release
+## 1.1.2 (2022-07-15)
 
 ### Features
 - Support searching for existing notes by alias
@@ -7,7 +7,7 @@
 
 ### Improvements
 - Indicate if inserting a link will result in a new note being created
-- Update visualization of notes to be compatible with Obsidian Desktop v0.15.6 and Mobile v1.3.0
+- Update visualization of notes to be compatible with Obsidian Desktop v0.15.6 and Mobile v1.3.0 (If you are using an earlier version of Obsidian this plugin will still work, but suggestions for aliases and headers might look a bit odd)
 
 ## 1.1.1 (2022-06-03)
 
