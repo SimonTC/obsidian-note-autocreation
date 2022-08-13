@@ -229,6 +229,40 @@ export class FakeEditorSuggestionContext implements IEditorSuggestContext{
 	}
 }
 
+export class FakeFolder implements TFolder{
+	children: TAbstractFile[] = []
+	name: string
+	parent: TFolder
+	path: string
+	vault: Vault
+
+	isRoot(): boolean {
+		return this.folderPath.IsRoot
+	}
+
+	private readonly folderPath: ObsidianFolderPath
+
+	constructor(folderPath: ObsidianFolderPath) {
+		this.folderPath = folderPath
+	}
+}
+
+export class FakeFile implements TFile{
+	get basename() {return this.filePath.Title}
+	get extension() {return this.filePath.Extension}
+	get name() {return this.filePath.FileNameWithPossibleExtension}
+	get parent() {return new FakeFolder(this.filePath.FolderPath)}
+	get path() {return this.filePath.VaultPath}
+	stat: FileStats = null
+	vault: Vault = null
+
+	private readonly filePath: ObsidianFilePath
+
+	constructor(path: string) {
+		this.filePath = new ObsidianFilePath(path)
+	}
+}
+
 export class Fake {
 	static get Interop() {
 		return new FakeInterop()
@@ -264,6 +298,14 @@ export class Fake {
 
 	static NoteQuery(query: string){
 		return Query.forNoteSuggestions(query)
+	}
+
+	static File(filePath: string){
+		return new FakeFile(filePath)
+	}
+
+	static Folder (folderPath: string){
+		return new FakeFolder(new ObsidianFolderPath(folderPath))
 	}
 }
 
