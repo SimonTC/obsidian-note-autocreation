@@ -258,6 +258,10 @@ export class Fake {
 	static EditorSuggestionContext(query: string){
 		return new FakeEditorSuggestionContext(query)
 	}
+
+	static Query(query: string){
+		return query
+	}
 }
 
 
