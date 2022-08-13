@@ -21,4 +21,11 @@ export class ObsidianFolderPath extends ObsidianPath {
 		const folderName = fullPath.slice(folderNameStartsAt + 1, folderNameEndsAt)
 		super(fullPath, folderName)
 	}
+
+	isAncestorOf(path: ObsidianPath): boolean{
+		if (this.IsRoot){
+			return true
+		}
+		return path.VaultPath.toLowerCase().startsWith(this.VaultPath.toLowerCase())
+	}
 }
