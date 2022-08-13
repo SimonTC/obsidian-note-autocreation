@@ -16,8 +16,9 @@ export class ObsidianFolderPath extends ObsidianPath {
 	 */
 	constructor(path: string) {
 		const fullPath = path.trim()
-		const folderNameStartsAt = fullPath.lastIndexOf('/')
-		const folderName = fullPath.slice(folderNameStartsAt + 1)
+		const folderNameEndsAt = fullPath.lastIndexOf('/')
+		const folderNameStartsAt = fullPath.slice(0, folderNameEndsAt).lastIndexOf('/')
+		const folderName = fullPath.slice(folderNameStartsAt + 1, folderNameEndsAt)
 		super(fullPath, folderName)
 	}
 }
