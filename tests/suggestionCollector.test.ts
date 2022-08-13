@@ -5,6 +5,7 @@ import {
 	NewNoteSuggestion,
 	NoteSuggestion
 } from "../src/core/suggestions/NoteSuggestion"
+import 'jest-extended'
 import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCollector"
 
 it.each([
@@ -73,4 +74,29 @@ test('Suggestions for non existing notes are not returned if that feature has be
 
 	const observedSuggestions = collector.getSuggestions(Fake.EditorSuggestionContext(query))
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
+})
+
+test('Only include suggestions with common ancestor if current file is ancestor of configured top folder ', () => {
+    const links = [
+		Fake.LinkToExistingNote('folder1/folder12/my note'),
+		Fake.LinkToExistingNote('folder1/folder12/my other note'),
+		Fake.LinkToExistingNote('folder1/folder12/folder123/deep note'),
+		Fake.LinkToExistingNote('folder2/my note'),
+	]
+
+	const interOp = Fake.Interop.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(links))
+	const settings = Fake.Settings
+	const collector = new SuggestionCollector(interOp, settings)
+
+	const query = 'note'
+	const expectedSuggestions: NoteSuggestion[] = [
+		new NewNoteSuggestion(query),
+		new ExistingNoteSuggestion('folder1/folder12/my note'),
+		new ExistingNoteSuggestion('folder1/folder12/my other note'),
+		new ExistingNoteSuggestion('folder1/folder12/folder123/deep note'),
+	]
+
+	const suggestionContext = Fake.EditorSuggestionContext(query)
+	const observedSuggestions = collector.getSuggestions(suggestionContext)
+	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 })
