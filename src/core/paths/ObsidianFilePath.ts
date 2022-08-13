@@ -1,8 +1,10 @@
+import {ObsidianPath} from "./ObsidianPath"
+
 /**
  * Path to a file in the obsidian vault.
  * This will never include aliases or links to headers.
  */
-export class ObsidianFilePath {
+export class ObsidianFilePath extends ObsidianPath{
 
 	/**
 	 * The full obsidian vault path to the file.
@@ -42,15 +44,19 @@ export class ObsidianFilePath {
 	readonly FileNameWithPossibleExtension: string
 
 	/**
+	 * Returns true if this path is for the root folder.
+	 */
+	get IsRoot(){return this.VaultPath === '' || this.VaultPath === '/'}
+
+	/**
 	 * Constructor for an Obsidian file path.
 	 * The constructor will remove any parts coming after an alias symbol (|) or a header symbol (#) but no other special parts.
 	 * @param path The path to the file.
 	 */
 	constructor(path: string) {
 		const fullPath = path.trim()
-		const {vaultPath, folderPath, title, extension, fileNameWithPossibleExtension} = this.extractPathParts(fullPath)
-		this.VaultPath = vaultPath
-		this.Title = title
+		const {vaultPath, folderPath, title, extension, fileNameWithPossibleExtension} = ObsidianFilePath.extractPathParts(fullPath)
+		super(vaultPath, title)
 		this.FolderPath = folderPath
 		this.Extension = extension
 		this.FileNameWithPossibleExtension = fileNameWithPossibleExtension
@@ -58,7 +64,7 @@ export class ObsidianFilePath {
 		this.VaultPathWithoutExtension = this.NoteIsInRoot ? title : `${folderPath}/${title}`
 	}
 
-	private extractPathParts(fullPath: string): {vaultPath: string, folderPath: string, title: string, extension: string, fileNameWithPossibleExtension: string} {
+	private static extractPathParts(fullPath: string): {vaultPath: string, folderPath: string, title: string, extension: string, fileNameWithPossibleExtension: string} {
 		// eslint-disable-next-line prefer-const
 		let [vaultPath] = fullPath.split(/[|#]/)
 		const fileNameStartsAt = vaultPath.lastIndexOf('/')

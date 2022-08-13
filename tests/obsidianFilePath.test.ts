@@ -1,6 +1,6 @@
-import {ObsidianFilePath} from "../src/core/ObsidianFilePath"
+import {ObsidianFilePath} from "../src/core/paths/ObsidianFilePath"
 
-describe('a single Obsidian path', function () {
+describe('a single Obsidian file path', function () {
 	it.each([
 		{path: 'folder1/folder2/mynote.md', expectedFolderPath: 'folder1/folder2'},
 		{path: 'folder1/folder2/note 1|other name', expectedFolderPath: 'folder1/folder2'},

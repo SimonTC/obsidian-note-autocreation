@@ -1,7 +1,7 @@
 import {LinkCreationCommand} from "../core/LinkCreationPreparer"
 import {HeadingCache, TFile} from "obsidian"
 import {DocumentLocation} from "../core/suggestionExtraction"
-import {ObsidianFilePath} from "../core/ObsidianFilePath"
+import {ObsidianFilePath} from "../core/paths/ObsidianFilePath"
 
 /**
  * Facade for the objects returned by app.metadataCache.getLinkSuggestions()

@@ -6,11 +6,11 @@ import {
 	IObsidianInterop,
 	ObsidianLinkSuggestion
 } from "../src/interop/ObsidianInterfaces"
-import {HeadingCache, Pos, TFile} from "obsidian"
+import {FileStats, HeadingCache, Pos, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
-import {ObsidianFilePath} from "../src/core/ObsidianFilePath"
 import {Query} from "../src/core/queries/FileQuery"
+import {ObsidianFilePath} from "../src/core/paths/ObsidianFilePath"
 
 class FakeInterop implements IObsidianInterop {
 	private metadataCollection: IMetadataCollection = Fake.MetaDataCollection

@@ -1,6 +1,6 @@
-import {ObsidianFilePath} from "../ObsidianFilePath"
 import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
+import {ObsidianFilePath} from "../paths/ObsidianFilePath"
 
 type MatchChecker = (suggestion: FileSuggestion) => boolean
 

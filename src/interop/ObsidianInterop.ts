@@ -1,7 +1,7 @@
 import {IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
 import {App, HeadingCache, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
-import {ObsidianFilePath} from "../core/ObsidianFilePath"
+import {ObsidianFilePath} from "../core/paths/ObsidianFilePath"
 
 export class ObsidianInterop implements IObsidianInterop {
 	private readonly app: App

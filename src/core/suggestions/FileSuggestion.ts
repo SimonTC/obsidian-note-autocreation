@@ -1,5 +1,5 @@
-import {ObsidianFilePath} from "../ObsidianFilePath"
 import {ISuggestion} from "./ISuggestion"
+import {ObsidianFilePath} from "../paths/ObsidianFilePath"
 
 /**
  * Base class for all suggestions for any types of files.
