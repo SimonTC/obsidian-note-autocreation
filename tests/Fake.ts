@@ -1,4 +1,6 @@
 import {
+	IEditor,
+	IEditorSuggestContext,
 	IFileSystem,
 	IMetadataCollection,
 	IObsidianInterop,
@@ -204,6 +206,26 @@ export class FakeHeadingCache implements HeadingCache{
 	}
 }
 
+export class FakeEditorSuggestionContext implements IEditorSuggestContext{
+	editor: IEditor = null
+	file: TFile = null
+	query = ''
+
+	constructor(query: string) {
+		this.query = query
+	}
+
+	withEditor(editor: IEditor): FakeEditorSuggestionContext{
+		this.editor = editor
+		return this
+	}
+
+	withFile(file: TFile): FakeEditorSuggestionContext{
+		this.file = file
+		return this
+	}
+}
+
 export class Fake {
 	static get Interop() {
 		return new FakeInterop()
@@ -231,6 +253,10 @@ export class Fake {
 
 	static get HeadingCache(){
 		return new FakeHeadingCache()
+	}
+
+	static EditorSuggestionContext(query: string){
+		return new FakeEditorSuggestionContext(query)
 	}
 }
 

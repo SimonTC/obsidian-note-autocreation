@@ -32,7 +32,7 @@ export class LinkSuggestor {
 	}
 
 	getSuggestions(context: IEditorSuggestContext): ISuggestion[] | Promise<ISuggestion[]> {
-		return this.suggestionsCollector.getSuggestions(context.query)
+		return this.suggestionsCollector.getSuggestions(context)
 	}
 
 	onTrigger(cursor: DocumentLocation, editor: IEditor, file: TFile): SuggestionTrigger | null {

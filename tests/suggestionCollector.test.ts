@@ -1,4 +1,3 @@
-import {TemplateSuggestion} from "../src/core/suggestions/TemplateSuggestion"
 import {Fake} from "./Fake"
 import {
 	AliasNoteSuggestion,
@@ -16,7 +15,7 @@ it.each([
 	const interOp = Fake.Interop
 	const collector = new SuggestionCollector(interOp, Fake.Settings)
 
-	const observedSuggestions = collector.getSuggestions(query)
+	const observedSuggestions = collector.getSuggestions(Fake.EditorSuggestionContext(query))
 	expect(observedSuggestions.every(s => s instanceof NoteSuggestion)).toBe(true)
 })
 
@@ -33,7 +32,7 @@ test('alias suggestion is returned when query is alias for existing note', () =>
 		new AliasNoteSuggestion('my note.md', 'My Alias'),
 	]
 
-	const observedSuggestions = collector.getSuggestions(query)
+	const observedSuggestions = collector.getSuggestions(Fake.EditorSuggestionContext(query))
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })
 
@@ -52,7 +51,7 @@ test('alias suggestion is returned when query is alias for existing note and sug
 		new AliasNoteSuggestion('my note.md', 'My Alias'),
 	]
 
-	const observedSuggestions = collector.getSuggestions(query)
+	const observedSuggestions = collector.getSuggestions(Fake.EditorSuggestionContext(query))
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })
 
@@ -72,6 +71,6 @@ test('Suggestions for non existing notes are not returned if that feature has be
 		new ExistingNoteSuggestion('my other note.md'),
 	]
 
-	const observedSuggestions = collector.getSuggestions(query)
+	const observedSuggestions = collector.getSuggestions(Fake.EditorSuggestionContext(query))
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })

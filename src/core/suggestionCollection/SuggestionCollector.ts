@@ -1,4 +1,9 @@
-import {IConfigurationStore, IFileSystem, IObsidianInterop} from "../../interop/ObsidianInterfaces"
+import {
+	IConfigurationStore,
+	IEditorSuggestContext,
+	IFileSystem,
+	IObsidianInterop
+} from "../../interop/ObsidianInterfaces"
 import {ExistingNoteSuggestion, NewNoteSuggestion} from "../suggestions/NoteSuggestion"
 import {NoteSuggestionCollector} from "./NoteSuggestionCollector"
 import {TemplateSuggestionCollector} from "./TemplateSuggestionCollector"
@@ -31,7 +36,8 @@ export class SuggestionCollector {
 			: new NewNoteSuggestion(query)
 	}
 
-	getSuggestions(query: string): ISuggestion[] {
+	getSuggestions(context: IEditorSuggestContext): ISuggestion[] {
+		const query = context.query
 		let suggestions: ISuggestion[] = []
 		if (this.configStore.templaterIsEnabled && query.includes(this.settings.templateTriggerSymbol)) {
 			const [noteQuery, templateQuery] = query.split(this.settings.templateTriggerSymbol)
