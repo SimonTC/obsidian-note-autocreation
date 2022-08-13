@@ -14,4 +14,8 @@ export abstract class ObsidianPath {
 		this.VaultPath = vaultPath
 		this.Title = title
 	}
+
+	toString() {
+		return this.VaultPath
+	}
 }
