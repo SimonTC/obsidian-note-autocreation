@@ -2,6 +2,7 @@ import {ExistingNoteSuggestion, NewNoteSuggestion} from "../src/core/suggestions
 import {IConfigurationStore, IFileSystem} from "../src/interop/ObsidianInterfaces"
 import {LinkCreationPreparer} from "../src/core/LinkCreationPreparer"
 import {TFile} from "obsidian"
+import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 
 const defaultConfigStore = <IConfigurationStore>{getValueFor: (s) => s === 'newFileLocation' ? 'root' : undefined}
 const fakeFile = <TFile>{}
@@ -69,7 +70,7 @@ describe('when the file in the suggestion does not exist', function () {
 		const cmd = await noteCreator.prepareNoteCreationForEmptyNote(suggestion, fakeFile)
 
 		expect(cmd.FolderCreationCommand).toBeTruthy()
-		expect(cmd.FolderCreationCommand.PathToNewFolder).toBe(expectedFolderPath)
+		expect(cmd.FolderCreationCommand.PathToNewFolder).toStrictEqual(new ObsidianFolderPath(expectedFolderPath))
 	})
 
 	it.each([

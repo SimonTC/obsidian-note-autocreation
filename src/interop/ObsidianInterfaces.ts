@@ -2,6 +2,7 @@ import {LinkCreationCommand} from "../core/LinkCreationPreparer"
 import {HeadingCache, TFile} from "obsidian"
 import {DocumentLocation} from "../core/suggestionExtraction"
 import {ObsidianFilePath} from "../core/paths/ObsidianFilePath"
+import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 
 /**
  * Facade for the objects returned by app.metadataCache.getLinkSuggestions()
@@ -35,7 +36,7 @@ export interface IFileSystem{
 	 * Returns true if a folder exists with the given path
 	 * @param folderPath the path to check
 	 */
-	folderExists(folderPath: string): boolean
+	folderExists(folderPath: ObsidianFolderPath): boolean
 
 	/**
 	 * Returns the file if it already exists. Otherwise it will create the file and folders.

@@ -2,6 +2,7 @@ import {IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
 import {App, HeadingCache, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 import {ObsidianFilePath} from "../core/paths/ObsidianFilePath"
+import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 
 export class ObsidianInterop implements IObsidianInterop {
 	private readonly app: App
@@ -25,8 +26,8 @@ export class ObsidianInterop implements IObsidianInterop {
 		return this.app.metadataCache.unresolvedLinks
 	}
 
-	folderExists(folderPath: string): boolean {
-		const foundItem = this.app.vault.getAbstractFileByPath(folderPath)
+	folderExists(folderPath: ObsidianFolderPath): boolean {
+		const foundItem = this.app.vault.getAbstractFileByPath(folderPath.VaultPath)
 		return foundItem && foundItem instanceof TFolder
 	}
 
@@ -89,7 +90,7 @@ export class ObsidianInterop implements IObsidianInterop {
 
 	private async createFolderIfNeeded(creationCommand: FolderCreationCommand){
 		try{
-			await this.app.vault.createFolder(creationCommand.PathToNewFolder)
+			await this.app.vault.createFolder(creationCommand.PathToNewFolder.VaultPath)
 		} catch (e) {
 			// Folder apparently already exists.
 			// This might happen if a folder of the same name but with different casing exist

@@ -11,9 +11,9 @@ function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath){
 function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath){
 	return (suggestion: FileSuggestion) => {
 		const path = suggestion.Path
-		const queryIsAncestor = path.FolderPath.toLowerCase().includes(lowerCaseQueryPath.FolderPath)
+		const queryIsAncestor = path.FolderPath.VaultPath.toLowerCase().includes(lowerCaseQueryPath.FolderPath.VaultPath)
 		const queryCouldBeForSuggestedNote = path.VaultPath.toLowerCase()
-			.replace(lowerCaseQueryPath.FolderPath, '')
+			.replace(lowerCaseQueryPath.FolderPath.VaultPath, '')
 			.includes(lowerCaseQueryPath.Title)
 		return queryIsAncestor && queryCouldBeForSuggestedNote
 	}

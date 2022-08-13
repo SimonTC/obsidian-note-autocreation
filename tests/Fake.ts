@@ -11,6 +11,7 @@ import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
 import {Query} from "../src/core/queries/FileQuery"
 import {ObsidianFilePath} from "../src/core/paths/ObsidianFilePath"
+import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 
 class FakeInterop implements IObsidianInterop {
 	private metadataCollection: IMetadataCollection = Fake.MetaDataCollection
@@ -20,7 +21,7 @@ class FakeInterop implements IObsidianInterop {
 		return this
 	}
 
-	folderExists(folderPath: string): boolean {
+	folderExists(folderPath: ObsidianFolderPath): boolean {
 		return false
 	}
 
@@ -87,7 +88,7 @@ class FakeInterop implements IObsidianInterop {
 }
 
 class FakeFileSystem implements IFileSystem {
-	folderExists(folderPath: string): boolean {
+	folderExists(folderPath: ObsidianFolderPath): boolean {
 		return false
 	}
 

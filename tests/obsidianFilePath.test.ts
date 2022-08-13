@@ -1,4 +1,5 @@
 import {ObsidianFilePath} from "../src/core/paths/ObsidianFilePath"
+import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 
 describe('a single Obsidian file path', function () {
 	it.each([
@@ -10,7 +11,7 @@ describe('a single Obsidian file path', function () {
 	])('does not contain file name in folder path when path is $path', ({path, expectedFolderPath}) => {
 		const obsidianPath = new ObsidianFilePath(path)
 
-		expect(obsidianPath.FolderPath).toBe(expectedFolderPath)
+		expect(obsidianPath.FolderPath).toStrictEqual(new ObsidianFolderPath(expectedFolderPath))
 	})
 
 	it.each([
@@ -91,7 +92,7 @@ describe('a single Obsidian file path', function () {
 			VaultPath: 'folder1/folder3/my file.exe',
 			VaultPathWithoutExtension: 'folder1/folder3/my file',
 			Title: 'my file',
-			FolderPath: 'folder1/folder3',
+			FolderPath: new ObsidianFolderPath('folder1/folder3'),
 			NoteIsInRoot: false,
 			Extension: 'exe',
 			FileNameWithPossibleExtension: 'my file.exe'
@@ -109,7 +110,7 @@ describe('a single Obsidian file path', function () {
 			VaultPath: 'folder1/folder3/my file.exe',
 			VaultPathWithoutExtension: 'folder1/folder3/my file',
 			Title: 'my file',
-			FolderPath: 'folder1/folder3',
+			FolderPath: new ObsidianFolderPath('folder1/folder3'),
 			NoteIsInRoot: false,
 			Extension: 'exe',
 			FileNameWithPossibleExtension: 'my file.exe'
@@ -124,7 +125,7 @@ describe('a single Obsidian file path', function () {
 			VaultPath: 'my file',
 			VaultPathWithoutExtension: 'my file',
 			Title: 'my file',
-			FolderPath: '',
+			FolderPath: new ObsidianFolderPath(''),
 			NoteIsInRoot: true,
 			Extension: '',
 			FileNameWithPossibleExtension: 'my file'
@@ -140,7 +141,7 @@ describe('a single Obsidian file path', function () {
 			VaultPath: '000 - Folder. Inbox. Subfolder/_Templates/my note',
 			VaultPathWithoutExtension: '000 - Folder. Inbox. Subfolder/_Templates/my note',
 			Title: 'my note',
-			FolderPath: '000 - Folder. Inbox. Subfolder/_Templates',
+			FolderPath: new ObsidianFolderPath('000 - Folder. Inbox. Subfolder/_Templates'),
 			NoteIsInRoot: false,
 			Extension: '',
 			FileNameWithPossibleExtension: 'my note'
@@ -156,7 +157,7 @@ describe('a single Obsidian file path', function () {
 			VaultPath: '/_Templates/folder.with.dots/my note.is.awesome.md',
 			VaultPathWithoutExtension: '/_Templates/folder.with.dots/my note.is.awesome',
 			Title: 'my note.is.awesome',
-			FolderPath: '/_Templates/folder.with.dots',
+			FolderPath: new ObsidianFolderPath('/_Templates/folder.with.dots'),
 			NoteIsInRoot: false,
 			Extension: 'md',
 			FileNameWithPossibleExtension: 'my note.is.awesome.md'

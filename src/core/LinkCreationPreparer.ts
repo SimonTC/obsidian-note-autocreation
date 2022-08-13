@@ -2,9 +2,10 @@ import {ExistingNoteSuggestion, NoteSuggestion} from "./suggestions/NoteSuggesti
 import {IConfigurationStore, IFileSystem} from "../interop/ObsidianInterfaces"
 import {TFile} from "obsidian"
 import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
+import {ObsidianFolderPath} from "./paths/ObsidianFolderPath"
 
 export type FolderCreationCommand = {
-	PathToNewFolder: string
+	PathToNewFolder: ObsidianFolderPath
 }
 
 export type NoteCreationCommand = {
@@ -53,7 +54,7 @@ export class LinkCreationPreparer {
 
 	private createLinkToNoteInSubfolder(suggestion: NoteSuggestion, noteExists: boolean, getNoteContent: () => string) {
 		const fileCreationNeeded = suggestion.Title !== '' && !noteExists
-		const folderCreationNeeded = suggestion.FolderPath !== '' && !this.fileSystem.folderExists(suggestion.FolderPath)
+		const folderCreationNeeded = !suggestion.FolderPath.IsRoot && !this.fileSystem.folderExists(suggestion.FolderPath)
 
 		const folderCreationCmd = folderCreationNeeded
 			? {PathToNewFolder: suggestion.FolderPath}
@@ -110,7 +111,7 @@ export class LinkCreationPreparer {
 				const suggestionForCurrentFile = new ExistingNoteSuggestion(currentFile.path)
 				return suggestionForCurrentFile.NoteIsInRoot
 					? pathInRoot
-					: `${suggestionForCurrentFile.FolderPath}/${suggestion.Title}.md`
+					: `${suggestionForCurrentFile.FolderPath.VaultPath}/${suggestion.Title}.md`
 			}
 			case 'folder':{
 				const defaultFolder = this.configStore.getValueFor('newFileFolderPath')

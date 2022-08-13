@@ -1,4 +1,5 @@
 import {ObsidianPath} from "./ObsidianPath"
+import {ObsidianFolderPath} from "./ObsidianFolderPath"
 
 /**
  * Path to a file in the obsidian vault.
@@ -25,7 +26,7 @@ export class ObsidianFilePath extends ObsidianPath{
 	/**
 	 * The path to the folder where the file is stored.
 	 */
-	readonly FolderPath: string
+	readonly FolderPath: ObsidianFolderPath
 
 	/**
 	 * True if this is a path to a file in the root of the vault.
@@ -57,7 +58,7 @@ export class ObsidianFilePath extends ObsidianPath{
 		const fullPath = path.trim()
 		const {vaultPath, folderPath, title, extension, fileNameWithPossibleExtension} = ObsidianFilePath.extractPathParts(fullPath)
 		super(vaultPath, title)
-		this.FolderPath = folderPath
+		this.FolderPath = new ObsidianFolderPath(folderPath)
 		this.Extension = extension
 		this.FileNameWithPossibleExtension = fileNameWithPossibleExtension
 		this.NoteIsInRoot = folderPath === '/' || folderPath === ''

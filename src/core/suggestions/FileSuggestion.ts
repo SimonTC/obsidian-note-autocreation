@@ -1,5 +1,6 @@
 import {ISuggestion} from "./ISuggestion"
 import {ObsidianFilePath} from "../paths/ObsidianFilePath"
+import {ObsidianFolderPath} from "../paths/ObsidianFolderPath"
 
 /**
  * Base class for all suggestions for any types of files.
@@ -33,7 +34,7 @@ export abstract class FileSuggestion implements ISuggestion{
 	/**
 	 * The path to the folder where the item of the suggestion is stored.
 	 */
-	get FolderPath(): string {
+	get FolderPath(): ObsidianFolderPath {
 		return this.Path.FolderPath
 	}
 
