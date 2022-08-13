@@ -31,21 +31,34 @@ export class ObsidianFilePath {
 	readonly NoteIsInRoot: boolean
 
 	/**
+	 * The extension for the file
+	 */
+	readonly Extension: string
+
+	/**
+	 * The full name of the file including an extension if it exists.
+	 * Will be empty if this is a path to a folder.
+	 */
+	readonly FileNameWithPossibleExtension: string
+
+	/**
 	 * Constructor for an Obsidian file path.
 	 * The constructor will remove any parts coming after an alias symbol (|) or a header symbol (#) but no other special parts.
 	 * @param path The path to the file.
 	 */
 	constructor(path: string) {
 		const fullPath = path.trim()
-		const {vaultPath, folderPath, title} = this.extractPathParts(fullPath)
+		const {vaultPath, folderPath, title, extension, fileNameWithPossibleExtension} = this.extractPathParts(fullPath)
 		this.VaultPath = vaultPath
 		this.Title = title
 		this.FolderPath = folderPath
+		this.Extension = extension
+		this.FileNameWithPossibleExtension = fileNameWithPossibleExtension
 		this.NoteIsInRoot = folderPath === '/' || folderPath === ''
 		this.VaultPathWithoutExtension = this.NoteIsInRoot ? title : `${folderPath}/${title}`
 	}
 
-	private extractPathParts(fullPath: string): {vaultPath: string, folderPath: string, title: string} {
+	private extractPathParts(fullPath: string): {vaultPath: string, folderPath: string, title: string, extension: string, fileNameWithPossibleExtension: string} {
 		// eslint-disable-next-line prefer-const
 		let [vaultPath] = fullPath.split(/[|#]/)
 		const fileNameStartsAt = vaultPath.lastIndexOf('/')
@@ -57,6 +70,9 @@ export class ObsidianFilePath {
 		const title = extensionStartsAt === -1
 			? fileNameWithPossibleExtension
 			: fileNameWithPossibleExtension.slice(0, extensionStartsAt)
-		return {vaultPath, folderPath, title}
+		const extension = extensionStartsAt !== -1
+			? fileNameWithPossibleExtension.slice(extensionStartsAt + 1)
+			: ''
+		return {vaultPath, folderPath, title, extension, fileNameWithPossibleExtension}
 	}
 }

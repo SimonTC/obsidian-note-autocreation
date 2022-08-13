@@ -46,6 +46,30 @@ describe('a single Obsidian path', function () {
 	})
 
 	it.each([
+		{path: 'folder1/folder2/file.md', expectedExtension: 'md'},
+		{path: 'folder1/note', expectedExtension: ""},
+		{path: 'folder1/note.', expectedExtension: ""},
+		{path: 'folder1/folder2/', expectedExtension: ""},
+		{path: 'folder/name.txt', expectedExtension: 'txt'},
+	])('stores extension as $expectedExtension when path is $path', ({path, expectedExtension}) => {
+		const obsidianPath = new ObsidianFilePath(path)
+
+		expect(obsidianPath.Extension).toBe(expectedExtension)
+	})
+
+	it.each([
+		{path: 'folder1/folder2/file.md', expected: 'file.md'},
+		{path: 'folder1/note', expected: 'note'},
+		{path: 'folder1/note.', expected: 'note.'},
+		{path: 'folder1/folder2/', expected: ''},
+		{path: 'folder/name.txt', expected: 'name.txt'},
+	])('stores title with possible extension as $expected when path is $path', ({path, expected}) => {
+		const obsidianPath = new ObsidianFilePath(path)
+
+		expect(obsidianPath.FileNameWithPossibleExtension).toBe(expected)
+	})
+
+	it.each([
 		{path: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'}, // space before trigger
 		{path: 'folder1/note ', expected: 'folder1/note'}, // space after trigger
 		{path: ' folder/name ', expected: 'folder/name'}, // space before and after the trigger
@@ -68,7 +92,9 @@ describe('a single Obsidian path', function () {
 			VaultPathWithoutExtension: 'folder1/folder3/my file',
 			Title: 'my file',
 			FolderPath: 'folder1/folder3',
-			NoteIsInRoot: false
+			NoteIsInRoot: false,
+			Extension: 'exe',
+			FileNameWithPossibleExtension: 'my file.exe'
 		}
 
 		expect(obsidianPath).toEqual(expectedPath)
@@ -84,7 +110,9 @@ describe('a single Obsidian path', function () {
 			VaultPathWithoutExtension: 'folder1/folder3/my file',
 			Title: 'my file',
 			FolderPath: 'folder1/folder3',
-			NoteIsInRoot: false
+			NoteIsInRoot: false,
+			Extension: 'exe',
+			FileNameWithPossibleExtension: 'my file.exe'
 		}
 
 		expect(obsidianPath).toEqual(expectedPath)
@@ -97,7 +125,9 @@ describe('a single Obsidian path', function () {
 			VaultPathWithoutExtension: 'my file',
 			Title: 'my file',
 			FolderPath: '',
-			NoteIsInRoot: true
+			NoteIsInRoot: true,
+			Extension: '',
+			FileNameWithPossibleExtension: 'my file'
 		}
 
 		expect(obsidianPath).toEqual(expectedPath)
@@ -111,7 +141,9 @@ describe('a single Obsidian path', function () {
 			VaultPathWithoutExtension: '000 - Folder. Inbox. Subfolder/_Templates/my note',
 			Title: 'my note',
 			FolderPath: '000 - Folder. Inbox. Subfolder/_Templates',
-			NoteIsInRoot: false
+			NoteIsInRoot: false,
+			Extension: '',
+			FileNameWithPossibleExtension: 'my note'
 		}
 
 		expect(obsidianPath).toEqual(expectedPath)
@@ -125,7 +157,9 @@ describe('a single Obsidian path', function () {
 			VaultPathWithoutExtension: '/_Templates/folder.with.dots/my note.is.awesome',
 			Title: 'my note.is.awesome',
 			FolderPath: '/_Templates/folder.with.dots',
-			NoteIsInRoot: false
+			NoteIsInRoot: false,
+			Extension: 'md',
+			FileNameWithPossibleExtension: 'my note.is.awesome.md'
 		}
 
 		expect(obsidianPath).toEqual(expectedPath)
