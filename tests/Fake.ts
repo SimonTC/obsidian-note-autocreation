@@ -168,6 +168,7 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	templateTriggerSymbol = '$'
 	triggerSymbol = '@'
 	suggestLinksToNonExistingNotes = true
+	relativeTopFolders: string[] = []
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{

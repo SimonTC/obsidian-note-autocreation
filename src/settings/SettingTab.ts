@@ -19,6 +19,7 @@ export class SettingTab extends PluginSettingTab {
 
 		this.addSuggestionTriggerSetting(containerEl)
 		this.addSuggestNonExistingNotesSetting(containerEl)
+		this.addRelativeTopFolderSetting(containerEl)
 
 		// @ts-ignore
 		// No need to show the setting if templater does not exist
@@ -43,6 +44,19 @@ export class SettingTab extends PluginSettingTab {
 				this.plugin.settings.triggerSymbol = value
 				await this.plugin.saveSettings()
 			}))
+	}
+
+	private addRelativeTopFolderSetting(containerEl: HTMLElement){
+		new Setting(containerEl)
+			.setName('Relative top folders')
+			.setDesc('Add folder paths here if you want to limit suggestions to notes that are descendents from these folders if the active note also is a descendent. Example: If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative topfolder, then you will only get suggestions for other notes descending from folder 1.')
+			.addText(component => component
+				.setValue(this.plugin.settings.relativeTopFolders.first())
+				.onChange(async value => {
+					this.plugin.settings.relativeTopFolders = [value]
+					await this.plugin.saveSettings()
+				})
+			)
 	}
 
 	private addSuggestNonExistingNotesSetting(containerEl: HTMLElement){

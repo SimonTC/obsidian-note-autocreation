@@ -86,6 +86,7 @@ test('Only include suggestions with common ancestor if current file is ancestor 
 
 	const interOp = Fake.Interop.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(links))
 	const settings = Fake.Settings
+	settings.relativeTopFolders = ['folder1']
 	const collector = new SuggestionCollector(interOp, settings)
 
 	const query = 'note'
