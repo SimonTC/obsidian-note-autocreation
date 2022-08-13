@@ -25,7 +25,7 @@ test('the suggestion collector can deal with big vaults', () => {
 	const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
 	const startTime = performance.now()
-	collector.getSuggestions(Fake.Query(""))
+	collector.getSuggestions(Fake.NoteQuery(""))
 	const endTime = performance.now()
 
 	const diff = endTime - startTime
@@ -38,7 +38,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions([])
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const suggestions = collector.getSuggestions(Fake.Query(""))
+		const suggestions = collector.getSuggestions(Fake.NoteQuery(""))
 
 		expect(suggestions).toEqual<NoteSuggestion[]>([])
 	})
@@ -55,7 +55,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const suggestions = collector.getSuggestions(Fake.Query(""))
+		const suggestions = collector.getSuggestions(Fake.NoteQuery(""))
 
 		expect(suggestions).toIncludeSameMembers(expectedSuggestions)
 	})
@@ -74,7 +74,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const suggestions = collector.getSuggestions(Fake.Query(""))
+		const suggestions = collector.getSuggestions(Fake.NoteQuery(""))
 		const expectedSuggestions = [
 			new ExistingNoteSuggestion('document 1.md'),
 			new NewNoteSuggestion('Some link'),
@@ -97,7 +97,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const suggestions = collector.getSuggestions(Fake.Query("this"))
+		const suggestions = collector.getSuggestions(Fake.NoteQuery("this"))
 		const expectedSuggestions = [
 			new NewNoteSuggestion('this'),
 			new ExistingNoteSuggestion('this note.md'),
@@ -120,7 +120,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const suggestions = collector.getSuggestions(Fake.Query(""))
+		const suggestions = collector.getSuggestions(Fake.NoteQuery(""))
 		const expectedSuggestions = [
 			new ExistingNoteSuggestion('document 1.md'),
 			new NewNoteSuggestion('Some link'),
@@ -140,7 +140,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const suggestions = collector.getSuggestions(Fake.Query(""))
+		const suggestions = collector.getSuggestions(Fake.NoteQuery(""))
 		const expectedSuggestions = [
 			new ExistingNoteSuggestion('document 1.md'),
 			new NewNoteSuggestion('Some link'),
@@ -162,7 +162,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const suggestions = collector.getSuggestions(Fake.Query(""))
+		const suggestions = collector.getSuggestions(Fake.NoteQuery(""))
 		const expectedSuggestionPaths = [
 			'document 1.md',
 			'Hello world.md',
@@ -197,7 +197,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const observedSuggestions = collector.getSuggestions(Fake.Query(query))
+		const observedSuggestions = collector.getSuggestions(Fake.NoteQuery(query))
 		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
@@ -210,7 +210,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const observedSuggestions = collector.getSuggestions(Fake.Query('bob|the builder'))
+		const observedSuggestions = collector.getSuggestions(Fake.NoteQuery('bob|the builder'))
 		expect(observedSuggestions.length).toBe(1)
 		const suggestion = observedSuggestions[0]
 		expect(suggestion.Alias).toBe('the builder')
@@ -233,7 +233,7 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
-		const observedSuggestions = collector.getSuggestions(Fake.Query(query))
+		const observedSuggestions = collector.getSuggestions(Fake.NoteQuery(query))
 		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
@@ -252,7 +252,7 @@ describe('the list of suggestions', function () {
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 		const expectedSuggestions = expectedFiles.map(f => new ExistingNoteSuggestion(f))
 
-		const observedSuggestions = collector.getSuggestions(Fake.Query(query))
+		const observedSuggestions = collector.getSuggestions(Fake.NoteQuery(query))
 		expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 	})
 
@@ -272,7 +272,7 @@ describe('the list of suggestions', function () {
 		const metadata = Fake.MetaDataCollection.withLinkSuggestions(links)
 		const collector = new NoteSuggestionCollector(metadata, Fake.Settings)
 
-		const observedSuggestions = collector.getSuggestions(Fake.Query(query))
+		const observedSuggestions = collector.getSuggestions(Fake.NoteQuery(query))
 		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 	})
 
@@ -289,7 +289,7 @@ describe('the list of suggestions', function () {
 			new ExistingNoteSuggestion('my note.md'),
 		]
 
-		const observedSuggestions = collector.getSuggestions(Fake.Query(query))
+		const observedSuggestions = collector.getSuggestions(Fake.NoteQuery(query))
 		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 	})
 
@@ -308,7 +308,7 @@ describe('the list of suggestions', function () {
 			new AliasNoteSuggestion('my note.md', 'My Other Alias'),
 		]
 
-		const observedSuggestions = collector.getSuggestions(Fake.Query(query))
+		const observedSuggestions = collector.getSuggestions(Fake.NoteQuery(query))
 		expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 	})
 })

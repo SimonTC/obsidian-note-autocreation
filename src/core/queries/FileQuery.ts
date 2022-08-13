@@ -22,10 +22,12 @@ function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath){
 export class Query{
 	private fullMatchFoundCheckers: MatchChecker[]
 	private partialMatchFoundCheckers: MatchChecker[]
+	readonly query: string
 
-	constructor(fullMatchFoundCheckers: MatchChecker[], partialMatchFoundCheckers: MatchChecker[]) {
+	constructor(query: string, fullMatchFoundCheckers: MatchChecker[], partialMatchFoundCheckers: MatchChecker[]) {
 		this.fullMatchFoundCheckers = fullMatchFoundCheckers
 		this.partialMatchFoundCheckers = partialMatchFoundCheckers
+		this.query = query
 	}
 
 	couldBeQueryFor(suggestion: FileSuggestion): FileQueryResult{
@@ -38,6 +40,10 @@ export class Query{
 		}
 
 		return FileQueryResult.forNoMatch()
+	}
+
+	get IsEmpty(){
+		return this.query === ''
 	}
 
 	static forNoteSuggestions(query: string): Query{
@@ -57,7 +63,7 @@ export class Query{
 			}
 		]
 
-		return new Query(fullMatchFoundCheckers, partialMatchFoundCheckers)
+		return new Query(query, fullMatchFoundCheckers, partialMatchFoundCheckers)
 	}
 
 	static forTemplateSuggestions(query: string): Query{
@@ -71,7 +77,7 @@ export class Query{
 			getMatcherForPartialMatch(lowerCaseQueryPath),
 		]
 
-		return new Query(fullMatchFoundCheckers, partialMatchFoundCheckers)
+		return new Query(query, fullMatchFoundCheckers, partialMatchFoundCheckers)
 	}
 }
 

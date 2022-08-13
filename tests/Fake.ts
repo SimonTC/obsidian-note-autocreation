@@ -10,6 +10,7 @@ import {HeadingCache, Pos, TFile} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
 import {ObsidianFilePath} from "../src/core/ObsidianFilePath"
+import {Query} from "../src/core/queries/FileQuery"
 
 class FakeInterop implements IObsidianInterop {
 	private metadataCollection: IMetadataCollection = Fake.MetaDataCollection
@@ -259,8 +260,8 @@ export class Fake {
 		return new FakeEditorSuggestionContext(query)
 	}
 
-	static Query(query: string){
-		return query
+	static NoteQuery(query: string){
+		return Query.forNoteSuggestions(query)
 	}
 }
 

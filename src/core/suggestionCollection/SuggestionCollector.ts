@@ -11,6 +11,7 @@ import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {HeaderSuggestionCollector} from "./HeaderSuggestionCollector"
 import {ISuggestion} from "../suggestions/ISuggestion"
 import {NotFoundSuggestion} from "../suggestions/NotFoundSuggestion"
+import {Query} from "../queries/FileQuery"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
@@ -52,7 +53,7 @@ export class SuggestionCollector {
 				suggestions = [new NotFoundSuggestion(query, 'No headers to link to in non-existing notes')]
 			}
 		} else {
-			suggestions = this.noteSuggestionCollector.getSuggestions(query)
+			suggestions = this.noteSuggestionCollector.getSuggestions(Query.forNoteSuggestions(query))
 		}
 
 		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query, 'No match found')]

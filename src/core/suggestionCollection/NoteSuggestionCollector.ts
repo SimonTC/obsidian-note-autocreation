@@ -18,14 +18,14 @@ export class NoteSuggestionCollector {
 		this.settings = settings
 	}
 
-	getSuggestions(query: string): NoteSuggestion[] {
-		const queryObject = Query.forNoteSuggestions(query)
+	getSuggestions(query: Query): NoteSuggestion[] {
+
 		let existingSuggestionForQuery: NoteSuggestion
 		const validSuggestions: NoteSuggestion[] = []
 
-		for (const suggestion of this.getAllPossibleSuggestions(query)) {
+		for (const suggestion of this.getAllPossibleSuggestions(query.query)) {
 			if (suggestion.ForExistingNote || this.settings.suggestLinksToNonExistingNotes){
-				const queryResult = queryObject.couldBeQueryFor(suggestion)
+				const queryResult = query.couldBeQueryFor(suggestion)
 
 				if (queryResult.isCompleteMatch){
 					existingSuggestionForQuery = suggestion
@@ -40,11 +40,11 @@ export class NoteSuggestionCollector {
 
 		validSuggestions.sort(FileSuggestion.compare)
 
-		if (query === '') {
+		if (query.IsEmpty) {
 			return validSuggestions
 		}
 
-		const queryAsSuggestion = new NewNoteSuggestion(query)
+		const queryAsSuggestion = new NewNoteSuggestion(query.query)
 		if (existingSuggestionForQuery){
 			const suggestionToAdd = queryAsSuggestion.HasAlias
 				? new ExistingNoteSuggestion(`${existingSuggestionForQuery.VaultPath}|${queryAsSuggestion.Alias}`)
