@@ -1,5 +1,6 @@
 import {App, PluginSettingTab, Setting, TextComponent} from "obsidian"
 import NoteAutoCreator from "../main"
+import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 
 export class SettingTab extends PluginSettingTab {
 	plugin: NoteAutoCreator
@@ -51,9 +52,9 @@ export class SettingTab extends PluginSettingTab {
 			.setName('Relative top folders')
 			.setDesc('Add folder paths here if you want to limit suggestions to notes that are descendents from these folders if the active note also is a descendent. Example: If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative topfolder, then you will only get suggestions for other notes descending from folder 1.')
 			.addText(component => component
-				.setValue(this.plugin.settings.relativeTopFolders.first())
+				.setValue(this.plugin.settings.relativeTopFolders.first()?.VaultPath ?? '')
 				.onChange(async value => {
-					this.plugin.settings.relativeTopFolders = [value]
+					this.plugin.settings.relativeTopFolders = [new ObsidianFolderPath(value)]
 					await this.plugin.saveSettings()
 				})
 			)

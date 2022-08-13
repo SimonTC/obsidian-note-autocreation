@@ -7,6 +7,7 @@ import {
 } from "../src/core/suggestions/NoteSuggestion"
 import 'jest-extended'
 import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCollector"
+import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 
 it.each([
 	{query: 'my note'},
@@ -86,7 +87,7 @@ test('Only include suggestions with common ancestor if current file is ancestor 
 
 	const interOp = Fake.Interop.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(links))
 	const settings = Fake.Settings
-	settings.relativeTopFolders = ['folder1']
+	settings.relativeTopFolders = [new ObsidianFolderPath('folder1')]
 	const collector = new SuggestionCollector(interOp, settings)
 
 	const query = 'note'
@@ -97,7 +98,8 @@ test('Only include suggestions with common ancestor if current file is ancestor 
 		new ExistingNoteSuggestion('folder1/folder12/folder123/deep note'),
 	]
 
-	const suggestionContext = Fake.EditorSuggestionContext(query)
+	const suggestionContext = Fake.EditorSuggestionContext(query).withFile(Fake.File('folder1/folder133/my note'))
+
 	const observedSuggestions = collector.getSuggestions(suggestionContext)
 	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 })

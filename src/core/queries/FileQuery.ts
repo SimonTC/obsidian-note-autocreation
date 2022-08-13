@@ -1,14 +1,16 @@
 import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
 import {ObsidianFilePath} from "../paths/ObsidianFilePath"
+import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
+import {IEditorSuggestContext} from "../../interop/ObsidianInterfaces"
 
 type MatchChecker = (suggestion: FileSuggestion) => boolean
 
-function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath){
+function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath): MatchChecker{
 	return (suggestion: FileSuggestion) => suggestion.Path.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryPath.VaultPathWithoutExtension
 }
 
-function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath){
+function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath): MatchChecker{
 	return (suggestion: FileSuggestion) => {
 		const path = suggestion.Path
 		const queryIsAncestor = path.FolderPath.VaultPath.toLowerCase().includes(lowerCaseQueryPath.FolderPath.VaultPath)
@@ -17,6 +19,14 @@ function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath){
 			.includes(lowerCaseQueryPath.Title)
 		return queryIsAncestor && queryCouldBeForSuggestedNote
 	}
+}
+
+function allTrue(matchers: MatchChecker[]): MatchChecker{
+	return (suggestion: FileSuggestion) => matchers.every(m => m(suggestion))
+}
+
+function anyTrue(matchers: MatchChecker[]): MatchChecker{
+	return (suggestion: FileSuggestion) => matchers.some(m => m(suggestion))
 }
 
 export class Query{
@@ -46,24 +56,42 @@ export class Query{
 		return this.query === ''
 	}
 
-	static forNoteSuggestions(query: string): Query{
+	static topFolderCheck (queryPath: ObsidianFilePath, context:IEditorSuggestContext, settings: NoteAutoCreatorSettings): MatchChecker{
+		if (settings.relativeTopFolders.length > 0){
+			const topFolderToUse = settings.relativeTopFolders.find(folder => folder.isAncestorOf(new ObsidianFilePath(context.file.path)))
+			if (topFolderToUse){
+				return (suggestion) => topFolderToUse.isAncestorOf(suggestion.Path)
+			}
+		}
+		return (suggestion) => true
+	}
+
+	static suggestionCheck(queryPath: ObsidianFilePath) : MatchChecker {
+		return suggestion => {
+			if (suggestion instanceof AliasNoteSuggestion){
+				return suggestion.Alias.toLowerCase().includes(queryPath.Title)
+			}
+			return false
+		}
+	}
+
+	static forNoteSuggestions(context: IEditorSuggestContext, settings: NoteAutoCreatorSettings): Query{
+		const query = context.query
 		const lowerCaseQueryPath = new ObsidianFilePath(query.toLowerCase())
 
 		const fullMatchFoundCheckers: MatchChecker[] = [
 			getMatcherForExactMatch(lowerCaseQueryPath)
 		]
 
-		const partialMatchFoundCheckers: MatchChecker[] = [
-			getMatcherForPartialMatch(lowerCaseQueryPath),
-			suggestion => {
-				if (suggestion instanceof AliasNoteSuggestion){
-					return suggestion.Alias.toLowerCase().includes(lowerCaseQueryPath.Title)
-				}
-				return false
-			}
-		]
+		const partialMatchFoundCheckers: MatchChecker = allTrue([
+			this.topFolderCheck(lowerCaseQueryPath, context, settings),
+			anyTrue([
+				getMatcherForPartialMatch(lowerCaseQueryPath),
+				this.suggestionCheck(lowerCaseQueryPath)
+			])
+		])
 
-		return new Query(query, fullMatchFoundCheckers, partialMatchFoundCheckers)
+		return new Query(query, fullMatchFoundCheckers, [partialMatchFoundCheckers])
 	}
 
 	static forTemplateSuggestions(query: string): Query{

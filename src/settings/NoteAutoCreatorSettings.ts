@@ -1,8 +1,10 @@
+import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
+
 export interface NoteAutoCreatorSettings {
 	triggerSymbol: string,
 	templateTriggerSymbol: string,
 	suggestLinksToNonExistingNotes: boolean
-	relativeTopFolders: string[]
+	relativeTopFolders: ObsidianFolderPath[]
 }
 
 export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {

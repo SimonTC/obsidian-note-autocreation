@@ -53,7 +53,7 @@ export class SuggestionCollector {
 				suggestions = [new NotFoundSuggestion(query, 'No headers to link to in non-existing notes')]
 			}
 		} else {
-			suggestions = this.noteSuggestionCollector.getSuggestions(Query.forNoteSuggestions(query))
+			suggestions = this.noteSuggestionCollector.getSuggestions(Query.forNoteSuggestions(context, this.settings))
 		}
 
 		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query, 'No match found')]

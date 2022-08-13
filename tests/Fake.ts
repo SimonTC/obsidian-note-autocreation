@@ -169,7 +169,7 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	templateTriggerSymbol = '$'
 	triggerSymbol = '@'
 	suggestLinksToNonExistingNotes = true
-	relativeTopFolders: string[] = []
+	relativeTopFolders: ObsidianFolderPath[] = []
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{
@@ -297,7 +297,7 @@ export class Fake {
 	}
 
 	static NoteQuery(query: string){
-		return Query.forNoteSuggestions(query)
+		return Query.forNoteSuggestions(Fake.EditorSuggestionContext(query), Fake.Settings)
 	}
 
 	static File(filePath: string){
