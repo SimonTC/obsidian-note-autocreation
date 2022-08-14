@@ -1,6 +1,7 @@
-import {App, PluginSettingTab, Setting, TextComponent} from "obsidian"
+import {App, ButtonComponent, PluginSettingTab, Setting, TextComponent} from "obsidian"
 import NoteAutoCreator from "../main"
 import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
+import {FolderSuggest} from "./FolderSuggester"
 
 export class SettingTab extends PluginSettingTab {
 	plugin: NoteAutoCreator
@@ -20,13 +21,14 @@ export class SettingTab extends PluginSettingTab {
 
 		this.addSuggestionTriggerSetting(containerEl)
 		this.addSuggestNonExistingNotesSetting(containerEl)
-		this.addRelativeTopFolderSetting(containerEl)
 
 		// @ts-ignore
 		// No need to show the setting if templater does not exist
 		if (this.app.plugins.plugins["templater-obsidian"]){
 			this.addTemplateTriggerSetting(containerEl)
 		}
+
+		this.addRelativeTopFolderSetting(containerEl)
 	}
 
 	private addSuggestionTriggerSetting(containerEl: HTMLElement) {
@@ -48,16 +50,57 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	private addRelativeTopFolderSetting(containerEl: HTMLElement){
+		containerEl.createEl("h2", { text: "Relative top folders" })
+		const description = document.createDocumentFragment()
+		description.append(
+			'Add folder names or paths to folders here if you want to filter suggestions when inserting new links. ',
+			'The filtering is activated when inserting a link in a note that has any of the specified folders in its folder tree. ',
+			'Only suggestions for notes that also have the same folder in their folder tree are shown.',
+			description.createEl('br'),
+			description.createEl('br'),
+			description.createEl("strong", { text: "Example " }),
+			description.createEl('br'),
+			'If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative top folder, then you will only get suggestions for other notes descending from folder 1.'
+		)
+		new Setting(containerEl).setDesc(description)
+
 		new Setting(containerEl)
-			.setName('Relative top folders')
-			.setDesc('Add folder paths here if you want to limit suggestions to notes that are descendents from these folders if the active note also is a descendent. Example: If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative topfolder, then you will only get suggestions for other notes descending from folder 1.')
-			.addText(component => component
-				.setValue(this.plugin.settings.relativeTopFolders.first()?.VaultPath ?? '')
-				.onChange(async value => {
-					this.plugin.settings.relativeTopFolders = [new ObsidianFolderPath(value)]
-					await this.plugin.saveSettings()
-				})
-			)
+			.setName("Add New")
+			.setDesc("Add new relative top folder")
+			.addButton((button: ButtonComponent) => {
+				button
+					.setButtonText("+")
+					.setCta()
+					.onClick(async () => {
+						this.plugin.settings.relativeTopFolders.push(new ObsidianFolderPath(''))
+						await this.plugin.saveSettings()
+						this.display()
+					})
+			})
+
+		this.plugin.settings.relativeTopFolders.forEach(
+			(folderPath, index) => {
+				new Setting(containerEl)
+					.addSearch(cb => {
+						new FolderSuggest(this.app, cb.inputEl)
+						cb.setPlaceholder('Folder name or path')
+							.setValue(folderPath.VaultPath)
+							.onChange(async newValue => {
+								this.plugin.settings.relativeTopFolders[index] = new ObsidianFolderPath(newValue)
+								await this.plugin.saveSettings()
+							})
+					})
+					.addExtraButton(cb => cb
+						.setIcon('cross')
+						.setTooltip('Delete')
+						.onClick(async() =>{
+							this.plugin.settings.relativeTopFolders.splice(index, 1)
+							await this.plugin.saveSettings()
+							this.display()
+						})
+					)
+			}
+		)
 	}
 
 	private addSuggestNonExistingNotesSetting(containerEl: HTMLElement){
