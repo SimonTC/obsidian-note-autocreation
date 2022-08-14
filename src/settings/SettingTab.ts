@@ -49,6 +49,17 @@ export class SettingTab extends PluginSettingTab {
 			}))
 	}
 
+	private moveFolderPath (pathCollection: ObsidianFolderPath[], fromIndex: number, toIndex: number) {
+		if (toIndex < 0 || toIndex > pathCollection.length -1 ){
+			return
+		}
+
+		const thisPath = pathCollection[fromIndex]
+		const otherPath = pathCollection[toIndex]
+		pathCollection[toIndex] = thisPath
+		pathCollection[fromIndex] = otherPath
+	}
+
 	private addRelativeTopFolderSetting(containerEl: HTMLElement){
 		containerEl.createEl("h2", { text: "Relative top folders" })
 		const description = document.createDocumentFragment()
@@ -58,12 +69,19 @@ export class SettingTab extends PluginSettingTab {
 			'Only suggestions for notes that also have the same folder in their folder tree are shown.',
 			description.createEl('br'),
 			description.createEl('br'),
-			description.createEl("strong", { text: "Example " }),
+			description.createEl('strong', { text: 'Example ' }),
 			description.createEl('br'),
-			'If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative top folder, then you will only get suggestions for other notes descending from folder 1.'
+			'If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative top folder, then you will only get suggestions for other notes descending from folder 1.',
+			description.createEl('br'),
+			description.createEl('br'),
+			'The folder names are checked in prioritized order. ',
+			'If both "folder1/folder2" and "folder1" are defined as relative top folders, ',
+			'then "folder1/folder2" is used as the relative top folder if the path to the note is "folder1/folder2/note". ',
+			'If the path to the note is "folder1/my note", then "folder1" is used as the top folder.'
 		)
 		new Setting(containerEl).setDesc(description)
 
+		const folderPaths = this.plugin.settings.relativeTopFolders
 		new Setting(containerEl)
 			.setName("Add New")
 			.setDesc("Add new relative top folder")
@@ -72,13 +90,13 @@ export class SettingTab extends PluginSettingTab {
 					.setButtonText("+")
 					.setCta()
 					.onClick(async () => {
-						this.plugin.settings.relativeTopFolders.push(new ObsidianFolderPath(''))
+						folderPaths.push(new ObsidianFolderPath(''))
 						await this.plugin.saveSettings()
 						this.display()
 					})
 			})
 
-		this.plugin.settings.relativeTopFolders.forEach(
+		folderPaths.forEach(
 			(folderPath, index) => {
 				new Setting(containerEl)
 					.addSearch(cb => {
@@ -86,7 +104,7 @@ export class SettingTab extends PluginSettingTab {
 						cb.setPlaceholder('Folder name or path')
 							.setValue(folderPath.VaultPath)
 							.onChange(async newValue => {
-								this.plugin.settings.relativeTopFolders[index] = new ObsidianFolderPath(newValue)
+								folderPaths[index] = new ObsidianFolderPath(newValue)
 								await this.plugin.saveSettings()
 							})
 					})
@@ -94,7 +112,25 @@ export class SettingTab extends PluginSettingTab {
 						.setIcon('cross')
 						.setTooltip('Delete')
 						.onClick(async() =>{
-							this.plugin.settings.relativeTopFolders.splice(index, 1)
+							folderPaths.splice(index, 1)
+							await this.plugin.saveSettings()
+							this.display()
+						})
+					)
+					.addExtraButton(cb => cb
+						.setIcon('down-chevron-glyph')
+						.setTooltip('Decrease priority')
+						.onClick(async () => {
+							this.moveFolderPath(folderPaths, index, index + 1)
+							await this.plugin.saveSettings()
+							this.display()
+						})
+					)
+					.addExtraButton(cb => cb
+						.setIcon('up-chevron-glyph')
+						.setTooltip('Increase priority')
+						.onClick(async () => {
+							this.moveFolderPath(folderPaths, index, index -1)
 							await this.plugin.saveSettings()
 							this.display()
 						})
