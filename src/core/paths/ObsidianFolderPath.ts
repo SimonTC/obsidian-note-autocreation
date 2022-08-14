@@ -16,10 +16,23 @@ export class ObsidianFolderPath extends ObsidianPath {
 	 */
 	constructor(path: string) {
 		const fullPath = path.trim()
-		const folderNameEndsAt = fullPath.lastIndexOf('/')
-		const folderNameStartsAt = fullPath.slice(0, folderNameEndsAt).lastIndexOf('/')
-		const folderName = fullPath.slice(folderNameStartsAt + 1, folderNameEndsAt)
+		const folderName = ObsidianFolderPath.getFolderName(fullPath)
 		super(fullPath, folderName)
+	}
+
+	private static getFolderName(fullPath: string){
+		let folderNameStartsAt = fullPath.lastIndexOf('/')
+		let folderNameEndsAt = fullPath.length
+		if (folderNameStartsAt === -1){
+			return fullPath
+		}
+		if (folderNameStartsAt === fullPath.length - 1){
+			// Folder path is "some/folder12/"
+			// Title should be "folder12"
+			folderNameStartsAt = fullPath.slice(0, folderNameStartsAt).lastIndexOf('/')
+			folderNameEndsAt = fullPath.length - 1
+		}
+		return fullPath.slice(folderNameStartsAt + 1, folderNameEndsAt)
 	}
 
 	isAncestorOf(path: ObsidianPath): boolean{
