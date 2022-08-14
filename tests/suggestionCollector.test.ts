@@ -103,3 +103,28 @@ test('Only include suggestions with common ancestor if current file is ancestor 
 	const observedSuggestions = collector.getSuggestions(suggestionContext)
 	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 })
+
+test('Only include suggestions from nearest top folder', () => {
+	const links = [
+		Fake.LinkToExistingNote('folder1/subfolder/note1'),
+		Fake.LinkToExistingNote('folder2/subfolder/note2'),
+		Fake.LinkToExistingNote('folder1/subfolder/subfolder/note3'),
+		Fake.LinkToExistingNote('folder1/subfolder/subfolder/note4'),
+	]
+
+	const interOp = Fake.Interop.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(links))
+	const settings = Fake.Settings
+	settings.relativeTopFolders = [new ObsidianFolderPath('subfolder')]
+	const collector = new SuggestionCollector(interOp, settings)
+
+	const query = 'note'
+	const suggestionContext = Fake.EditorSuggestionContext(query).withFile(Fake.File('folder1/subfolder/subfolder/my note in subfolder'))
+	const expectedSuggestions: NoteSuggestion[] = [
+		new NewNoteSuggestion(query),
+		new ExistingNoteSuggestion('folder1/subfolder/subfolder/note3'),
+		new ExistingNoteSuggestion('folder1/subfolder/subfolder/note4'),
+	]
+
+	const observedSuggestions = collector.getSuggestions(suggestionContext)
+	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
+})

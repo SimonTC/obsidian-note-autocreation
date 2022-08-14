@@ -3,6 +3,7 @@ import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
 import {ObsidianFilePath} from "../paths/ObsidianFilePath"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {IEditorSuggestContext} from "../../interop/ObsidianInterfaces"
+import {ObsidianFolderPath} from "../paths/ObsidianFolderPath"
 
 type MatchChecker = (suggestion: FileSuggestion) => boolean
 
@@ -58,9 +59,15 @@ export class Query{
 
 	static topFolderCheck (queryPath: ObsidianFilePath, context:IEditorSuggestContext, settings: NoteAutoCreatorSettings): MatchChecker{
 		if (settings.relativeTopFolders.length > 0){
-			const topFolderToUse = settings.relativeTopFolders.find(folder => folder.isAncestorOf(new ObsidianFilePath(context.file.path)))
+			const filePath = new ObsidianFilePath(context.file.path)
+			const topFolderToUse = settings.relativeTopFolders.find(folder => {
+				return folder.isAncestorOf(filePath) ||  filePath.FolderPath.VaultPath.toLowerCase().includes(folder.VaultPath.toLowerCase())
+			})
 			if (topFolderToUse){
-				return (suggestion) => topFolderToUse.isAncestorOf(suggestion.Path)
+				const endOfFolderPath = filePath.FolderPath.VaultPath.lastIndexOf(topFolderToUse.VaultPath)
+				const folderPathToUse = filePath.FolderPath.VaultPath.slice(0, endOfFolderPath + topFolderToUse.VaultPath.length)
+				const path = new ObsidianFolderPath(folderPathToUse)
+				return (suggestion) => path.isAncestorOf(suggestion.Path)
 			}
 		}
 		return (suggestion) => true
