@@ -1,4 +1,4 @@
-// Credits go to Liam's Periodic Notes Plugin: https://github.com/liamcain/obsidian-periodic-notes
+// Based on Liam's Periodic Notes Plugin: https://github.com/liamcain/obsidian-periodic-notes, but I have made some small changes.
 
 import { App, ISuggestOwner, Scope } from "obsidian"
 import { createPopper, Instance as PopperInstance } from "@popperjs/core"
