@@ -23,6 +23,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                    |
 | Can disable suggestions for links to notes that do not exist                                           | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled |
 | Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ❌                                                                                     |
+| Can limit note suggestions to notes from only part of the vault                                        | ❌                | ✔️                                                                                    |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -45,6 +46,63 @@ When you have selected a template, the note will be created and the selected tem
 - Inserting templates does not work with templates created for the [core Templates plugin](https://help.obsidian.md/Plugins/Templates).
 - You cannot apply templates to already existing notes.
 
+### Limit note suggestions
+If your vault is organized into separate sub-vaults you might not be interested in getting suggestions for items in other sub vaults than the sub vault your current note is in.
+To achieve this you can define [relative top folders](#relative-top-folders). 
+When a relative top folder has been defined, and you are inserting a link into a note that has that relative top folder in its folder tree, you will only get suggestions for notes that also have that top folder in their folder tree.
+You can both define the full path to a folder or just use folder name parts.
+You can define as many relative top folders as you want. They are checked in the order they have been added in the settings.
+
+Be aware that note creation is not affected by the defined top folders. The location of a new note is still controlled by the Obsidian core setting "Default location for new notes".
+
+**Example**
+```
+/
+│   General notes.md
+│   My 10 year goal.md
+│
+└───Work/
+│   │   Contact info.md
+│   │   Birthdays.md
+│   │
+│   └───Tasks/
+│       │   Prepare meeting with Jim.md
+│       │   Collect offers.md
+│       │ 	Remember to buy birthday gifts.md
+│       │ 	
+│       └───Less important task/
+│           │ 	Clean up my desk.md
+│       
+│   
+└───Private/
+    │   Birthdays.md
+    │
+    └───Tasks/
+        │ 	Remember to buy birthday gifts.md
+        │ 	Buy new house.md
+```
+
+In the vault described above there are some notes that have the same names in the two sub vaults. 
+If you are inserting a link to a note somewhere in `Work` you might not want to get suggestions for any notes in `Birthday`.
+In the following table you can see examples of what suggestions are returned based on the note you are inserting a link into and the relative top folders you have defined.
+
+| Active file                                              | Relative topfolders in prioritized order | Returned suggestions when typing `@`                                                      |
+|----------------------------------------------------------|------------------------------------------|-------------------------------------------------------------------------------------------|
+| `/General notes.md`                                      | `Work/`, `Private/`                      | All notes are returned as suggestions since the active note is not in `Work` or `Private` |
+| `/Work/Contact info.md`                                  | `Private/`                               | All notes are returned as suggestions since the active note is not in `Work`              |
+| `/Work/Contact info.md`                                  | `Work/`                                  | All notes in the `Work` folder or its sub folders                                         |
+| `/Work/Tasks/Collect offers.md`                          | `Work/`                                  | All notes in the `Work` folder or its sub folders                                         |
+| `/Work/Tasks/Collect offers.md`                          | `Work/Tasks`                             | All notes in the `Work/Tasks` folder or its sub folders                                   |
+| `/Work/Tasks/Collect offers.md`                          | `Tasks`                                  | All notes in the `Work/Tasks` folder or its sub folders                                   |
+| `/Work/Tasks/Collect offers.md`                          | `Task`                                   | All notes in the `Work/Tasks` folder or its sub folders                                   |
+| `/Private/Tasks/Buy new house.md`                        | `Work/Tasks`                             | All notes are returned as suggestions since the active note is not in `Work/Tasks`        |
+| `/Private/Tasks/Buy new house.md`                        | `Tasks`                                  | All notes in the `Private/Tasks` folder or its sub folders                                |
+| `/Private/Tasks/Less important task/Clean up my desk.md` | `Task`                                   | All notes in the `Private/Tasks/Less important task` folder or its sub folders            |
+| `/Private/Tasks/Less important task/Clean up my desk.md` | `Tasks`                                  | All notes in the `Private/Tasks/` folder or its sub folders                               |
+| `/Private/Tasks/Less important task/Clean up my desk.md` | `impo`                                   | All notes in the `Private/Tasks/Less important task` folder or its sub folders            |
+| `/Private/Tasks/Less important task/Clean up my desk.md` | `Private/`, `Tasks`                      | All notes in the `Private/` folder or its sub folders                                     |
+| `/Private/Tasks/Less important task/Clean up my desk.md` | `Tasks`, `Private/`                      | All notes in the `Private/Tasks/` folder or its sub folders                               |
+
 ## Settings
 
 ### Link suggestion trigger
@@ -62,6 +120,11 @@ Disabling this feature will hide suggestions for links to notes that do not exis
 Any symbol can be used to trigger the selection of a template to insert. By default, the trigger symbol is `$`. This symbol can be configured by changing the value in `Trigger for template execution`.
 This setting is only shown when Templater is installed and enabled.
 
+### Relative top folders
+To add a new relative top folder click the "+"-button.
+This will add a new input box where you can write the relative top folder.
+Click the search icon if you want to get suggestions for folders.
+
 ## Compatibility
 This plugin should work on all operating systems supported by Obsidian, but has not been tested everywhere. See the table below for tested systems:
 
@@ -74,7 +137,7 @@ This plugin should work on all operating systems supported by Obsidian, but has 
 | Linux           | ✔️         | ✔️      |
 
 ## Todo
-- [ ] Set specific top folders to collect note suggestions from
+- [X] Set specific top folders to collect note suggestions from
 - [ ] Enable block linking if inserting a link to an existing note
 - [ ] Suggest links to other file types than markdown
 - [X] Enable header linking if inserting a link to an existing note

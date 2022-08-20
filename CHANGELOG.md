@@ -1,3 +1,8 @@
+## Next release
+
+### Features
+- Make it possible to limit where note suggestions are collected from
+
 ## 1.1.2 (2022-07-15)
 
 ### Features
