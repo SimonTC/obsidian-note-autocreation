@@ -77,7 +77,7 @@ test('Suggestions for non existing notes are not returned if that feature has be
 	expect(observedSuggestions).toStrictEqual(expectedSuggestions)
 })
 
-test('Only include suggestions with common ancestor if current file is ancestor of configured top folder ', () => {
+test('Only include suggestions with common ancestor if current file is descendent of configured top folder ', () => {
     const links = [
 		Fake.LinkToExistingNote('folder1/folder12/my note'),
 		Fake.LinkToExistingNote('folder1/folder12/my other note'),
