@@ -1,4 +1,4 @@
-import {App, ButtonComponent, PluginSettingTab, Setting, TextComponent} from "obsidian"
+import {App, ButtonComponent, PluginSettingTab, SearchComponent, Setting, TextComponent} from "obsidian"
 import NoteAutoCreator from "../main"
 import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 import {FolderSuggest} from "./FolderSuggester"
@@ -98,9 +98,10 @@ export class SettingTab extends PluginSettingTab {
 
 		folderPaths.forEach(
 			(folderPath, index) => {
+				let searchComponent: SearchComponent
 				new Setting(containerEl)
 					.addSearch(cb => {
-						new FolderSuggest(this.app, cb.inputEl)
+						searchComponent = cb
 						cb.setPlaceholder('Folder name or path')
 							.setValue(folderPath.VaultPath)
 							.onChange(async newValue => {
@@ -108,6 +109,14 @@ export class SettingTab extends PluginSettingTab {
 								await this.plugin.saveSettings()
 							})
 					})
+					.addExtraButton(cb => cb
+						.setIcon('search')
+						.setTooltip('Search for specific folder')
+						.onClick(() => {
+							new FolderSuggest(this.app, searchComponent.inputEl)
+							searchComponent.inputEl.select()
+						})
+					)
 					.addExtraButton(cb => cb
 						.setIcon('cross')
 						.setTooltip('Delete')
@@ -138,7 +147,6 @@ export class SettingTab extends PluginSettingTab {
 			}
 		)
 	}
-
 	private addSuggestNonExistingNotesSetting(containerEl: HTMLElement){
 		new Setting(containerEl)
 			.setName('Suggest existing links to notes that do not exist')
