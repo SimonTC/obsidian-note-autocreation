@@ -18,7 +18,7 @@ export class FolderSuggest extends TextInputSuggest<TFolder> {
             }
         })
 
-        return folders
+        return folders.sort((f1, f2) => f1.path.localeCompare(f2.path) )
     }
 
     renderSuggestion(file: TFolder, el: HTMLElement): void {
