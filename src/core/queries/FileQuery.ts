@@ -61,7 +61,7 @@ export class Query{
 		if (settings.relativeTopFolders.length > 0){
 			const filePath = new ObsidianFilePath(context.file.path)
 			const topFolderToUse = settings.relativeTopFolders.find(folder => {
-				return folder.isAncestorOf(filePath) ||  filePath.FolderPath.VaultPath.toLowerCase().includes(folder.VaultPath.toLowerCase())
+				return folder.isAncestorOf(filePath) ||  filePath.FolderPath.VaultPath.toLowerCase().includes(folder.VaultPath)
 			})
 			if (topFolderToUse){
 				const endOfFolderPath = filePath.FolderPath.VaultPath.lastIndexOf(topFolderToUse.VaultPath)
