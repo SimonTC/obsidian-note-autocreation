@@ -4,14 +4,17 @@ import {ObsidianFilePath} from "../paths/ObsidianFilePath"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {IEditorSuggestContext} from "../../interop/ObsidianInterfaces"
 import {ObsidianFolderPath} from "../paths/ObsidianFolderPath"
+import {ISuggestion} from "../suggestions/ISuggestion"
 
-type MatchChecker = (suggestion: FileSuggestion) => boolean
+type MatchChecker<TSuggestion extends ISuggestion>  = (suggestion: TSuggestion) => boolean
 
-function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath): MatchChecker{
+type FileMatchChecker = MatchChecker<FileSuggestion>
+
+function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath): FileMatchChecker{
 	return (suggestion: FileSuggestion) => suggestion.Path.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryPath.VaultPathWithoutExtension
 }
 
-function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath): MatchChecker{
+function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath): FileMatchChecker{
 	return (suggestion: FileSuggestion) => {
 		const path = suggestion.Path
 		const queryIsAncestor = path.FolderPath.VaultPath.toLowerCase().includes(lowerCaseQueryPath.FolderPath.VaultPath)
@@ -22,20 +25,20 @@ function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath): MatchC
 	}
 }
 
-function allTrue(matchers: MatchChecker[]): MatchChecker{
+function allTrue(matchers: FileMatchChecker[]): FileMatchChecker{
 	return (suggestion: FileSuggestion) => matchers.every(m => m(suggestion))
 }
 
-function anyTrue(matchers: MatchChecker[]): MatchChecker{
+function anyTrue(matchers: FileMatchChecker[]): FileMatchChecker{
 	return (suggestion: FileSuggestion) => matchers.some(m => m(suggestion))
 }
 
-export class Query{
-	private fullMatchFoundCheckers: MatchChecker[]
-	private partialMatchFoundCheckers: MatchChecker[]
+export class FileQuery {
+	private fullMatchFoundCheckers: FileMatchChecker[]
+	private partialMatchFoundCheckers: FileMatchChecker[]
 	readonly query: string
 
-	constructor(query: string, fullMatchFoundCheckers: MatchChecker[], partialMatchFoundCheckers: MatchChecker[]) {
+	constructor(query: string, fullMatchFoundCheckers: FileMatchChecker[], partialMatchFoundCheckers: FileMatchChecker[]) {
 		this.fullMatchFoundCheckers = fullMatchFoundCheckers
 		this.partialMatchFoundCheckers = partialMatchFoundCheckers
 		this.query = query
@@ -57,7 +60,7 @@ export class Query{
 		return this.query === ''
 	}
 
-	static topFolderCheck (queryPath: ObsidianFilePath, context:IEditorSuggestContext, settings: NoteAutoCreatorSettings): MatchChecker{
+	static topFolderCheck (queryPath: ObsidianFilePath, context:IEditorSuggestContext, settings: NoteAutoCreatorSettings): FileMatchChecker{
 		if (settings.relativeTopFolders.length > 0){
 			const filePath = new ObsidianFilePath(context.file.path)
 			const topFolderToUse = settings.relativeTopFolders.find(folder => {
@@ -73,7 +76,7 @@ export class Query{
 		return (suggestion) => true
 	}
 
-	static suggestionCheck(queryPath: ObsidianFilePath) : MatchChecker {
+	static suggestionCheck(queryPath: ObsidianFilePath) : FileMatchChecker {
 		return suggestion => {
 			if (suggestion instanceof AliasNoteSuggestion){
 				return suggestion.Alias.toLowerCase().includes(queryPath.Title)
@@ -82,15 +85,15 @@ export class Query{
 		}
 	}
 
-	static forNoteSuggestions(context: IEditorSuggestContext, settings: NoteAutoCreatorSettings): Query{
+	static forNoteSuggestions(context: IEditorSuggestContext, settings: NoteAutoCreatorSettings): FileQuery{
 		const query = context.query
 		const lowerCaseQueryPath = new ObsidianFilePath(query.toLowerCase())
 
-		const fullMatchFoundCheckers: MatchChecker[] = [
+		const fullMatchFoundCheckers: FileMatchChecker[] = [
 			getMatcherForExactMatch(lowerCaseQueryPath)
 		]
 
-		const partialMatchFoundCheckers: MatchChecker = allTrue([
+		const partialMatchFoundCheckers: FileMatchChecker = allTrue([
 			this.topFolderCheck(lowerCaseQueryPath, context, settings),
 			anyTrue([
 				getMatcherForPartialMatch(lowerCaseQueryPath),
@@ -98,21 +101,21 @@ export class Query{
 			])
 		])
 
-		return new Query(query, fullMatchFoundCheckers, [partialMatchFoundCheckers])
+		return new FileQuery(query, fullMatchFoundCheckers, [partialMatchFoundCheckers])
 	}
 
-	static forTemplateSuggestions(query: string): Query{
+	static forTemplateSuggestions(query: string): FileQuery{
 		const lowerCaseQueryPath = new ObsidianFilePath(query.toLowerCase())
 
-		const fullMatchFoundCheckers: MatchChecker[] = [
+		const fullMatchFoundCheckers: FileMatchChecker[] = [
 			getMatcherForExactMatch(lowerCaseQueryPath)
 		]
 
-		const partialMatchFoundCheckers: MatchChecker[] = [
+		const partialMatchFoundCheckers: FileMatchChecker[] = [
 			getMatcherForPartialMatch(lowerCaseQueryPath),
 		]
 
-		return new Query(query, fullMatchFoundCheckers, partialMatchFoundCheckers)
+		return new FileQuery(query, fullMatchFoundCheckers, partialMatchFoundCheckers)
 	}
 }
 

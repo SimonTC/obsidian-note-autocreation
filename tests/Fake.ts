@@ -9,7 +9,7 @@ import {
 import {FileStats, HeadingCache, Pos, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
 import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
-import {Query} from "../src/core/queries/FileQuery"
+import {FileQuery} from "../src/core/queries/FileQuery"
 import {ObsidianFilePath} from "../src/core/paths/ObsidianFilePath"
 import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 
@@ -304,7 +304,7 @@ export class Fake {
 	}
 
 	static NoteQuery(query: string){
-		return Query.forNoteSuggestions(Fake.EditorSuggestionContext(query), Fake.Settings)
+		return FileQuery.forNoteSuggestions(Fake.EditorSuggestionContext(query), Fake.Settings)
 	}
 
 	static File(filePath: string){

@@ -1,6 +1,6 @@
 import {IFileSystem} from "../../interop/ObsidianInterfaces"
 import {FolderSuggestion} from "../suggestions/FolderSuggestion"
-import {Query} from "../queries/FileQuery"
+import {FileQuery} from "../queries/FileQuery"
 
 export class FolderSuggestionCollector {
 	private readonly fileSystem: IFileSystem
@@ -10,6 +10,6 @@ export class FolderSuggestionCollector {
 	}
 
 	getSuggestions(queryString: string): FolderSuggestion []{
-		const query = Query.forFolderSuggestions(queryString)
+		const query = FileQuery.forFolderSuggestions(queryString)
 	}
 }

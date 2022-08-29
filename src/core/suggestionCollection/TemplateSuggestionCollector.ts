@@ -3,7 +3,7 @@ import {NoteSuggestion} from "../suggestions/NoteSuggestion"
 import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
-import {Query} from "../queries/FileQuery"
+import {FileQuery} from "../queries/FileQuery"
 import {Suggestion} from "../suggestions/ISuggestion"
 
 export class TemplateSuggestionCollector {
@@ -18,7 +18,7 @@ export class TemplateSuggestionCollector {
 	}
 
 	getSuggestions(templateQuery: string, noteSuggestion: NoteSuggestion): FileSuggestion[] {
-		const query = Query.forTemplateSuggestions(templateQuery)
+		const query = FileQuery.forTemplateSuggestions(templateQuery)
 		const templaterTemplateFolderPath = this.configStore.getTemplaterTemplatesPath()
 		const validSuggestions: TemplateSuggestion[] = []
 

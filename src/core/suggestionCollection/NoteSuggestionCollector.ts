@@ -6,7 +6,7 @@ import {
 } from "../suggestions/NoteSuggestion"
 import {IMetadataCollection} from "../../interop/ObsidianInterfaces"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
-import {Query} from "../queries/FileQuery"
+import {FileQuery} from "../queries/FileQuery"
 import {Suggestion} from "../suggestions/ISuggestion"
 
 export class NoteSuggestionCollector {
@@ -18,7 +18,7 @@ export class NoteSuggestionCollector {
 		this.settings = settings
 	}
 
-	getSuggestions(query: Query): NoteSuggestion[] {
+	getSuggestions(query: FileQuery): NoteSuggestion[] {
 
 		let existingSuggestionForQuery: NoteSuggestion
 		const validSuggestions: NoteSuggestion[] = []
