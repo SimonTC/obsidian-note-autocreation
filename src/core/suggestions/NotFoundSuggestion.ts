@@ -1,5 +1,6 @@
 import {ISuggestion} from "./ISuggestion"
 import {SuggestionRenderer} from "./SuggestionRenderer"
+import {ObsidianPath} from "../paths/ObsidianPath"
 
 /**
  * Suggestion returned when nothing is found with the query.
@@ -26,6 +27,10 @@ export class NotFoundSuggestion implements ISuggestion{
 
 	get textToInsertOnLineUpdate(): string {
 		return this.trigger
+	}
+
+	get Path(): ObsidianPath {
+		return undefined
 	}
 
 }

@@ -1,8 +1,9 @@
+import { ObsidianPath } from "../paths/ObsidianPath"
 import {ISuggestion} from "./ISuggestion"
 import {ExistingNoteSuggestion} from "./NoteSuggestion"
 import {SuggestionRenderer} from "./SuggestionRenderer"
 
-export class HeaderSuggestion implements ISuggestion{
+export class HeaderSuggestion implements ISuggestion {
 	private readonly level: number
 	private readonly header: string
 	private readonly noteSuggestion: ExistingNoteSuggestion
@@ -14,6 +15,10 @@ export class HeaderSuggestion implements ISuggestion{
 		this.noteSuggestion = noteSuggestion
 		this.alias = alias
 	}
+
+	get Path(): ObsidianPath {
+        return this.noteSuggestion.Path
+    }
 
 	get ParentNote(): ExistingNoteSuggestion{
 		return this.noteSuggestion

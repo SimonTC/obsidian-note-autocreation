@@ -5,6 +5,7 @@ import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {IEditorSuggestContext} from "../../interop/ObsidianInterfaces"
 import {ObsidianFolderPath} from "../paths/ObsidianFolderPath"
 import {ISuggestion} from "../suggestions/ISuggestion"
+import {ObsidianPath} from "../paths/ObsidianPath"
 
 type MatchChecker<TSuggestion extends ISuggestion>  = (suggestion: TSuggestion) => boolean
 
@@ -33,18 +34,18 @@ function anyTrue(matchers: FileMatchChecker[]): FileMatchChecker{
 	return (suggestion: FileSuggestion) => matchers.some(m => m(suggestion))
 }
 
-export class FileQuery {
-	private fullMatchFoundCheckers: FileMatchChecker[]
-	private partialMatchFoundCheckers: FileMatchChecker[]
+export class Query<TSuggestion extends ISuggestion>{
+	private fullMatchFoundCheckers: MatchChecker<TSuggestion>[]
+	private partialMatchFoundCheckers: MatchChecker<TSuggestion>[]
 	readonly query: string
 
-	constructor(query: string, fullMatchFoundCheckers: FileMatchChecker[], partialMatchFoundCheckers: FileMatchChecker[]) {
+	protected constructor(query: string, fullMatchFoundCheckers: MatchChecker<TSuggestion>[], partialMatchFoundCheckers: MatchChecker<TSuggestion>[]) {
 		this.fullMatchFoundCheckers = fullMatchFoundCheckers
 		this.partialMatchFoundCheckers = partialMatchFoundCheckers
 		this.query = query
 	}
 
-	couldBeQueryFor(suggestion: FileSuggestion): FileQueryResult{
+	couldBeQueryFor(suggestion: TSuggestion): FileQueryResult{
 		if (this.fullMatchFoundCheckers.some(checker => checker(suggestion))){
 			return FileQueryResult.forCompleteMatch()
 		}
@@ -60,7 +61,7 @@ export class FileQuery {
 		return this.query === ''
 	}
 
-	static topFolderCheck (queryPath: ObsidianFilePath, context:IEditorSuggestContext, settings: NoteAutoCreatorSettings): FileMatchChecker{
+	static topFolderCheck<TSuggestion extends ISuggestion> (queryPath: ObsidianPath, context:IEditorSuggestContext, settings: NoteAutoCreatorSettings): MatchChecker<TSuggestion>{
 		if (settings.relativeTopFolders.length > 0){
 			const filePath = new ObsidianFilePath(context.file.path)
 			const topFolderToUse = settings.relativeTopFolders.find(folder => {
@@ -75,8 +76,14 @@ export class FileQuery {
 		}
 		return (suggestion) => true
 	}
+}
 
-	static suggestionCheck(queryPath: ObsidianFilePath) : FileMatchChecker {
+export class FileQuery extends Query<FileSuggestion>{
+	constructor(query: string, fullMatchFoundCheckers: FileMatchChecker[], partialMatchFoundCheckers: FileMatchChecker[]) {
+		super(query, fullMatchFoundCheckers, partialMatchFoundCheckers)
+	}
+
+	static aliasCheck(queryPath: ObsidianFilePath) : FileMatchChecker {
 		return suggestion => {
 			if (suggestion instanceof AliasNoteSuggestion){
 				return suggestion.Alias.toLowerCase().includes(queryPath.Title)
@@ -97,7 +104,7 @@ export class FileQuery {
 			this.topFolderCheck(lowerCaseQueryPath, context, settings),
 			anyTrue([
 				getMatcherForPartialMatch(lowerCaseQueryPath),
-				this.suggestionCheck(lowerCaseQueryPath)
+				this.aliasCheck(lowerCaseQueryPath)
 			])
 		])
 

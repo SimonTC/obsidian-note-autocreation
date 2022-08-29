@@ -1,6 +1,8 @@
 /**
  * Interface for any suggestions returned by Note Auto Creator
  */
+import {ObsidianPath} from "../paths/ObsidianPath"
+
 export interface ISuggestion {
 
 	/**
@@ -8,6 +10,11 @@ export interface ISuggestion {
 	 * Any potential extension is not included in the title.
 	 */
 	get Title(): string
+
+	/**
+	 * The path to the item
+	 */
+	get Path(): ObsidianPath
 
 	/**
 	 * Returns the text to insert if this suggestion has been chosen to update the selected suggestion

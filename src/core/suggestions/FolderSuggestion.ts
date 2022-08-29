@@ -1,6 +1,7 @@
 import {ISuggestion} from "./ISuggestion"
 import {ObsidianFolderPath} from "../paths/ObsidianFolderPath"
 import {SuggestionRenderer} from "./SuggestionRenderer"
+import {ObsidianPath} from "../paths/ObsidianPath"
 
 export class FolderSuggestion implements ISuggestion{
 	private readonly folderPath: ObsidianFolderPath
@@ -22,6 +23,10 @@ export class FolderSuggestion implements ISuggestion{
 
 	get textToInsertOnLineUpdate(): string {
 		return this.folderPath.VaultPath
+	}
+
+	get Path(): ObsidianPath {
+		return this.folderPath
 	}
 
 }
