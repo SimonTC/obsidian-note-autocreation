@@ -136,6 +136,10 @@ export class ObsidianInterop implements IObsidianInterop {
 		return app.metadataCache.getLinkSuggestions()
 	}
 
+	getPathsToAllLoadedFolders(): ObsidianFolderPath[]{
+		return app.vault.getAllLoadedFiles().filter(f => f instanceof TFolder).map(f => new ObsidianFolderPath(f.path))
+	}
+
 	getHeadersIn(filePath: string): HeadingCache[] {
 		const file: TAbstractFile = app.metadataCache.getFirstLinkpathDest(filePath, app.workspace.getActiveFile().path)
 		if (!(file instanceof TFile)) return []

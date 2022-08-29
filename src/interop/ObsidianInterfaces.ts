@@ -74,6 +74,11 @@ export interface IFileSystem{
 	 * @param filePath the path to the file
 	 */
 	getFileContentOf(filePath: string): Promise<string>
+
+	/**
+	 * Returns the paths to all loaded folders.
+	 */
+	getPathsToAllLoadedFolders(): ObsidianFolderPath[]
 }
 
 /**

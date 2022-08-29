@@ -85,6 +85,10 @@ class FakeInterop implements IObsidianInterop {
 	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null {
 		return null
 	}
+
+	getPathsToAllLoadedFolders(): ObsidianFolderPath[] {
+		return []
+	}
 }
 
 class FakeFileSystem implements IFileSystem {
@@ -126,6 +130,9 @@ class FakeFileSystem implements IFileSystem {
 		return null
 	}
 
+	getPathsToAllLoadedFolders(): ObsidianFolderPath[] {
+		return []
+	}
 }
 
 export class FakeMetadataCollection implements IMetadataCollection{
