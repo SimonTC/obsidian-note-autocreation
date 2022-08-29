@@ -45,16 +45,16 @@ export class Query<TSuggestion extends ISuggestion>{
 		this.query = query
 	}
 
-	couldBeQueryFor(suggestion: TSuggestion): FileQueryResult{
+	couldBeQueryFor(suggestion: TSuggestion): QueryResult{
 		if (this.fullMatchFoundCheckers.some(checker => checker(suggestion))){
-			return FileQueryResult.forCompleteMatch()
+			return QueryResult.forCompleteMatch()
 		}
 
 		if (this.partialMatchFoundCheckers.some(checker => checker(suggestion))){
-			return FileQueryResult.forPartialMatch()
+			return QueryResult.forPartialMatch()
 		}
 
-		return FileQueryResult.forNoMatch()
+		return QueryResult.forNoMatch()
 	}
 
 	get IsEmpty(){
@@ -126,7 +126,7 @@ export class FileQuery extends Query<FileSuggestion>{
 	}
 }
 
-export class FileQueryResult{
+export class QueryResult {
 	isCompleteMatch: boolean
 	isAtLeastPartialMatch: boolean
 	isNoMatch: boolean
@@ -137,15 +137,15 @@ export class FileQueryResult{
 		this.isNoMatch = !(isCompleteMatch || isAtLeastPartialMatch)
 	}
 
-	static forCompleteMatch(): FileQueryResult{
-		return new FileQueryResult(true, true)
+	static forCompleteMatch(): QueryResult{
+		return new QueryResult(true, true)
 	}
 
-	static forPartialMatch(): FileQueryResult{
-		return new FileQueryResult(true, false)
+	static forPartialMatch(): QueryResult{
+		return new QueryResult(true, false)
 	}
 
-	static forNoMatch(): FileQueryResult{
-		return new FileQueryResult(false, false)
+	static forNoMatch(): QueryResult{
+		return new QueryResult(false, false)
 	}
 }
