@@ -4,6 +4,7 @@ import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {Query} from "../queries/FileQuery"
+import {Suggestion} from "../suggestions/ISuggestion"
 
 export class TemplateSuggestionCollector {
 	private readonly fileSystem: IFileSystem
@@ -28,7 +29,7 @@ export class TemplateSuggestionCollector {
 			}
 		}
 
-		validSuggestions.sort(FileSuggestion.compare)
+		validSuggestions.sort(Suggestion.compare)
 		return validSuggestions
 	}
 

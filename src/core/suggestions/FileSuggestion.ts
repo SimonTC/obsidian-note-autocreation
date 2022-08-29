@@ -59,8 +59,4 @@ export abstract class FileSuggestion implements ISuggestion{
 		const fullPath = trigger.trim()
 		this.Trigger = fullPath
 	}
-
-	static compare(a: FileSuggestion, b: FileSuggestion){
-		return a.Title.localeCompare(b.Title)
-	}
 }

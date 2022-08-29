@@ -6,8 +6,8 @@ import {
 } from "../suggestions/NoteSuggestion"
 import {IMetadataCollection} from "../../interop/ObsidianInterfaces"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
-import {FileSuggestion} from "../suggestions/FileSuggestion"
 import {Query} from "../queries/FileQuery"
+import {Suggestion} from "../suggestions/ISuggestion"
 
 export class NoteSuggestionCollector {
 	private metadata: IMetadataCollection
@@ -38,7 +38,7 @@ export class NoteSuggestionCollector {
 			}
 		}
 
-		validSuggestions.sort(FileSuggestion.compare)
+		validSuggestions.sort(Suggestion.compare)
 
 		if (query.IsEmpty) {
 			return validSuggestions

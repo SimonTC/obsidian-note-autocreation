@@ -20,3 +20,9 @@ export interface ISuggestion {
 	 */
 	render(el: HTMLElement): void
 }
+
+export abstract class Suggestion{
+	static compare(a: ISuggestion, b: ISuggestion){
+		return a.Title.localeCompare(b.Title)
+	}
+}
