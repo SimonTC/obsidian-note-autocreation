@@ -16,7 +16,7 @@ export class FolderSuggestion implements ISuggestion{
 
 	render(el: HTMLElement): void {
 		SuggestionRenderer.RenderSuggestion(el, {
-			content: this.folderPath.Title,
+			content: `🗀 ${this.folderPath.Title}`,
 			note: this.folderPath.VaultPath,
 		})
 	}
@@ -29,4 +29,7 @@ export class FolderSuggestion implements ISuggestion{
 		return this.folderPath
 	}
 
+	static FromPath(path: ObsidianFolderPath) {
+		return new FolderSuggestion(path)
+	}
 }

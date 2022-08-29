@@ -12,9 +12,12 @@ import {HeaderSuggestionCollector} from "./HeaderSuggestionCollector"
 import {ISuggestion} from "../suggestions/ISuggestion"
 import {NotFoundSuggestion} from "../suggestions/NotFoundSuggestion"
 import {FileQuery} from "../queries/FileQuery"
+import {FolderSuggestionCollector} from "./FolderSuggestionCollector"
+import {FolderQuery} from "../queries/FolderQuery"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
+	private readonly folderSuggestionCollector: FolderSuggestionCollector
 	private readonly templateSuggestionCollector: TemplateSuggestionCollector
 	private readonly headerSuggestionCollector: HeaderSuggestionCollector
 	private readonly fileSystem: IFileSystem
@@ -26,6 +29,7 @@ export class SuggestionCollector {
 		this.noteSuggestionCollector = new NoteSuggestionCollector(interOp, settings)
 		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings)
 		this.headerSuggestionCollector = new HeaderSuggestionCollector(interOp)
+		this.folderSuggestionCollector = new FolderSuggestionCollector(interOp)
 		this.fileSystem = interOp
 		this.configStore = interOp
 	}
@@ -52,6 +56,8 @@ export class SuggestionCollector {
 			} else {
 				suggestions = [new NotFoundSuggestion(query, 'No headers to link to in non-existing notes')]
 			}
+		} else if(query.startsWith('/')){
+			suggestions = this.folderSuggestionCollector.getSuggestions(new FolderQuery(context, this.settings))
 		} else {
 			suggestions = this.noteSuggestionCollector.getSuggestions(FileQuery.forNoteSuggestions(context, this.settings))
 		}
