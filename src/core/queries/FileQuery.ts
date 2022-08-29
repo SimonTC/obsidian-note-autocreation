@@ -23,11 +23,11 @@ export function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath):
 }
 
 export class FileQuery extends Query<FileSuggestion>{
-	constructor(query: string, fullMatchFoundCheckers: FileMatchChecker[], partialMatchFoundCheckers: FileMatchChecker[]) {
+	private constructor(query: string, fullMatchFoundCheckers: FileMatchChecker[], partialMatchFoundCheckers: FileMatchChecker[]) {
 		super(query, fullMatchFoundCheckers, partialMatchFoundCheckers)
 	}
 
-	static aliasCheck(queryPath: ObsidianFilePath) : FileMatchChecker {
+	private static aliasCheck(queryPath: ObsidianFilePath) : FileMatchChecker {
 		return suggestion => {
 			if (suggestion instanceof AliasNoteSuggestion){
 				return suggestion.Alias.toLowerCase().includes(queryPath.Title)
@@ -45,7 +45,7 @@ export class FileQuery extends Query<FileSuggestion>{
 		]
 
 		const partialMatchFoundCheckers: FileMatchChecker = allTrue([
-			this.topFolderCheck(lowerCaseQueryPath, context, settings),
+			Query.topFolderCheck(lowerCaseQueryPath, context, settings),
 			anyTrue([
 				getMatcherForPartialMatch(lowerCaseQueryPath),
 				this.aliasCheck(lowerCaseQueryPath)
