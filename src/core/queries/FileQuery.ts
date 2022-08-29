@@ -3,19 +3,15 @@ import {AliasNoteSuggestion} from "../suggestions/NoteSuggestion"
 import {ObsidianFilePath} from "../paths/ObsidianFilePath"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {IEditorSuggestContext} from "../../interop/ObsidianInterfaces"
-import {ObsidianFolderPath} from "../paths/ObsidianFolderPath"
-import {ISuggestion} from "../suggestions/ISuggestion"
-import {ObsidianPath} from "../paths/ObsidianPath"
-
-type MatchChecker<TSuggestion extends ISuggestion>  = (suggestion: TSuggestion) => boolean
+import {allTrue, anyTrue, MatchChecker, Query} from "./Query"
 
 type FileMatchChecker = MatchChecker<FileSuggestion>
 
-function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath): FileMatchChecker{
+export function getMatcherForExactMatch (lowerCaseQueryPath: ObsidianFilePath): FileMatchChecker{
 	return (suggestion: FileSuggestion) => suggestion.Path.VaultPathWithoutExtension.toLowerCase() === lowerCaseQueryPath.VaultPathWithoutExtension
 }
 
-function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath): FileMatchChecker{
+export function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath): FileMatchChecker{
 	return (suggestion: FileSuggestion) => {
 		const path = suggestion.Path
 		const queryIsAncestor = path.FolderPath.VaultPath.toLowerCase().includes(lowerCaseQueryPath.FolderPath.VaultPath)
@@ -23,58 +19,6 @@ function getMatcherForPartialMatch(lowerCaseQueryPath: ObsidianFilePath): FileMa
 			.replace(lowerCaseQueryPath.FolderPath.VaultPath, '')
 			.includes(lowerCaseQueryPath.Title)
 		return queryIsAncestor && queryCouldBeForSuggestedNote
-	}
-}
-
-function allTrue(matchers: FileMatchChecker[]): FileMatchChecker{
-	return (suggestion: FileSuggestion) => matchers.every(m => m(suggestion))
-}
-
-function anyTrue(matchers: FileMatchChecker[]): FileMatchChecker{
-	return (suggestion: FileSuggestion) => matchers.some(m => m(suggestion))
-}
-
-export class Query<TSuggestion extends ISuggestion>{
-	private fullMatchFoundCheckers: MatchChecker<TSuggestion>[]
-	private partialMatchFoundCheckers: MatchChecker<TSuggestion>[]
-	readonly query: string
-
-	protected constructor(query: string, fullMatchFoundCheckers: MatchChecker<TSuggestion>[], partialMatchFoundCheckers: MatchChecker<TSuggestion>[]) {
-		this.fullMatchFoundCheckers = fullMatchFoundCheckers
-		this.partialMatchFoundCheckers = partialMatchFoundCheckers
-		this.query = query
-	}
-
-	couldBeQueryFor(suggestion: TSuggestion): QueryResult{
-		if (this.fullMatchFoundCheckers.some(checker => checker(suggestion))){
-			return QueryResult.forCompleteMatch()
-		}
-
-		if (this.partialMatchFoundCheckers.some(checker => checker(suggestion))){
-			return QueryResult.forPartialMatch()
-		}
-
-		return QueryResult.forNoMatch()
-	}
-
-	get IsEmpty(){
-		return this.query === ''
-	}
-
-	static topFolderCheck<TSuggestion extends ISuggestion> (queryPath: ObsidianPath, context:IEditorSuggestContext, settings: NoteAutoCreatorSettings): MatchChecker<TSuggestion>{
-		if (settings.relativeTopFolders.length > 0){
-			const filePath = new ObsidianFilePath(context.file.path)
-			const topFolderToUse = settings.relativeTopFolders.find(folder => {
-				return folder.isAncestorOf(filePath) ||  filePath.FolderPath.VaultPath.toLowerCase().includes(folder.VaultPath)
-			})
-			if (topFolderToUse){
-				const endOfFolderPath = filePath.FolderPath.VaultPath.lastIndexOf(topFolderToUse.VaultPath)
-				const folderPathToUse = filePath.FolderPath.VaultPath.slice(0, endOfFolderPath + topFolderToUse.VaultPath.length)
-				const path = new ObsidianFolderPath(folderPathToUse)
-				return (suggestion) => path.isAncestorOf(suggestion.Path)
-			}
-		}
-		return (suggestion) => true
 	}
 }
 
@@ -126,26 +70,3 @@ export class FileQuery extends Query<FileSuggestion>{
 	}
 }
 
-export class QueryResult {
-	isCompleteMatch: boolean
-	isAtLeastPartialMatch: boolean
-	isNoMatch: boolean
-
-	private constructor(isAtLeastPartialMatch: boolean, isCompleteMatch: boolean) {
-		this.isCompleteMatch = isCompleteMatch
-		this.isAtLeastPartialMatch = isAtLeastPartialMatch
-		this.isNoMatch = !(isCompleteMatch || isAtLeastPartialMatch)
-	}
-
-	static forCompleteMatch(): QueryResult{
-		return new QueryResult(true, true)
-	}
-
-	static forPartialMatch(): QueryResult{
-		return new QueryResult(true, false)
-	}
-
-	static forNoMatch(): QueryResult{
-		return new QueryResult(false, false)
-	}
-}
