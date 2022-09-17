@@ -24,17 +24,15 @@ export class NoteSuggestionCollector {
 		const validSuggestions: NoteSuggestion[] = []
 
 		for (const suggestion of this.getAllPossibleSuggestions(query.query)) {
-			if (suggestion.ForExistingNote || this.settings.suggestLinksToNonExistingNotes){
-				const queryResult = query.couldBeQueryFor(suggestion)
+			const queryResult = query.couldBeQueryFor(suggestion)
 
-				if (queryResult.isCompleteMatch){
-					existingSuggestionForQuery = suggestion
-					continue
-				}
+			if (queryResult.isCompleteMatch){
+				existingSuggestionForQuery = suggestion
+				continue
+			}
 
-				if (queryResult.isAtLeastPartialMatch){
-					validSuggestions.push(suggestion)
-				}
+			if (queryResult.isAtLeastPartialMatch){
+				validSuggestions.push(suggestion)
 			}
 		}
 
@@ -85,7 +83,12 @@ export class NoteSuggestionCollector {
 		for (const linkSuggestion of linkSuggestions) {
 			addIfPathHasNotBeSeen(linkSuggestion.path, linkSuggestion.file !== null, linkSuggestion.alias)
 		}
-		return suggestions
+
+		if(this.settings.suggestLinksToNonExistingNotes){
+			return suggestions
+		} else{
+			return suggestions.filter(suggestion => suggestion.ForExistingNote)
+		}
 	}
 }
 
