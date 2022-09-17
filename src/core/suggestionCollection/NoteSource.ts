@@ -9,7 +9,7 @@ import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {FileQuery} from "../queries/FileQuery"
 import {ISuggestionSource} from "./ISuggestionSource"
 
-export class NoteSource implements ISuggestionSource{
+export class NoteSource implements ISuggestionSource<NoteSuggestion>{
 	private metadata: IMetadataCollection
 	private settings: NoteAutoCreatorSettings
 

@@ -2,16 +2,16 @@ import {ISuggestion, Suggestion} from "../suggestions/ISuggestion"
 import {Query} from "../queries/Query"
 import {ISuggestionSource} from "./ISuggestionSource"
 
-export class BaseSuggestionCollector2{
-	private readonly suggestionSource: ISuggestionSource
+export class BaseSuggestionCollector2<TSuggestion extends ISuggestion>{
+	private readonly suggestionSource: ISuggestionSource<TSuggestion>
 
-	constructor(suggestionSource: ISuggestionSource) {
+	constructor(suggestionSource: ISuggestionSource<TSuggestion>) {
 		this.suggestionSource = suggestionSource
 	}
 
-	getSuggestions(query: Query<ISuggestion>): ISuggestion[] {
-		let existingSuggestionForQuery: ISuggestion
-		const validSuggestions: ISuggestion[] = []
+	getSuggestions(query: Query<TSuggestion>): TSuggestion[] {
+		let existingSuggestionForQuery: TSuggestion
+		const validSuggestions: TSuggestion[] = []
 
 		for (const suggestion of this.suggestionSource.getAllPossibleSuggestions(query)) {
 			const queryResult = query.couldBeQueryFor(suggestion)

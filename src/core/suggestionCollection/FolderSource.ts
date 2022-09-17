@@ -4,7 +4,7 @@ import {FolderQuery} from "../queries/FolderQuery"
 import {ObsidianFolderPath} from "../paths/ObsidianFolderPath"
 import {ISuggestionSource} from "./ISuggestionSource"
 
-export class FolderSource implements ISuggestionSource{
+export class FolderSource implements ISuggestionSource<FolderSuggestion>{
 	private readonly fileSystem: IFileSystem
 
 	constructor(fileSystem: IFileSystem) {
