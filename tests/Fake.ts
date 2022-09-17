@@ -15,14 +15,16 @@ import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 
 class FakeInterop implements IObsidianInterop {
 	private metadataCollection: IMetadataCollection = Fake.MetaDataCollection
+	private fileSystem: IFileSystem = Fake.FileSystem
 
 	withMetadataCollection(metadataCollection: IMetadataCollection): FakeInterop{
 		this.metadataCollection = metadataCollection
 		return this
 	}
 
-	folderExists(folderPath: ObsidianFolderPath): boolean {
-		return false
+	withFileSystem(fileSystem: IFileSystem): FakeInterop{
+		this.fileSystem = fileSystem
+		return this
 	}
 
 	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string {
@@ -30,11 +32,11 @@ class FakeInterop implements IObsidianInterop {
 	}
 
 	getAllFileDescendantsOf(folderPath: string): TFile[] {
-		return []
+		return this.fileSystem.getAllFileDescendantsOf(folderPath)
 	}
 
 	getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile> {
-		return Promise.resolve(undefined)
+		return this.fileSystem.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
 	}
 
 	getUnresolvedLinks(): Record<string, Record<string, number>> {
@@ -45,7 +47,7 @@ class FakeInterop implements IObsidianInterop {
 	}
 
 	noteExists(notePath: string): boolean {
-		return false
+		return this.fileSystem.noteExists(notePath)
 	}
 
 	getCoreTemplatesPath(): string | undefined {
@@ -57,7 +59,7 @@ class FakeInterop implements IObsidianInterop {
 	}
 
 	getFileContentOf(filePath: string): Promise<string> {
-		return Promise.resolve("")
+		return this.fileSystem.getFileContentOf(filePath)
 	}
 
 	runTemplaterOn(file: TFile): Promise<void> {
@@ -82,12 +84,14 @@ class FakeInterop implements IObsidianInterop {
 		return this.metadataCollection.getHeadersIn(filePath)
 	}
 
-	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null {
-		return null
+	getFile = this.fileSystem.getFile
+
+	getPathsToAllLoadedFolders(): ObsidianFolderPath[]{
+		return this.fileSystem.getPathsToAllLoadedFolders()
 	}
 
-	getPathsToAllLoadedFolders(): ObsidianFolderPath[] {
-		return []
+	folderExists(folderPath: ObsidianFolderPath): boolean {
+		return this.fileSystem.folderExists(folderPath)
 	}
 }
 
@@ -131,14 +135,27 @@ class FakeFileSystem implements IFileSystem {
 	}
 
 	getPathsToAllLoadedFolders(): ObsidianFolderPath[] {
-		return []
+		return this.folderPaths
+	}
+
+	private folderPaths: ObsidianFolderPath[] = []
+
+	withFolders(folderPaths: string[]): FakeFileSystem{
+		this.folderPaths = folderPaths.map(s => new ObsidianFolderPath(s))
+		return this
 	}
 }
 
 export class FakeMetadataCollection implements IMetadataCollection{
-	private linkSuggestions: ObsidianLinkSuggestion[] = []
-	private unresolvedLinks: Record<string, Record<string, number>> = {}
-	private headersByPath: Map<string, HeadingCache[]> = new Map<string, HeadingCache[]>()
+	private linkSuggestions: ObsidianLinkSuggestion[]
+	private unresolvedLinks: Record<string, Record<string, number>>
+	private headersByPath: Map<string, HeadingCache[]>
+
+	constructor() {
+		this.linkSuggestions = []
+		this.unresolvedLinks = {}
+		this.headersByPath = new Map<string, HeadingCache[]>()
+	}
 
 	getLinkSuggestions(): ObsidianLinkSuggestion[] {
 		return this.linkSuggestions

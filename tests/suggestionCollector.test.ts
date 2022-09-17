@@ -8,6 +8,7 @@ import {
 import 'jest-extended'
 import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCollector"
 import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
+import {FolderSuggestion} from "../src/core/suggestions/FolderSuggestion"
 
 it.each([
 	{query: 'my note'},
@@ -124,6 +125,32 @@ test('Only include suggestions from nearest top folder', () => {
 		new ExistingNoteSuggestion('folder1/subfolder/subfolder/note3'),
 		new ExistingNoteSuggestion('folder1/subfolder/subfolder/note4'),
 	]
+
+	const observedSuggestions = collector.getSuggestions(suggestionContext)
+	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
+})
+
+test('It is possible to search for folders', () => {
+    const loadedFoldersPaths = [
+		"",
+		"folder1/",
+		"folder2/",
+		"folder2/folder2.1/",
+		"folder1/folder123/",
+	]
+
+	const fileSystem = Fake.FileSystem.withFolders(loadedFoldersPaths)
+	const interOp = Fake.Interop.withFileSystem(fileSystem)
+	const collector = new SuggestionCollector(interOp, Fake.Settings)
+
+	const query = '/folder2'
+
+	const expectedSuggestions: FolderSuggestion[] = [
+		new FolderSuggestion(new ObsidianFolderPath("/folder2")),
+		new FolderSuggestion(new ObsidianFolderPath("folder2/folder2.1/")),
+	]
+
+	const suggestionContext = Fake.EditorSuggestionContext(query)
 
 	const observedSuggestions = collector.getSuggestions(suggestionContext)
 	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)

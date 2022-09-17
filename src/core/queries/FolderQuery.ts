@@ -18,7 +18,7 @@ export class FolderQuery extends Query<FolderSuggestion>{
 		const partialMatchFoundCheckers: FolderMatchChecker = allTrue([
 			Query.topFolderCheck(lowerCaseQueryPath, context, settings),
 			anyTrue([
-				(suggestion: FolderSuggestion) => suggestion.Path.VaultPath.toLowerCase().contains(lowerCaseQueryPath.VaultPath)
+				(suggestion: FolderSuggestion) => suggestion.Path.VaultPath.toLowerCase().includes(lowerCaseQueryPath.VaultPath)
 			])
 		])
 
