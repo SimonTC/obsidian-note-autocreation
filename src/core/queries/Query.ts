@@ -17,22 +17,22 @@ export function anyTrue<TSuggestion extends ISuggestion>(matchers: MatchChecker<
 }
 
 export class Query<TSuggestion extends ISuggestion> {
-	private fullMatchFoundCheckers: MatchChecker<TSuggestion>[]
-	private partialMatchFoundCheckers: MatchChecker<TSuggestion>[]
+	public readonly fullMatchFoundChecker: MatchChecker<TSuggestion>
+	public readonly partialMatchFoundChecker: MatchChecker<TSuggestion>
 	readonly query: string
 
 	protected constructor(query: string, fullMatchFoundCheckers: MatchChecker<TSuggestion>[], partialMatchFoundCheckers: MatchChecker<TSuggestion>[]) {
-		this.fullMatchFoundCheckers = fullMatchFoundCheckers
-		this.partialMatchFoundCheckers = partialMatchFoundCheckers
+		this.fullMatchFoundChecker = anyTrue(fullMatchFoundCheckers)
+		this.partialMatchFoundChecker = anyTrue(partialMatchFoundCheckers)
 		this.query = query
 	}
 
 	couldBeQueryFor(suggestion: TSuggestion): QueryResult {
-		if (this.fullMatchFoundCheckers.some(checker => checker(suggestion))) {
+		if (this.fullMatchFoundChecker(suggestion)) {
 			return QueryResult.forCompleteMatch()
 		}
 
-		if (this.partialMatchFoundCheckers.some(checker => checker(suggestion))) {
+		if (this.partialMatchFoundChecker(suggestion)) {
 			return QueryResult.forPartialMatch()
 		}
 
