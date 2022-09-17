@@ -9,6 +9,7 @@ import 'jest-extended'
 import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCollector"
 import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 import {FolderSuggestion} from "../src/core/suggestions/FolderSuggestion"
+import {ISuggestion} from "../src/core/suggestions/ISuggestion"
 
 it.each([
 	{query: 'my note'},
@@ -148,6 +149,44 @@ test('It is possible to search for folders', () => {
 	const expectedSuggestions: FolderSuggestion[] = [
 		new FolderSuggestion(new ObsidianFolderPath("/folder2")),
 		new FolderSuggestion(new ObsidianFolderPath("folder2/folder2.1/")),
+	]
+
+	const suggestionContext = Fake.EditorSuggestionContext(query)
+
+	const observedSuggestions = collector.getSuggestions(suggestionContext)
+	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
+})
+
+test('Notes and folders are included in the same set of suggestions', () => {
+    const folderPaths = [
+		"",
+		"folder1",
+		"folder1/folder1.2",
+		"folder2"
+	]
+
+	const noteLinks = [
+		Fake.LinkToExistingNote('folder1/folder1.2/note1'),
+		Fake.LinkToExistingNote('folder2/note2'),
+		Fake.LinkToExistingNote('my note'),
+	]
+
+	const interOp = Fake.Interop
+		.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(noteLinks))
+		.withFileSystem(Fake.FileSystem.withFolders(folderPaths))
+
+	const collector = new SuggestionCollector(interOp, Fake.Settings)
+
+	const query = ''
+
+	const expectedSuggestions: ISuggestion[] = [
+		new FolderSuggestion(new ObsidianFolderPath("/")),
+		new FolderSuggestion(new ObsidianFolderPath("/folder1/")),
+		new FolderSuggestion(new ObsidianFolderPath("/folder1/folder1.2/")),
+		new FolderSuggestion(new ObsidianFolderPath("folder2/")),
+		new ExistingNoteSuggestion('folder1/folder1.2/note1'),
+		new ExistingNoteSuggestion('folder2/note2'),
+		new ExistingNoteSuggestion('my note'),
 	]
 
 	const suggestionContext = Fake.EditorSuggestionContext(query)
