@@ -29,3 +29,6 @@ data.json
 
 # Exclude everything in the test vault
 /tests/Note Auto Creation Test Vault/*
+
+# Exclude coverage reports
+/coverage/*
