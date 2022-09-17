@@ -4,10 +4,10 @@ import {
 	NewNoteSuggestion,
 	NoteSuggestion
 } from "../src/core/suggestions/NoteSuggestion"
-import {NoteSuggestionCollector} from "../src/core/suggestionCollection/NoteSuggestionCollector"
 import {faker} from "@faker-js/faker"
 import 'jest-extended'
 import {Fake} from "./Fake"
+import {NoteSuggestionCollector} from "../src/core/suggestionCollection/BaseSuggestionCollector"
 
 test('the suggestion collector can deal with big vaults', () => {
 	const getFakeLink = () => {

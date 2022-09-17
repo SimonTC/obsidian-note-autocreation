@@ -5,15 +5,14 @@ import {
 	IObsidianInterop
 } from "../../interop/ObsidianInterfaces"
 import {ExistingNoteSuggestion, NewNoteSuggestion} from "../suggestions/NoteSuggestion"
-import {NoteSuggestionCollector} from "./NoteSuggestionCollector"
 import {TemplateSuggestionCollector} from "./TemplateSuggestionCollector"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {HeaderSuggestionCollector} from "./HeaderSuggestionCollector"
 import {ISuggestion} from "../suggestions/ISuggestion"
 import {NotFoundSuggestion} from "../suggestions/NotFoundSuggestion"
 import {FileQuery} from "../queries/FileQuery"
-import {FolderSuggestionCollector} from "./FolderSuggestionCollector"
 import {FolderQuery} from "../queries/FolderQuery"
+import {FolderSuggestionCollector, NoteSuggestionCollector} from "./BaseSuggestionCollector"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector

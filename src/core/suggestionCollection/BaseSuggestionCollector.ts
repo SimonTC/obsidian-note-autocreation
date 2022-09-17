@@ -1,8 +1,14 @@
 import {ISuggestion, Suggestion} from "../suggestions/ISuggestion"
 import {Query} from "../queries/Query"
 import {ISuggestionSource} from "./ISuggestionSource"
+import {NoteSuggestion} from "../suggestions/NoteSuggestion"
+import {IFileSystem, IMetadataCollection} from "../../interop/ObsidianInterfaces"
+import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
+import {NoteSource} from "./NoteSource"
+import {FolderSuggestion} from "../suggestions/FolderSuggestion"
+import {FolderSource} from "./FolderSource"
 
-export class BaseSuggestionCollector2<TSuggestion extends ISuggestion>{
+export class BaseSuggestionCollector<TSuggestion extends ISuggestion>{
 	private readonly suggestionSource: ISuggestionSource<TSuggestion>
 
 	constructor(suggestionSource: ISuggestionSource<TSuggestion>) {
@@ -37,36 +43,14 @@ export class BaseSuggestionCollector2<TSuggestion extends ISuggestion>{
 	}
 }
 
-
-export abstract class BaseSuggestionCollector<TSuggestion extends ISuggestion> {
-	getSuggestions(query: Query<TSuggestion>): TSuggestion[] {
-		let existingSuggestionForQuery: TSuggestion
-		const validSuggestions: TSuggestion[] = []
-
-		for (const suggestion of this.getAllPossibleSuggestions(query)) {
-			const queryResult = query.couldBeQueryFor(suggestion)
-
-			if (queryResult.isCompleteMatch) {
-				existingSuggestionForQuery = suggestion
-				continue
-			}
-
-			if (queryResult.isAtLeastPartialMatch) {
-				validSuggestions.push(suggestion)
-			}
-		}
-
-		validSuggestions.sort(Suggestion.compare)
-
-		if (query.IsEmpty) {
-			return validSuggestions
-		}
-
-		validSuggestions.unshift(this.createSuggestionFromQuery(query, existingSuggestionForQuery))
-		return validSuggestions
+export class NoteSuggestionCollector extends BaseSuggestionCollector<NoteSuggestion>{
+	constructor(metadata: IMetadataCollection, settings: NoteAutoCreatorSettings) {
+		super(new NoteSource(metadata, settings))
 	}
+}
 
-	protected abstract createSuggestionFromQuery(query: Query<TSuggestion>, existingSuggestionForQuery: undefined | TSuggestion): TSuggestion
-
-	protected abstract getAllPossibleSuggestions(query: Query<TSuggestion>): TSuggestion[]
+export class FolderSuggestionCollector extends BaseSuggestionCollector<FolderSuggestion>{
+	constructor(fileSystem: IFileSystem) {
+		super(new FolderSource(fileSystem))
+	}
 }
