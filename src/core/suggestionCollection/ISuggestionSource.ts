@@ -6,7 +6,7 @@ export interface ISuggestionSource<TSuggestion extends ISuggestion> {
 	 * Returns all suggestions that the source has access to.
 	 * @param query The query that is used in the search. This might be used to create the suggestion objects, but is not used to influence what is returned.
 	 */
-	getAllPossibleSuggestions(query: Query<TSuggestion>): TSuggestion[]
+	getAllPossibleSuggestions(query: string): TSuggestion[]
 
 	/**
 	 * Creates a suggestion from the given query.

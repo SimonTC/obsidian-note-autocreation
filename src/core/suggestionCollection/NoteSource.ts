@@ -31,14 +31,13 @@ export class NoteSource implements ISuggestionSource<NoteSuggestion>{
 		}
 	}
 
-	getAllPossibleSuggestions(query: FileQuery): NoteSuggestion[]{
+	getAllPossibleSuggestions(query: string): NoteSuggestion[]{
 		const observedPaths = new Set<string>()
 		const suggestions: NoteSuggestion[] = []
-		const trigger = query.query
 		const addIfPathHasNotBeSeen = (path: string, exist: boolean, alias: string | unknown) => {
 			const pathHasBeenSeen = observedPaths.has(path)
 			if (alias || !pathHasBeenSeen){
-				suggestions.push(this.createSuggestion(path, alias, exist, trigger))
+				suggestions.push(this.createSuggestion(path, alias, exist, query))
 				observedPaths.add(path)
 			}
 			return !pathHasBeenSeen

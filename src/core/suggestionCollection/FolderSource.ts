@@ -17,7 +17,7 @@ export class FolderSource implements ISuggestionSource<FolderSuggestion>{
 			: new FolderSuggestion(new ObsidianFolderPath(query.query))
 	}
 
-	getAllPossibleSuggestions(query: FolderQuery): FolderSuggestion[]{
+	getAllPossibleSuggestions(query: string): FolderSuggestion[]{
 		return this.fileSystem.getPathsToAllLoadedFolders().map(FolderSuggestion.FromPath)
 	}
 }
