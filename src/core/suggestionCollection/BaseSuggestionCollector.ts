@@ -2,11 +2,12 @@ import {ISuggestion, Suggestion} from "../suggestions/ISuggestion"
 import {Query} from "../queries/Query"
 import {ISuggestionSource} from "./ISuggestionSource"
 import {NoteSuggestion} from "../suggestions/NoteSuggestion"
-import {IFileSystem, IMetadataCollection} from "../../interop/ObsidianInterfaces"
+import {IFileSystem, IMetadataCollection, IObsidianInterop} from "../../interop/ObsidianInterfaces"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {NoteSource} from "./NoteSource"
 import {FolderSuggestion} from "../suggestions/FolderSuggestion"
 import {FolderSource} from "./FolderSource"
+import {NoteAndFolderSource} from "./NoteAndFolderSource"
 
 export class BaseSuggestionCollector<TSuggestion extends ISuggestion>{
 	private readonly suggestionSource: ISuggestionSource<TSuggestion>
@@ -19,7 +20,7 @@ export class BaseSuggestionCollector<TSuggestion extends ISuggestion>{
 		let existingSuggestionForQuery: TSuggestion
 		const validSuggestions: TSuggestion[] = []
 
-		for (const suggestion of this.suggestionSource.getAllPossibleSuggestions(query)) {
+		for (const suggestion of this.suggestionSource.getAllPossibleSuggestions(query.query)) {
 			const queryResult = query.couldBeQueryFor(suggestion)
 
 			if (queryResult.isCompleteMatch) {
@@ -52,5 +53,11 @@ export class NoteSuggestionCollector extends BaseSuggestionCollector<NoteSuggest
 export class FolderSuggestionCollector extends BaseSuggestionCollector<FolderSuggestion>{
 	constructor(fileSystem: IFileSystem) {
 		super(new FolderSource(fileSystem))
+	}
+}
+
+export class NoteAndFolderSuggestionCollector extends BaseSuggestionCollector<ISuggestion>{
+	constructor(interop: IObsidianInterop, settings: NoteAutoCreatorSettings) {
+		super(new NoteAndFolderSource(interop, settings))
 	}
 }
