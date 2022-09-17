@@ -20,7 +20,8 @@ export class BaseSuggestionCollector<TSuggestion extends ISuggestion>{
 		let existingSuggestionForQuery: TSuggestion
 		const validSuggestions: TSuggestion[] = []
 
-		for (const suggestion of this.suggestionSource.getAllPossibleSuggestions(query.query)) {
+		const allPossibleSuggestions = this.suggestionSource.getAllPossibleSuggestions(query.query)
+		for (const suggestion of allPossibleSuggestions) {
 			const queryResult = query.couldBeQueryFor(suggestion)
 
 			if (queryResult.isCompleteMatch) {

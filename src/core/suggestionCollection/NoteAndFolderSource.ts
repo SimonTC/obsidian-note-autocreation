@@ -5,9 +5,7 @@ import {IObsidianInterop} from "../../interop/ObsidianInterfaces"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {NoteSource} from "./NoteSource"
 import {FolderSource} from "./FolderSource"
-import {FileQuery} from "../queries/FileQuery"
 import {NoteSuggestion} from "../suggestions/NoteSuggestion"
-import {FolderQuery} from "../queries/FolderQuery"
 import {FolderSuggestion} from "../suggestions/FolderSuggestion"
 
 export class NoteAndFolderSource implements ISuggestionSource<ISuggestion>{
@@ -27,11 +25,11 @@ export class NoteAndFolderSource implements ISuggestionSource<ISuggestion>{
 	}
 
 	createSuggestionFromQuery(query: Query<ISuggestion>, existingSuggestionForQuery: undefined | ISuggestion): ISuggestion {
-		if(query instanceof FileQuery){
-			return this.noteSource.createSuggestionFromQuery(query, <NoteSuggestion>existingSuggestionForQuery)
-		} else if (query instanceof FolderQuery){
-			return this.folderSource.createSuggestionFromQuery(query, <FolderSuggestion>existingSuggestionForQuery)
+		if (existingSuggestionForQuery && existingSuggestionForQuery instanceof FolderSuggestion){
+			return this.folderSource.createSuggestionFromQuery(query, existingSuggestionForQuery)
 		}
+
+		return this.noteSource.createSuggestionFromQuery(query, <NoteSuggestion>existingSuggestionForQuery)
 	}
 
 	getAllPossibleSuggestions(query: string): ISuggestion[] {

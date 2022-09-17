@@ -144,10 +144,11 @@ test('It is possible to search for folders', () => {
 	const interOp = Fake.Interop.withFileSystem(fileSystem)
 	const collector = new SuggestionCollector(interOp, Fake.Settings)
 
-	const query = '/folder2'
+	const query = 'folder2'
 
-	const expectedSuggestions: FolderSuggestion[] = [
-		new FolderSuggestion(new ObsidianFolderPath("/folder2")),
+	const expectedSuggestions: ISuggestion[] = [
+		new NewNoteSuggestion(query),
+		new FolderSuggestion(new ObsidianFolderPath("folder2/")),
 		new FolderSuggestion(new ObsidianFolderPath("folder2/folder2.1/")),
 	]
 
@@ -180,10 +181,9 @@ test('Notes and folders are included in the same set of suggestions', () => {
 	const query = ''
 
 	const expectedSuggestions: ISuggestion[] = [
-		new FolderSuggestion(new ObsidianFolderPath("/")),
-		new FolderSuggestion(new ObsidianFolderPath("/folder1/")),
-		new FolderSuggestion(new ObsidianFolderPath("/folder1/folder1.2/")),
-		new FolderSuggestion(new ObsidianFolderPath("folder2/")),
+		new FolderSuggestion(new ObsidianFolderPath("folder1")),
+		new FolderSuggestion(new ObsidianFolderPath("folder1/folder1.2")),
+		new FolderSuggestion(new ObsidianFolderPath("folder2")),
 		new ExistingNoteSuggestion('folder1/folder1.2/note1'),
 		new ExistingNoteSuggestion('folder2/note2'),
 		new ExistingNoteSuggestion('my note'),
