@@ -24,6 +24,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Can disable suggestions for links to notes that do not exist                                           | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled |
 | Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ❌                                                                                     |
 | Can limit note suggestions to notes from only part of the vault                                        | ❌                | ✔️                                                                                    |
+| Suggests paths to folders                                                                              | ❌                | ✔️<br/>Folder suggestions are disabled by default but can be enabled in settings      |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -116,6 +117,20 @@ You can choose to ignore the warning and still use any of the special symbols as
 By default, Note Auto Creator will suggest links to notes that have not been created if such links have been inserted in other files.
 Disabling this feature will hide suggestions for links to notes that do not exist. 
 
+### Include folders in suggestions
+By default, Note Auto Creator will not include paths to folders in the suggestions it gives when link insertion is triggered. 
+If you enable this feature you will also see paths to folders in the suggestions.
+You will not be able to insert links to folders though. To use the folder suggestions you can either click on them or expand them using TAB. 
+This will insert the folder path, and you can then continue writing the rest of the path to the note you want to link to.
+
+![Always show folder paths](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/readme_assets/NAC_Include_folders_always.gif)
+
+If you don't want to always include folder paths in the suggestions you can choose the option "Only on trigger" from the setting "When should folder suggestions be shown".
+This will let you define a specific trigger that changes the suggestions shown from notes to folders. 
+When this option is enabled, only folders are shown when the first character(s) you write matches the trigger in the setting "Trigger for showing only folders".
+
+![Only show folder paths on trigger](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/readme_assets/NAC_Folders_with_trigger.gif)
+
 ### Template insertion trigger
 Any symbol can be used to trigger the selection of a template to insert. By default, the trigger symbol is `$`. This symbol can be configured by changing the value in `Trigger for template execution`.
 This setting is only shown when Templater is installed and enabled.
@@ -137,9 +152,10 @@ This plugin should work on all operating systems supported by Obsidian, but has 
 | Linux           | ✔️         | ✔️      |
 
 ## Todo
-- [X] Set specific top folders to collect note suggestions from
 - [ ] Enable block linking if inserting a link to an existing note
 - [ ] Suggest links to other file types than markdown
+- [ ] Make it possible to create links and notes with relative paths 
+- [X] Set specific top folders to collect note suggestions from
 - [X] Enable header linking if inserting a link to an existing note
 - [X] Support searching for notes by alias
 
