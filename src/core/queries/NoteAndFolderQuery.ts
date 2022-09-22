@@ -12,19 +12,17 @@ export class NoteAndFolderQuery extends Query<ISuggestion>{
 		const noteQuery = FileQuery.forNoteSuggestions(context, settings)
 		const folderQuery = new FolderQuery(context, settings)
 
-		const fullMatchFoundChecker = anyTrue(
-			[
-				allTrue([NoteAndFolderQuery.isNoteSuggestion, noteQuery.fullMatchFoundChecker]),
-				allTrue([NoteAndFolderQuery.isFolderSuggestion,folderQuery.fullMatchFoundChecker])
-			]
-		)
-		const partialMatchFoundChecker = anyTrue(
-			[
-				allTrue([NoteAndFolderQuery.isNoteSuggestion, noteQuery.partialMatchFoundChecker]),
-				allTrue([NoteAndFolderQuery.isFolderSuggestion,folderQuery.partialMatchFoundChecker])
-			]
-		)
-		super( context.query, fullMatchFoundChecker, partialMatchFoundChecker )
+		const fullMatchFoundCheckers: MatchChecker<ISuggestion>[] = [
+			allTrue([NoteAndFolderQuery.isNoteSuggestion, noteQuery.fullMatchFoundChecker]),
+			allTrue([NoteAndFolderQuery.isFolderSuggestion,folderQuery.fullMatchFoundChecker])
+		]
+
+		const partialMatchFoundCheckers: MatchChecker<ISuggestion>[] = [
+			allTrue([NoteAndFolderQuery.isNoteSuggestion, noteQuery.partialMatchFoundChecker]),
+			allTrue([NoteAndFolderQuery.isFolderSuggestion,folderQuery.partialMatchFoundChecker])
+		]
+
+		super( context.query, anyTrue(fullMatchFoundCheckers), anyTrue(partialMatchFoundCheckers) )
 	}
 
 	static isNoteSuggestion: MatchChecker<ISuggestion> = (suggestion: ISuggestion) => suggestion instanceof NoteSuggestion

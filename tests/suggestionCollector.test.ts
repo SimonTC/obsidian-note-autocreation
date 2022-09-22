@@ -10,6 +10,7 @@ import {SuggestionCollector} from "../src/core/suggestionCollection/SuggestionCo
 import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
 import {FolderSuggestion} from "../src/core/suggestions/FolderSuggestion"
 import {ISuggestion} from "../src/core/suggestions/ISuggestion"
+import {FolderSuggestionMode} from "../src/settings/NoteAutoCreatorSettings"
 
 it.each([
 	{query: 'my note'},
@@ -142,7 +143,10 @@ test('It is possible to search for folders', () => {
 
 	const fileSystem = Fake.FileSystem.withFolders(loadedFoldersPaths)
 	const interOp = Fake.Interop.withFileSystem(fileSystem)
-	const collector = new SuggestionCollector(interOp, Fake.Settings)
+	const settings = Fake.Settings
+	settings.includeFoldersInSuggestions = true
+	settings.folderSuggestionSettings = {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: "/"}
+	const collector = new SuggestionCollector(interOp, settings)
 
 	const query = 'folder2'
 
@@ -176,7 +180,11 @@ test('Notes and folders are included in the same set of suggestions', () => {
 		.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(noteLinks))
 		.withFileSystem(Fake.FileSystem.withFolders(folderPaths))
 
-	const collector = new SuggestionCollector(interOp, Fake.Settings)
+	const settings = Fake.Settings
+	settings.includeFoldersInSuggestions = true
+	settings.folderSuggestionSettings = {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: "/"}
+
+	const collector = new SuggestionCollector(interOp, settings)
 
 	const query = ''
 
