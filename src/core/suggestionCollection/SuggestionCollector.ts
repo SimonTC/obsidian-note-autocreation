@@ -6,7 +6,7 @@ import {
 } from "../../interop/ObsidianInterfaces"
 import {ExistingNoteSuggestion, NewNoteSuggestion} from "../suggestions/NoteSuggestion"
 import {TemplateSuggestionCollector} from "./TemplateSuggestionCollector"
-import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
+import {FolderSuggestionMode, NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {HeaderSuggestionCollector} from "./HeaderSuggestionCollector"
 import {ISuggestion} from "../suggestions/ISuggestion"
 import {NotFoundSuggestion} from "../suggestions/NotFoundSuggestion"
@@ -16,6 +16,8 @@ import {
 	NoteSuggestionCollector
 } from "./BaseSuggestionCollector"
 import {NoteAndFolderQuery} from "../queries/NoteAndFolderQuery"
+import {FileQuery} from "../queries/FileQuery"
+import {FolderQuery} from "../queries/FolderQuery"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
@@ -61,7 +63,20 @@ export class SuggestionCollector {
 				suggestions = [new NotFoundSuggestion(query, 'No headers to link to in non-existing notes')]
 			}
 		} else{
-			suggestions = this.combinedSuggestionCollector.getSuggestions(new NoteAndFolderQuery(context, this.settings))
+			if (this.settings.includeFoldersInSuggestions){
+				if (this.settings.folderSuggestionSettings.folderSuggestionMode === FolderSuggestionMode.OnTrigger){
+					if(query.toLowerCase().startsWith(this.settings.folderSuggestionSettings.folderSuggestionTrigger.toLowerCase())){
+						context.query = context.query.substring(this.settings.folderSuggestionSettings.folderSuggestionTrigger.length)
+						suggestions = this.folderSuggestionCollector.getSuggestions(new FolderQuery(context, this.settings))
+					} else {
+						suggestions = this.noteSuggestionCollector.getSuggestions(FileQuery.forNoteSuggestions(context, this.settings))
+					}
+				} else{
+					suggestions = this.combinedSuggestionCollector.getSuggestions(new NoteAndFolderQuery(context, this.settings))
+				}
+			} else {
+				suggestions = this.noteSuggestionCollector.getSuggestions(FileQuery.forNoteSuggestions(context, this.settings))
+			}
 		}
 
 		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query, 'No match found')]
