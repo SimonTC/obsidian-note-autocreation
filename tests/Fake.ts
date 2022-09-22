@@ -8,7 +8,7 @@ import {
 } from "../src/interop/ObsidianInterfaces"
 import {FileStats, HeadingCache, Pos, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {LinkCreationCommand} from "../src/core/LinkCreationPreparer"
-import {NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
+import {FolderSuggestionSettings, NoteAutoCreatorSettings} from "../src/settings/NoteAutoCreatorSettings"
 import {FileQuery} from "../src/core/queries/FileQuery"
 import {ObsidianFilePath} from "../src/core/paths/ObsidianFilePath"
 import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
@@ -194,6 +194,8 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	triggerSymbol = '@'
 	suggestLinksToNonExistingNotes = true
 	relativeTopFolders: ObsidianFolderPath[] = []
+	includeFoldersInSuggestions = false
+	folderSuggestionSettings = <FolderSuggestionSettings>{}
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{

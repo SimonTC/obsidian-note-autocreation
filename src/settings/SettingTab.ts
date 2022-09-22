@@ -2,6 +2,7 @@ import {App, ButtonComponent, PluginSettingTab, SearchComponent, Setting, TextCo
 import NoteAutoCreator from "../main"
 import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 import {FolderSuggest} from "./FolderSuggester"
+import {FolderSuggestionMode} from "./NoteAutoCreatorSettings"
 
 export class SettingTab extends PluginSettingTab {
 	plugin: NoteAutoCreator
@@ -21,6 +22,7 @@ export class SettingTab extends PluginSettingTab {
 
 		this.addSuggestionTriggerSetting(containerEl)
 		this.addSuggestNonExistingNotesSetting(containerEl)
+		this.addFolderSearchTriggerSetting(containerEl)
 
 		// @ts-ignore
 		// No need to show the setting if templater does not exist
@@ -172,6 +174,62 @@ export class SettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings()
 				})
 			)
+	}
+
+	private addFolderSearchTriggerSetting(containerEl: HTMLElement){
+		const description = document.createDocumentFragment()
+		description.append(
+			'Set this to true if you want to include folders in the suggestions shown.',
+			description.createEl('br'),
+			'You cannot create a link to a folder, but it makes it easier to create a new note or link to an existing note that is deep in your folder structure.',
+			description.createEl('br'),
+			'Extra options are available to control when the folder suggestions are shown.'
+		)
+
+		new Setting(containerEl)
+			.setName('Include folders in suggestions')
+			.setDesc(description)
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.includeFoldersInSuggestions)
+				.onChange(async(value) => {
+					this.plugin.settings.includeFoldersInSuggestions = value
+					await this.plugin.saveSettings()
+					this.display() // Force refresh
+				})
+			)
+
+		if (this.plugin.settings.includeFoldersInSuggestions){
+			const folderSuggestionSettings = this.plugin.settings.folderSuggestionSettings ?? {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: '/'}
+			new Setting(containerEl)
+				.setName('When should folder suggestions be shown')
+				.addDropdown(dropdown => {
+					dropdown
+						.addOption('always', 'Always')
+						.addOption('on-trigger', 'Only on trigger')
+						.setValue(folderSuggestionSettings.folderSuggestionMode)
+						.onChange(async(value) => {
+							folderSuggestionSettings.folderSuggestionMode = value as FolderSuggestionMode
+							this.plugin.settings.folderSuggestionSettings = folderSuggestionSettings
+							await this.plugin.saveSettings()
+							this.display() // force refresh
+						})
+					}
+				)
+
+			if (folderSuggestionSettings.folderSuggestionMode === FolderSuggestionMode.OnTrigger){
+				new Setting(containerEl)
+					.setName('Trigger for showing only folders')
+					.setDesc(`The text string that will trigger folder suggestions to be shown. Note that it will only trigger if this is the first symbol you write after writing '${this.plugin.settings.triggerSymbol}'`)
+					.addText(component => component
+						.setValue(folderSuggestionSettings.folderSuggestionTrigger)
+						.onChange(async (value) => {
+							folderSuggestionSettings.folderSuggestionTrigger = value
+							this.plugin.settings.folderSuggestionSettings = folderSuggestionSettings
+							await this.plugin.saveSettings()
+						})
+					)
+			}
+		}
 	}
 
 	private warnIfTriggerIsProblematic(value: string, trigger: Setting, component: TextComponent) {
