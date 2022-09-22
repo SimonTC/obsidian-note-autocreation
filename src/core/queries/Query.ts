@@ -21,9 +21,9 @@ export class Query<TSuggestion extends ISuggestion> {
 	public readonly partialMatchFoundChecker: MatchChecker<TSuggestion>
 	readonly query: string
 
-	protected constructor(query: string, fullMatchFoundCheckers: MatchChecker<TSuggestion>[], partialMatchFoundCheckers: MatchChecker<TSuggestion>[]) {
-		this.fullMatchFoundChecker = anyTrue(fullMatchFoundCheckers)
-		this.partialMatchFoundChecker = anyTrue(partialMatchFoundCheckers)
+	protected constructor(query: string, fullMatchFoundChecker: MatchChecker<TSuggestion>, partialMatchFoundChecker: MatchChecker<TSuggestion>) {
+		this.fullMatchFoundChecker = fullMatchFoundChecker
+		this.partialMatchFoundChecker = partialMatchFoundChecker
 		this.query = query
 	}
 

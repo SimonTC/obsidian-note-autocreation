@@ -11,17 +11,16 @@ export class FolderQuery extends Query<FolderSuggestion>{
 		const query = context.query
 		const lowerCaseQueryPath = new ObsidianFolderPath(query.toLowerCase())
 
-		const fullMatchFoundCheckers: FolderMatchChecker[] = [
+		const fullMatchFoundChecker: FolderMatchChecker =
 			(suggestion: FolderSuggestion) => suggestion.Path.VaultPath.toLowerCase() === lowerCaseQueryPath.VaultPath
-		]
 
-		const partialMatchFoundCheckers: FolderMatchChecker = allTrue([
+		const partialMatchFoundChecker: FolderMatchChecker = allTrue([
 			Query.topFolderCheck(lowerCaseQueryPath, context, settings),
 			anyTrue([
 				(suggestion: FolderSuggestion) => suggestion.Path.VaultPath.toLowerCase().includes(lowerCaseQueryPath.VaultPath)
 			])
 		])
 
-		super(query, fullMatchFoundCheckers, [partialMatchFoundCheckers])
+		super(query, fullMatchFoundChecker, partialMatchFoundChecker)
 	}
 }

@@ -1,4 +1,4 @@
-import {allTrue, MatchChecker, Query} from "./Query"
+import {allTrue, anyTrue, MatchChecker, Query} from "./Query"
 import {ISuggestion} from "../suggestions/ISuggestion"
 import {IEditorSuggestContext} from "../../interop/ObsidianInterfaces"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
@@ -12,17 +12,19 @@ export class NoteAndFolderQuery extends Query<ISuggestion>{
 		const noteQuery = FileQuery.forNoteSuggestions(context, settings)
 		const folderQuery = new FolderQuery(context, settings)
 
-		super(
-			context.query,
+		const fullMatchFoundChecker = anyTrue(
 			[
 				allTrue([NoteAndFolderQuery.isNoteSuggestion, noteQuery.fullMatchFoundChecker]),
 				allTrue([NoteAndFolderQuery.isFolderSuggestion,folderQuery.fullMatchFoundChecker])
-			],
+			]
+		)
+		const partialMatchFoundChecker = anyTrue(
 			[
 				allTrue([NoteAndFolderQuery.isNoteSuggestion, noteQuery.partialMatchFoundChecker]),
 				allTrue([NoteAndFolderQuery.isFolderSuggestion,folderQuery.partialMatchFoundChecker])
-			],
+			]
 		)
+		super( context.query, fullMatchFoundChecker, partialMatchFoundChecker )
 	}
 
 	static isNoteSuggestion: MatchChecker<ISuggestion> = (suggestion: ISuggestion) => suggestion instanceof NoteSuggestion
