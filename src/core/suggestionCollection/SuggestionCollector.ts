@@ -51,34 +51,66 @@ export class SuggestionCollector {
 		const query = context.query
 		let suggestions: ISuggestion[] = []
 		if (this.configStore.templaterIsEnabled && query.includes(this.settings.templateTriggerSymbol)) {
-			const [noteQuery, templateQuery] = query.split(this.settings.templateTriggerSymbol)
-			const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
-			suggestions = this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
+			suggestions = this.getTemplateSuggestions(query)
 		} else if (query.includes('#')){
-			const [noteQuery, headerQuery] = query.split('#')
-			const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
-			if (noteSuggestion instanceof ExistingNoteSuggestion){
-				suggestions = this.headerSuggestionCollector.getSuggestions(headerQuery, noteSuggestion)
-			} else {
-				suggestions = [new NotFoundSuggestion(query, 'No headers to link to in non-existing notes')]
-			}
-		} else{
-			if (this.settings.includeFoldersInSuggestions){
-				if (this.settings.folderSuggestionSettings.folderSuggestionMode === FolderSuggestionMode.OnTrigger){
-					if(query.toLowerCase().startsWith(this.settings.folderSuggestionSettings.folderSuggestionTrigger.toLowerCase())){
-						context.query = context.query.substring(this.settings.folderSuggestionSettings.folderSuggestionTrigger.length)
-						suggestions = this.folderSuggestionCollector.getSuggestions(new FolderQuery(context, this.settings))
-					} else {
-						suggestions = this.noteSuggestionCollector.getSuggestions(FileQuery.forNoteSuggestions(context, this.settings))
-					}
-				} else{
-					suggestions = this.combinedSuggestionCollector.getSuggestions(new NoteAndFolderQuery(context, this.settings))
-				}
-			} else {
-				suggestions = this.noteSuggestionCollector.getSuggestions(FileQuery.forNoteSuggestions(context, this.settings))
-			}
+			suggestions = this.getHeaderSuggestions(query)
+		} else if (this.settings.includeFoldersInSuggestions){
+			suggestions = this.getFoldersOrCombinedSuggestions(query, context)
+		} else {
+			suggestions = this.getNoteSuggestions(context)
 		}
 
 		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query, 'No match found')]
+	}
+
+	private getNoteSuggestions(context: IEditorSuggestContext) {
+		return this.noteSuggestionCollector.getSuggestions(FileQuery.forNoteSuggestions(context, this.settings))
+	}
+
+	private getFoldersOrCombinedSuggestions(query: string, context: IEditorSuggestContext) {
+		const onlyCollectFoldersOnTrigger = this.settings.folderSuggestionSettings.folderSuggestionMode === FolderSuggestionMode.OnTrigger
+		if (onlyCollectFoldersOnTrigger) {
+			return this.getOnlyFolderOrNoteSuggestions(query, context)
+		} else {
+			return this.getFolderAndNoteSuggestions(context)
+		}
+	}
+
+	private getFolderAndNoteSuggestions(context: IEditorSuggestContext) {
+		return this.combinedSuggestionCollector.getSuggestions(new NoteAndFolderQuery(context, this.settings))
+	}
+
+	private getOnlyFolderOrNoteSuggestions(query: string, context: IEditorSuggestContext) {
+		const trigger = this.settings.folderSuggestionSettings.folderSuggestionTrigger
+		if (this.queryStartsWithTrigger(query, trigger)) {
+			context.query = context.query.substring(trigger.length)
+			return this.getFolderSuggestions(context)
+		} else {
+			return this.getNoteSuggestions(context)
+		}
+	}
+
+	private getFolderSuggestions(context: IEditorSuggestContext) {
+		return this.folderSuggestionCollector.getSuggestions(new FolderQuery(context, this.settings))
+	}
+
+	private queryStartsWithTrigger(query: string, trigger: string) {
+		return query.toLowerCase().startsWith(trigger.toLowerCase())
+	}
+
+	private getHeaderSuggestions(query: string) {
+		const [noteQuery, headerQuery] = query.split('#')
+		const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
+		if (noteSuggestion instanceof ExistingNoteSuggestion) {
+			return this.headerSuggestionCollector.getSuggestions(headerQuery, noteSuggestion)
+		} else {
+			return [new NotFoundSuggestion(query, 'No headers to link to in non-existing notes')]
+		}
+	}
+
+	private getTemplateSuggestions(query: string) {
+		const [noteQuery, templateQuery] = query.split(this.settings.templateTriggerSymbol)
+		const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
+		return this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
 	}
 }
