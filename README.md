@@ -120,8 +120,7 @@ Disabling this feature will hide suggestions for links to notes that do not exis
 ### Include folders in suggestions
 By default, Note Auto Creator will not include paths to folders in the suggestions it gives when link insertion is triggered. 
 If you enable this feature you will also see paths to folders in the suggestions.
-You will not be able to insert links to folders though. To use the folder suggestions you can either click on them or expand them using TAB. 
-This will insert the folder path, and you can then continue writing the rest of the path to the note you want to link to.
+When selecting a path to a folder from the suggestions, the path will be inserted, and you can then continue writing the rest of the path to the note you want to link to.
 
 ![Always show folder paths](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/readme_assets/NAC_Include_folders_always.gif)
 

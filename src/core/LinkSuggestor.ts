@@ -8,6 +8,7 @@ import {TemplateSuggestion} from "./suggestions/TemplateSuggestion"
 import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
 import {ISuggestion} from "./suggestions/ISuggestion"
 import {HeaderSuggestion} from "./suggestions/HeaderSuggestion"
+import {FolderSuggestion} from "./suggestions/FolderSuggestion"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
@@ -61,6 +62,8 @@ export class LinkSuggestor {
 			await this.selectTemplateSuggestion(suggestion, currentFile, context)
 		} else if (suggestion instanceof HeaderSuggestion){
 			await this.selectHeaderSuggestion(suggestion, currentFile, context)
+		} else if (suggestion instanceof FolderSuggestion){
+			this.updateSuggestionLine(suggestion, context)
 		}
 	}
 
