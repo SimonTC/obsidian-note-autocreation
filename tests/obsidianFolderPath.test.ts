@@ -84,3 +84,18 @@ describe('isAncestorOf', function () {
 		expect(obsidianPath.isAncestorOf(toCheck)).toBe(expected)
 	})
 })
+
+describe('getParentOrThis', function () {
+	test('returns itself when folder is root', () => {
+		const path = new ObsidianFolderPath('')
+		expect(path.getParentOrThis().VaultPath).toBe('')
+	})
+
+	it.each([
+		{folderPath: "folder1", expectedParentPath: ''},
+		{folderPath: "folder1/folder2", expectedParentPath: 'folder1'}
+	])('returns "$expectedParentPath" when folder path is "$folderPath"', ({folderPath, expectedParentPath}) => {
+		const path = new ObsidianFolderPath(folderPath)
+		expect(path.getParentOrThis().VaultPath).toBe(expectedParentPath)
+	})
+})

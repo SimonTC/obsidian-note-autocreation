@@ -18,6 +18,7 @@ import {
 import {NoteAndFolderQuery} from "../queries/NoteAndFolderQuery"
 import {FileQuery} from "../queries/FileQuery"
 import {FolderQuery} from "../queries/FolderQuery"
+import {ObsidianFilePath} from "../paths/ObsidianFilePath"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
@@ -48,19 +49,30 @@ export class SuggestionCollector {
 	}
 
 	getSuggestions(context: IEditorSuggestContext): ISuggestion[] {
-		const query = context.query
+		this.replaceRelativePathInQueryWithFullPath(context)
+
 		let suggestions: ISuggestion[] = []
-		if (this.configStore.templaterIsEnabled && query.includes(this.settings.templateTriggerSymbol)) {
-			suggestions = this.getTemplateSuggestions(query)
-		} else if (query.includes('#')){
-			suggestions = this.getHeaderSuggestions(query)
+		if (this.configStore.templaterIsEnabled && context.query.includes(this.settings.templateTriggerSymbol)) {
+			suggestions = this.getTemplateSuggestions(context.query)
+		} else if (context.query.includes('#')){
+			suggestions = this.getHeaderSuggestions(context.query)
 		} else if (this.settings.includeFoldersInSuggestions){
-			suggestions = this.getFoldersOrCombinedSuggestions(query, context)
+			suggestions = this.getFoldersOrCombinedSuggestions(context.query, context)
 		} else {
 			suggestions = this.getNoteSuggestions(context)
 		}
 
-		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(query, 'No match found')]
+		return suggestions.length > 0 ? suggestions : [new NotFoundSuggestion(context.query, 'No match found')]
+	}
+
+	private replaceRelativePathInQueryWithFullPath(context: IEditorSuggestContext) {
+		if (context.query.startsWith('..')) {
+			const path = new ObsidianFilePath(context.file.path)
+			context.query = context.query.replace('..', path.FolderPath.getParentOrThis().VaultPath)
+		} else if (context.query.startsWith('.')) {
+			const path = new ObsidianFilePath(context.file.path)
+			context.query = context.query.replace('.', path.FolderPath.VaultPath)
+		}
 	}
 
 	private getNoteSuggestions(context: IEditorSuggestContext) {

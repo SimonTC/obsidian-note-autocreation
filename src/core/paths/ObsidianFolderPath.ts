@@ -35,6 +35,16 @@ export class ObsidianFolderPath extends ObsidianPath {
 		return fullPath.slice(folderNameStartsAt + 1, folderNameEndsAt)
 	}
 
+	getParentOrThis(): ObsidianFolderPath {
+		if (this.IsRoot){
+			return this
+		}
+
+		const lastDivider = this.VaultPath.lastIndexOf('/')
+		const parentPath = this.VaultPath.substring(0, lastDivider)
+		return new ObsidianFolderPath(parentPath)
+	}
+
 	isAncestorOf(path: ObsidianPath): boolean{
 		if (this.IsRoot){
 			return true
