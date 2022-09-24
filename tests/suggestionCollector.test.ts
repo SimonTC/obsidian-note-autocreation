@@ -202,3 +202,90 @@ test('Notes and folders are included in the same set of suggestions', () => {
 	const observedSuggestions = collector.getSuggestions(suggestionContext)
 	expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
 })
+
+describe('When using relative search', function () {
+	describe('and the active file is in the root folder', function () {
+		test('all files and folders in the vault are returned as suggestions', () => {
+			const folderPaths = [
+				"",
+				"folder1",
+				"folder1/folder1.2",
+				"folder2"
+			]
+
+			const noteLinks = [
+				Fake.LinkToExistingNote('folder1/folder1.2/note1'),
+				Fake.LinkToExistingNote('folder2/note2'),
+				Fake.LinkToExistingNote('my note'),
+			]
+
+			const interOp = Fake.Interop
+				.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(noteLinks))
+				.withFileSystem(Fake.FileSystem.withFolders(folderPaths))
+
+			const settings = Fake.Settings
+			settings.includeFoldersInSuggestions = true
+			settings.folderSuggestionSettings = {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: "/"}
+
+			const collector = new SuggestionCollector(interOp, settings)
+
+			const query = '.'
+
+			const expectedSuggestions: ISuggestion[] = [
+				new FolderSuggestion(new ObsidianFolderPath("folder1")),
+				new FolderSuggestion(new ObsidianFolderPath("folder1/folder1.2")),
+				new FolderSuggestion(new ObsidianFolderPath("folder2")),
+				new ExistingNoteSuggestion('folder1/folder1.2/note1'),
+				new ExistingNoteSuggestion('folder2/note2'),
+				new ExistingNoteSuggestion('my note'),
+			]
+
+			const suggestionContext = Fake.EditorSuggestionContext(query).withFile(Fake.File('my note'))
+
+			const observedSuggestions = collector.getSuggestions(suggestionContext)
+			expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
+		})
+	})
+
+	describe('and the active file is in a sub folder', function () {
+		test('only files and folders in the sub folder tree are returned as suggestions when', () => {
+			const folderPaths = [
+				"",
+				"folder1",
+				"folder1/folder1.2",
+				"folder2"
+			]
+
+			const noteLinks = [
+				Fake.LinkToExistingNote('folder1/folder1.2/note1'),
+				Fake.LinkToExistingNote('folder1/my other note'),
+				Fake.LinkToExistingNote('folder2/note2'),
+				Fake.LinkToExistingNote('my note'),
+			]
+
+			const interOp = Fake.Interop
+				.withMetadataCollection(Fake.MetaDataCollection.withLinkSuggestions(noteLinks))
+				.withFileSystem(Fake.FileSystem.withFolders(folderPaths))
+
+			const settings = Fake.Settings
+			settings.includeFoldersInSuggestions = true
+			settings.folderSuggestionSettings = {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: "/"}
+
+			const collector = new SuggestionCollector(interOp, settings)
+
+			const query = '.'
+
+			const expectedSuggestions: ISuggestion[] = [
+				new FolderSuggestion(new ObsidianFolderPath("folder1")),
+				new FolderSuggestion(new ObsidianFolderPath("folder1/folder1.2")),
+				new ExistingNoteSuggestion('folder1/folder1.2/note1'),
+				new ExistingNoteSuggestion('folder1/my other note'),
+			]
+
+			const suggestionContext = Fake.EditorSuggestionContext(query).withFile(Fake.File('folder1/my other note'))
+
+			const observedSuggestions = collector.getSuggestions(suggestionContext)
+			expect(observedSuggestions).toIncludeSameMembers(expectedSuggestions)
+		})
+	})
+})
