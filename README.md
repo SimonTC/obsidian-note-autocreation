@@ -158,7 +158,7 @@ This plugin should work on all operating systems supported by Obsidian, but has 
 ## Todo
 - [ ] Enable block linking if inserting a link to an existing note
 - [ ] Suggest links to other file types than markdown
-- [ ] Make it possible to create links and notes with relative paths 
+- [X] Make it possible to create links and notes with relative paths 
 - [X] Set specific top folders to collect note suggestions from
 - [X] Enable header linking if inserting a link to an existing note
 - [X] Support searching for notes by alias
