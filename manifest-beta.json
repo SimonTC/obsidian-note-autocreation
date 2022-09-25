@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-note-autocreator",
 	"name": "Note Auto Creator",
-	"version": "1.2.993",
+	"version": "1.2.994",
 	"minAppVersion": "0.14.2",
 	"description": "Automatically create notes when links are created to them.",
 	"author": "Simon T. Clement",
