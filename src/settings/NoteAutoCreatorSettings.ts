@@ -17,6 +17,7 @@ export interface NoteAutoCreatorSettings {
 	relativeTopFolders: ObsidianFolderPath[]
 	includeFoldersInSuggestions: boolean
 	folderSuggestionSettings: FolderSuggestionSettings
+	enableRelativePaths: boolean
 }
 
 export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
@@ -25,5 +26,6 @@ export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
 	suggestLinksToNonExistingNotes: true,
 	relativeTopFolders: [],
 	includeFoldersInSuggestions: false,
-	folderSuggestionSettings: {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: '/'}
+	folderSuggestionSettings: {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: '/'},
+	enableRelativePaths: true
 }

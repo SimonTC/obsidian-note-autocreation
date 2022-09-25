@@ -49,7 +49,9 @@ export class SuggestionCollector {
 	}
 
 	getSuggestions(context: IEditorSuggestContext): ISuggestion[] {
-		this.replaceRelativePathInQueryWithFullPath(context)
+		if (this.settings.enableRelativePaths && context.query.startsWith('.')){
+			this.replaceRelativePathInQueryWithFullPath(context)
+		}
 
 		let suggestions: ISuggestion[] = []
 		if (this.configStore.templaterIsEnabled && context.query.includes(this.settings.templateTriggerSymbol)) {

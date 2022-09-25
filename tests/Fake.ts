@@ -196,6 +196,7 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	relativeTopFolders: ObsidianFolderPath[] = []
 	includeFoldersInSuggestions = false
 	folderSuggestionSettings = <FolderSuggestionSettings>{}
+	enableRelativePaths = true
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{

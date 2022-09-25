@@ -22,6 +22,7 @@ export class SettingTab extends PluginSettingTab {
 
 		this.addSuggestionTriggerSetting(containerEl)
 		this.addSuggestNonExistingNotesSetting(containerEl)
+		this.addRelativePathsSetting(containerEl)
 		this.addFolderSearchTriggerSetting(containerEl)
 
 		// @ts-ignore
@@ -161,6 +162,20 @@ export class SettingTab extends PluginSettingTab {
 				}
 			)
 		)
+	}
+
+	private addRelativePathsSetting(containerEl: HTMLElement){
+		new Setting(containerEl)
+			.setName('Enable relative paths')
+			.setDesc("Set this to true if you want an easy way to link to notes in the same folder as the active note or in the parent folder. Use './' to link to a note in the same folder as the active note. Use '../' to link to a note in the parent folder of the active note's folder.")
+			.addToggle(component => component
+				.setValue(this.plugin.settings.enableRelativePaths)
+				.onChange(async value => {
+						this.plugin.settings.enableRelativePaths = value
+						await this.plugin.saveSettings()
+					}
+				)
+			)
 	}
 
 	private addTemplateTriggerSetting(containerEl: HTMLElement) {
