@@ -1,3 +1,8 @@
+## 1.3.1 (2022-09-25)
+
+### Bug fixes
+- Fix issue where folder icons where not shown correctly on mobile devices 
+
 ## 1.3.0 (2022-09-25)
 
 ### Features
