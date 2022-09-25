@@ -1,11 +1,11 @@
-## Next release
+## 1.3.0 (2022-09-25)
 
 ### Features
 - Make it possible to limit where note suggestions are collected from
 - Make it possible to include folder paths in suggestions
 - Make it possible to use relative paths when inserting links
 
-## 1.1.2 (2022-07-15)
+## 1.2.0 (2022-07-15)
 
 ### Features
 - Support searching for existing notes by alias
