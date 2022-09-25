@@ -25,6 +25,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ❌                                                                                     |
 | Can limit note suggestions to notes from only part of the vault                                        | ❌                | ✔️                                                                                    |
 | Suggests paths to folders                                                                              | ❌                | ✔️<br/>Folder suggestions are disabled by default but can be enabled in settings      |
+| Relative paths can be used when inserting links                                                        | ❌                | ✔️                                                                                    |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -116,6 +117,10 @@ You can choose to ignore the warning and still use any of the special symbols as
 ### Suggest existing links to notes that do not exist
 By default, Note Auto Creator will suggest links to notes that have not been created if such links have been inserted in other files.
 Disabling this feature will hide suggestions for links to notes that do not exist. 
+
+### Enable relative paths
+Set this to true if you want an easy way to link to notes in the same folder as the active note or in the parent folder. 
+Use './' to link to a note in the same folder as the active note. Use '../' to link to a note in the parent folder of the active note's folder.
 
 ### Include folders in suggestions
 By default, Note Auto Creator will not include paths to folders in the suggestions it gives when link insertion is triggered. 

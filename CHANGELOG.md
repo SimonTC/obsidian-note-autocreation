@@ -3,6 +3,7 @@
 ### Features
 - Make it possible to limit where note suggestions are collected from
 - Make it possible to include folder paths in suggestions
+- Make it possible to use relative paths when inserting links
 
 ## 1.1.2 (2022-07-15)
 
