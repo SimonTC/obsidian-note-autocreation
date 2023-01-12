@@ -114,8 +114,8 @@ export class LinkCreationPreparer {
 					: `${suggestionForCurrentFile.FolderPath.VaultPath}/${suggestion.Title}.md`
 			}
 			case 'folder':{
-				const defaultFolder = this.configStore.getValueFor('newFileFolderPath')
-				return defaultFolder && defaultFolder.length > 0 && this.fileSystem.folderExists(defaultFolder)
+				const defaultFolder = this.configStore.getValueFor('newFileFolderPath') as string
+				return defaultFolder && defaultFolder.length > 0 && this.fileSystem.folderExists(new ObsidianFolderPath(defaultFolder))
 					? `${defaultFolder}/${suggestion.Title}.md`
 					: pathInRoot
 			}

@@ -112,7 +112,7 @@ export class ObsidianInterop implements IObsidianInterop {
 		return undefined
 	}
 
-	getValueFor(configKey: string): any {
+	getValueFor(configKey: string): unknown {
 		// @ts-ignore
 		return this.app.vault.getConfig(configKey)
 	}
