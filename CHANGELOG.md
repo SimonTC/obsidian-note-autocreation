@@ -1,3 +1,8 @@
+## 1.3.2 (2023-01-15)
+
+### Bug fixes
+- Fix issue where new files were not created in default folder
+
 ## 1.3.1 (2022-09-25)
 
 ### Bug fixes
