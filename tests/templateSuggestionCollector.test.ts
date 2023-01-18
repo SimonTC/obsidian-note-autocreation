@@ -23,6 +23,49 @@ describe('when only templater is enabled', function () {
 		expect(observedTemplates).toStrictEqual(expectedSuggestions)
 	})
 
+	test('default template is not returned as first result when query is not empty', () => {
+		const defaultTemplate = 'scripts/template4'
+		const templaterTemplates = ['template1', 'template2', defaultTemplate]
+		const rootTemplateFolder = 'templater/templates'
+		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
+		const interop = Fake.Interop
+		interop.getTemplaterTemplatesPath = () => rootTemplateFolder
+		// templatePaths.map(path => new TemplateSuggestion(path, fakeNote, rootTemplateFolder))
+		const expectedSuggestions = [
+			new TemplateSuggestion(templatePaths[0], fakeNote, rootTemplateFolder),
+			new TemplateSuggestion(templatePaths[1], fakeNote, rootTemplateFolder),
+			new TemplateSuggestion(templatePaths[2], fakeNote, rootTemplateFolder),
+		]
+		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
+
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings)
+
+		const observedTemplates = templateCollector.getSuggestions('t', fakeNote )
+
+		expect(observedTemplates).toStrictEqual(expectedSuggestions)
+	})
+
+	test('default template is returned as first result when query is empty', () => {
+		const defaultTemplate = 'scripts/template4'
+		const templaterTemplates = ['template1', 'template2', defaultTemplate]
+		const rootTemplateFolder = 'templater/templates'
+		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
+		const interop = Fake.Interop
+		interop.getTemplaterTemplatesPath = () => rootTemplateFolder
+		const expectedSuggestions = [
+			new TemplateSuggestion(templaterTemplates[2], fakeNote, rootTemplateFolder),
+			new TemplateSuggestion(templaterTemplates[0], fakeNote, rootTemplateFolder),
+			new TemplateSuggestion(templaterTemplates[1], fakeNote, rootTemplateFolder),
+		]
+		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
+
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings)
+
+		const observedTemplates = templateCollector.getSuggestions('', fakeNote )
+
+		expect(observedTemplates).toStrictEqual(expectedSuggestions)
+	})
+
 	test('templates are filtered', () => {
 		const templaterTemplates = ['my first template', 'template2', 'scripts/template4']
 		const rootTemplateFolder = 'templater/templates'
