@@ -13,7 +13,7 @@ import {LinkSuggestor} from "../core/LinkSuggestor"
 import {TemplateSuggestion} from "../core/suggestions/TemplateSuggestion"
 import {ExistingNoteSuggestion} from "../core/suggestions/NoteSuggestion"
 import {ISuggestion} from "../core/suggestions/ISuggestion"
-import {IConfigurationStore} from "./ObsidianInterfaces"
+import {IConfigurationStore, IFileSystem} from "./ObsidianInterfaces"
 
 /**
  * Wrapper around the Link suggestor logic.
@@ -22,9 +22,9 @@ import {IConfigurationStore} from "./ObsidianInterfaces"
 export class LinkSuggestorInterop extends EditorSuggest<ISuggestion> {
 	private wrapped: LinkSuggestor
 
-	constructor(app: App, settings: NoteAutoCreatorSettings, configStore: IConfigurationStore) {
+	constructor(app: App, settings: NoteAutoCreatorSettings, configStore: IConfigurationStore, fileSystem: IFileSystem) {
 		super(app)
-		this.wrapped = new LinkSuggestor(new ObsidianInterop(app, configStore), settings)
+		this.wrapped = new LinkSuggestor(new ObsidianInterop(app, configStore, fileSystem), settings)
 		this.setInstructions(this.wrapped.instructions)
 
 		// @ts-ignore

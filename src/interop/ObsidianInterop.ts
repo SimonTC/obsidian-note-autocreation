@@ -1,5 +1,5 @@
-import {IConfigurationStore, IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
-import {App, HeadingCache, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
+import {IConfigurationStore, IFileSystem, IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
+import {App, HeadingCache, TAbstractFile, TFile} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 import {ObsidianFilePath} from "../core/paths/ObsidianFilePath"
 import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
@@ -7,21 +7,20 @@ import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 export class ObsidianInterop implements IObsidianInterop {
 	private readonly app: App
 	private readonly configStore: IConfigurationStore
+	private readonly fileSystem: IFileSystem
 
-	constructor(app: App, configStore: IConfigurationStore) {
+	constructor(app: App, configStore: IConfigurationStore, fileSystem: IFileSystem) {
 		this.app = app
 		this.configStore = configStore
+		this.fileSystem = fileSystem
 	}
 
 	async getFileContentOf(filePath: string): Promise<string> {
-		const file: TAbstractFile = this.app.vault.getAbstractFileByPath(filePath)
-		if (!(file instanceof TFile)) return
-
-		return await this.app.vault.cachedRead(file)
+		return this.fileSystem.getFileContentOf(filePath)
     }
 
 	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string {
-        return this.app.fileManager.generateMarkdownLink(file, sourcePath, subpath, alias)
+        return this.fileSystem.generateMarkdownLink(file, sourcePath, subpath, alias)
     }
 
 	getUnresolvedLinks(): Record<string, Record<string, number>> {
@@ -29,45 +28,23 @@ export class ObsidianInterop implements IObsidianInterop {
 	}
 
 	folderExists(folderPath: ObsidianFolderPath): boolean {
-		const foundItem = this.app.vault.getAbstractFileByPath(folderPath.VaultPath)
-		return foundItem && foundItem instanceof TFolder
+		return this.fileSystem.folderExists(folderPath)
 	}
 
 	noteExists(notePath: string): boolean {
-		const foundItem = app.metadataCache.getFirstLinkpathDest(notePath, app.workspace.getActiveFile().path)
-		return foundItem && foundItem instanceof TFile
+		return this.fileSystem.noteExists(notePath)
 	}
 
 	getAllFileDescendantsOf(folderPath: string): TFile[]{
-		const abstractFile = this.app.vault.getAbstractFileByPath(folderPath)
-		if (!(abstractFile instanceof TFolder)){
-			console.debug(`NAC: "${folderPath}" is not a valid path to a folder`)
-			return []
-		}
-
-		const files: TFile[] = []
-		Vault.recurseChildren(abstractFile as TFolder, file => {
-			if (file instanceof TFile){
-				files.push(file)
-			}
-		})
-		return files
+		return this.fileSystem.getAllFileDescendantsOf(folderPath)
 	}
 
 	async getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>{
-		if (creationCommand.FolderCreationCommand){
-			await this.createFolderIfNeeded(creationCommand.FolderCreationCommand)
-		}
-
-		if (creationCommand.NoteCreationCommand){
-			return await this.tryCreateFile(creationCommand.NoteCreationCommand)
-		} else {
-			return this.app.metadataCache.getFirstLinkpathDest(creationCommand.FullPath, currentFile.path)
-		}
+		return this.fileSystem.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
 	}
 
 	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null{
-		return this.app.metadataCache.getFirstLinkpathDest(filePath.VaultPath, currentFile.path)
+		return this.getFile(filePath, currentFile)
 	}
 
 	private async createFolderIfNeeded(creationCommand: FolderCreationCommand){
@@ -109,7 +86,7 @@ export class ObsidianInterop implements IObsidianInterop {
 	}
 
 	getPathsToAllLoadedFolders(): ObsidianFolderPath[]{
-		return app.vault.getAllLoadedFiles().filter(f => f instanceof TFolder).map(f => new ObsidianFolderPath(f.path))
+		return this.fileSystem.getPathsToAllLoadedFolders()
 	}
 
 	getHeadersIn(filePath: string): HeadingCache[] {
