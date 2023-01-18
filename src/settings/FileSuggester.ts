@@ -10,7 +10,7 @@ export class FileSuggester extends TextInputSuggest<TFile>{
 	constructor(app: App, inputEl: HTMLInputElement | HTMLTextAreaElement, rootFolderPath: string, fileSystem: IFileSystem) {
 		super(app, inputEl)
 		this.fileSystem = fileSystem
-		this.rootFolderPath = rootFolderPath ?? ''
+		this.rootFolderPath = rootFolderPath ?? '/'
 	}
 
 	getSuggestions(inputStr: string): TFile[] {

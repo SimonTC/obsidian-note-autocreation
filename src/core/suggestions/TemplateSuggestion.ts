@@ -11,8 +11,8 @@ export class TemplateSuggestion extends FileSuggestion{
 
 	constructor(templatePath: string, noteSuggestion: NoteSuggestion, rootTemplateFolder: string) {
 		super(templatePath)
-		this.rootTemplateFolder = rootTemplateFolder
-		this.templateIsInTemplateFolder = this.VaultPath.toLowerCase().includes(rootTemplateFolder.toLowerCase())
+		this.rootTemplateFolder = rootTemplateFolder ?? ""
+		this.templateIsInTemplateFolder = this.VaultPath.toLowerCase().includes(this.rootTemplateFolder.toLowerCase())
 		this.pathFromTemplateRoot = this.templateIsInTemplateFolder
 			? this.VaultPathWithoutExtension.slice(this.rootTemplateFolder.length)
 			: this.VaultPathWithoutExtension
