@@ -165,6 +165,7 @@ describe('when the file in the suggestion does not exist', function () {
 	describe('and the default new note location is "folder"', function () {
 		it.each([
 			{defaultFolder: 'folder10', triggerText: "my new note", triggeredIn: 'some note', expectedVaultPath: 'folder10/my new note.md'},
+			{defaultFolder: 'Capital folder', triggerText: "my new note", triggeredIn: 'some note', expectedVaultPath: 'Capital folder/my new note.md'},
 			{defaultFolder: '', triggerText: "my new note", triggeredIn: 'some note', expectedVaultPath: 'my new note.md'},
 			{defaultFolder: undefined, triggerText: "my new note", triggeredIn: 'some note', expectedVaultPath: 'my new note.md'},
 			{defaultFolder: 'folder23', triggerText: "my new note", triggeredIn: 'folder/some note', expectedVaultPath: 'folder23/my new note.md'},
@@ -182,7 +183,7 @@ describe('when the file in the suggestion does not exist', function () {
 						}
 					}
 				}
-				const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => true}
+				const fileSystem = <IFileSystem>{ noteExists: (s) => false, folderExists: (s) => s.VaultPath === defaultFolder}
 				const noteCreator = new LinkCreationPreparer(fileSystem, configStore)
 				const suggestion = new NewNoteSuggestion(triggerText)
 				const expected = new NewNoteSuggestion(expectedVaultPath)

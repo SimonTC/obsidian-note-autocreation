@@ -18,6 +18,7 @@ describe('a single Obsidian file path', function () {
 		{path: 'folder1/folder2/mynote.md', expectedTitle: 'mynote'}, // normal link
 		{path: 'folder1/folder2/some note', expectedTitle: 'some note'}, // link without extension
 		{path: 'folder1/folder2/with some extension.exe', expectedTitle: 'with some extension'}, // link with other extension
+		{path: 'folder1/My note.md', expectedTitle: 'My note'}, // Capitalized
 	])('uses title $expectedTitle when path is $path', ({path, expectedTitle}) => {
 		const obsidianPath = new ObsidianFilePath(path)
 
@@ -64,6 +65,7 @@ describe('a single Obsidian file path', function () {
 		{path: 'folder1/note.', expected: 'note.'},
 		{path: 'folder1/folder2/', expected: ''},
 		{path: 'folder/name.txt', expected: 'name.txt'},
+		{path: 'folder/Capital noTe.md', expected: 'Capital noTe.md'},
 	])('stores title with possible extension as $expected when path is $path', ({path, expected}) => {
 		const obsidianPath = new ObsidianFilePath(path)
 
@@ -73,6 +75,7 @@ describe('a single Obsidian file path', function () {
 	it.each([
 		{path: ' folder1/folder2/file.md', expected: 'folder1/folder2/file.md'}, // space before trigger
 		{path: 'folder1/note ', expected: 'folder1/note'}, // space after trigger
+		{path: 'Folder1/nOte ', expected: 'Folder1/nOte'}, // Capital letters
 		{path: ' folder/name ', expected: 'folder/name'}, // space before and after the trigger
 		{path: 'myNote.md', expected: 'myNote.md'}, // file with markdown extension
 		{path: 'myImage.png', expected: 'myImage.png'}, // file with other extension

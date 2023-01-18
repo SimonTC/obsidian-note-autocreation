@@ -5,6 +5,7 @@ describe('a single Obsidian folder path', function () {
 	it.each([
 		{path: 'folder1/folder2', expectedFolderPath: 'folder1/folder2'},
 		{path: 'folder1/folder2/', expectedFolderPath: 'folder1/folder2/'},
+		{path: 'Folder1/fOlder2/', expectedFolderPath: 'Folder1/fOlder2/'}, // Capitalized
 		{path: 'folder2', expectedFolderPath: 'folder2'},
 		{path: '', expectedFolderPath: ''},
 		{path: '/', expectedFolderPath: '/'},
@@ -18,6 +19,7 @@ describe('a single Obsidian folder path', function () {
 		{path: 'folder1/folder2/', expectedTitle: 'folder2'},
 		{path: '/folder1/', expectedTitle: 'folder1'},
 		{path: 'testfolder', expectedTitle: 'testfolder'},
+		{path: 'Test Folder', expectedTitle: 'Test Folder'}, // Capitalized
 		{path: 'folder1/folder2', expectedTitle: 'folder2'},
 		{path: '', expectedTitle: ''},
 		{path: '/', expectedTitle: ''},
@@ -50,6 +52,8 @@ describe('isAncestorOf', function () {
 	it.each([
 		{folderPath: 'folder1/', otherPath: 'folder2/', expected: false},
 		{folderPath: 'folder1/', otherPath: 'folder1/folder2/', expected: true},
+		{folderPath: 'folder1/', otherPath: 'Folder1/folder2/', expected: true}, // Capitalization should not matter
+		{folderPath: 'Folder1/', otherPath: 'folder1/folder2/', expected: true}, // Capitalization should not matter
 		{folderPath: '/', otherPath: 'folder1/folder2/', expected: true},
 		{folderPath: '/', otherPath: 'folder2/', expected: true},
 		{folderPath: '', otherPath: 'folder2/', expected: true},
@@ -67,6 +71,8 @@ describe('isAncestorOf', function () {
 	it.each([
 		{folderPath: 'folder1/', otherPath: 'some note', expected: false},
 		{folderPath: 'folder1/', otherPath: 'folder1/folder2/some note', expected: true},
+		{folderPath: 'Folder1/', otherPath: 'folder1/folder2/some note', expected: true}, // Capitalization should not matter
+		{folderPath: 'folder1/', otherPath: 'Folder1/folder2/some note', expected: true}, // Capitalization should not matter
 		{folderPath: '/', otherPath: 'folder1/note', expected: true},
 		{folderPath: '/', otherPath: 'note', expected: true},
 		{folderPath: '/', otherPath: '/note', expected: true},
@@ -93,7 +99,8 @@ describe('getParentOrThis', function () {
 
 	it.each([
 		{folderPath: "folder1", expectedParentPath: ''},
-		{folderPath: "folder1/folder2", expectedParentPath: 'folder1'}
+		{folderPath: "folder1/folder2", expectedParentPath: 'folder1'},
+		{folderPath: "Folder1/folder2", expectedParentPath: 'Folder1'}
 	])('returns "$expectedParentPath" when folder path is "$folderPath"', ({folderPath, expectedParentPath}) => {
 		const path = new ObsidianFolderPath(folderPath)
 		expect(path.getParentOrThis().VaultPath).toBe(expectedParentPath)
