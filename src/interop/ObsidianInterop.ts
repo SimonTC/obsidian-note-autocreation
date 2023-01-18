@@ -1,4 +1,4 @@
-import {IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
+import {IConfigurationStore, IObsidianInterop, ObsidianLinkSuggestion} from "./ObsidianInterfaces"
 import {App, HeadingCache, TAbstractFile, TFile, TFolder, Vault} from "obsidian"
 import {FolderCreationCommand, LinkCreationCommand, NoteCreationCommand} from "../core/LinkCreationPreparer"
 import {ObsidianFilePath} from "../core/paths/ObsidianFilePath"
@@ -6,9 +6,11 @@ import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 
 export class ObsidianInterop implements IObsidianInterop {
 	private readonly app: App
+	private readonly configStore: IConfigurationStore
 
-	constructor(app: App) {
+	constructor(app: App, configStore: IConfigurationStore) {
 		this.app = app
+		this.configStore = configStore
 	}
 
 	async getFileContentOf(filePath: string): Promise<string> {
@@ -52,26 +54,6 @@ export class ObsidianInterop implements IObsidianInterop {
 		return files
 	}
 
-	getCoreTemplatesPath(): string | undefined {
-		// @ts-ignore
-		const internalTemplatePlugin = this.app.internalPlugins.plugins.templates
-		if (internalTemplatePlugin) {
-			const templateFolderPath = internalTemplatePlugin.instance.options.folder
-			if (templateFolderPath)
-				return templateFolderPath
-		}
-	}
-
-	getTemplaterTemplatesPath(): string | undefined {
-		// @ts-ignore
-		const templater = this.app.plugins.plugins["templater-obsidian"]
-		if (templater) {
-			const templateFolderPath = templater.settings["templates_folder"]
-			if (templateFolderPath)
-				return templateFolderPath
-		}
-	}
-
 	async getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>{
 		if (creationCommand.FolderCreationCommand){
 			await this.createFolderIfNeeded(creationCommand.FolderCreationCommand)
@@ -112,11 +94,6 @@ export class ObsidianInterop implements IObsidianInterop {
 		return undefined
 	}
 
-	getValueFor(configKey: string): unknown {
-		// @ts-ignore
-		return this.app.vault.getConfig(configKey)
-	}
-
 	async runTemplaterOn(file: TFile){
 		// @ts-ignore
 		const templater = this.app.plugins.plugins["templater-obsidian"]
@@ -124,11 +101,6 @@ export class ObsidianInterop implements IObsidianInterop {
 		if (templater) {
 			await templater.templater.overwrite_file_commands(file)
 		}
-	}
-
-	get templaterIsEnabled(): boolean {
-		// @ts-ignore
-		return this.app.plugins.plugins["templater-obsidian"]
 	}
 
 	getLinkSuggestions(): ObsidianLinkSuggestion[] {
@@ -146,5 +118,21 @@ export class ObsidianInterop implements IObsidianInterop {
 
 		const headingCache = this.app.metadataCache.getFileCache(file).headings ?? []
 		return headingCache
+	}
+
+	getCoreTemplatesPath(): string | undefined {
+		return this.configStore.getCoreTemplatesPath()
+	}
+
+	getTemplaterTemplatesPath(): string | undefined {
+		return this.configStore.getTemplaterTemplatesPath()
+	}
+
+	getValueFor(configKey: string): unknown {
+		return this.configStore.getValueFor(configKey)
+	}
+
+	get templaterIsEnabled(): boolean {
+		return this.configStore.templaterIsEnabled
 	}
 }

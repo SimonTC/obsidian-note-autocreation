@@ -3,17 +3,20 @@ import NoteAutoCreator from "../main"
 import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 import {FolderSuggest} from "./FolderSuggester"
 import {FolderSuggestionMode} from "./NoteAutoCreatorSettings"
+import {IConfigurationStore} from "../interop/ObsidianInterfaces"
 
 export class SettingTab extends PluginSettingTab {
 	plugin: NoteAutoCreator
+	private readonly configStore: IConfigurationStore
 
 	// Problematic symbols are based on this table from the markdown guide:
 	// https://www.markdownguide.org/basic-syntax/#characters-you-can-escape
 	private readonly problematicSymbols = ["\\", "`", "*", "_", "{", "}", "[", "]", "<", ">", "(", ")", "#", "+", "-", ".", "!", "|"]
 
-	constructor(app: App, plugin: NoteAutoCreator) {
+	constructor(app: App, plugin: NoteAutoCreator, configStore: IConfigurationStore) {
 		super(app, plugin)
 		this.plugin = plugin
+		this.configStore = configStore
 	}
 
 	display(): void {
