@@ -15,7 +15,7 @@ export class ObsidianFolderPath extends ObsidianPath {
 	 * @param path The path to the file.
 	 */
 	constructor(path: string) {
-		const fullPath = path.trim().toLowerCase()
+		const fullPath = path.trim()
 		const folderName = ObsidianFolderPath.getFolderName(fullPath)
 		super(fullPath, folderName)
 	}
