@@ -3,20 +3,23 @@ import NoteAutoCreator from "../main"
 import {ObsidianFolderPath} from "../core/paths/ObsidianFolderPath"
 import {FolderSuggest} from "./FolderSuggester"
 import {FolderSuggestionMode} from "./NoteAutoCreatorSettings"
-import {IConfigurationStore} from "../interop/ObsidianInterfaces"
+import {IConfigurationStore, IFileSystem} from "../interop/ObsidianInterfaces"
+import {FileSuggester} from "./FileSuggester"
 
 export class SettingTab extends PluginSettingTab {
 	plugin: NoteAutoCreator
 	private readonly configStore: IConfigurationStore
+	private readonly fileSystem: IFileSystem
 
 	// Problematic symbols are based on this table from the markdown guide:
 	// https://www.markdownguide.org/basic-syntax/#characters-you-can-escape
 	private readonly problematicSymbols = ["\\", "`", "*", "_", "{", "}", "[", "]", "<", ">", "(", ")", "#", "+", "-", ".", "!", "|"]
 
-	constructor(app: App, plugin: NoteAutoCreator, configStore: IConfigurationStore) {
+	constructor(app: App, plugin: NoteAutoCreator, configStore: IConfigurationStore, fileSystem: IFileSystem) {
 		super(app, plugin)
 		this.plugin = plugin
 		this.configStore = configStore
+		this.fileSystem = fileSystem
 	}
 
 	display(): void {
@@ -30,8 +33,9 @@ export class SettingTab extends PluginSettingTab {
 
 		// @ts-ignore
 		// No need to show the setting if templater does not exist
-		if (this.app.plugins.plugins["templater-obsidian"]){
+		if (this.configStore.templaterIsEnabled){
 			this.addTemplateTriggerSetting(containerEl)
+			this.addDefaultTemplateSetting(containerEl)
 		}
 
 		this.addRelativeTopFolderSetting(containerEl)
@@ -192,6 +196,23 @@ export class SettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings()
 				})
 			)
+	}
+
+	private addDefaultTemplateSetting(containerEl: HTMLElement){
+		let searchComponent: SearchComponent
+		new Setting(containerEl)
+			.setName('Default Templater template')
+			.setDesc('This template will be the first in the list of templates to select from when triggering template execution')
+			.addSearch(cb => {
+				searchComponent = cb
+				new FileSuggester(this.app, searchComponent.inputEl, this.configStore.getTemplaterTemplatesPath(), this.fileSystem)
+				cb.setPlaceholder('Default templater template')
+					.setValue(this.plugin.settings.defaultTemplaterTemplate)
+					.onChange(async newValue => {
+						this.plugin.settings.defaultTemplaterTemplate = newValue
+						await this.plugin.saveSettings()
+					})
+			})
 	}
 
 	private addFolderSearchTriggerSetting(containerEl: HTMLElement){

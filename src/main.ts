@@ -13,7 +13,7 @@ export default class NoteAutoCreator extends Plugin {
 		await this.loadSettings()
 		const configStore = new ConfigStore(this.app)
 		const fileSystem = new ObsidianFileSystem(this.app)
-		this.addSettingTab(new SettingTab(this.app, this, configStore))
+		this.addSettingTab(new SettingTab(this.app, this, configStore, fileSystem))
 
 		const linkSuggestor = new LinkSuggestorInterop( this.app, this.settings, configStore, fileSystem )
 		this.registerEditorSuggest( linkSuggestor )
