@@ -1,3 +1,8 @@
+## 1.3.3 (2023-01-18)
+
+### Bug fixes
+- Fix issue where files would not be added to default folder if default folder was capitalized
+
 ## 1.3.2 (2023-01-15)
 
 ### Bug fixes
