@@ -197,6 +197,7 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	includeFoldersInSuggestions = false
 	folderSuggestionSettings = <FolderSuggestionSettings>{}
 	enableRelativePaths = true
+	defaultTemplaterTemplate = ""
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{

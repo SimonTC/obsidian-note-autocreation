@@ -18,6 +18,7 @@ export interface NoteAutoCreatorSettings {
 	includeFoldersInSuggestions: boolean
 	folderSuggestionSettings: FolderSuggestionSettings
 	enableRelativePaths: boolean
+	defaultTemplaterTemplate: string
 }
 
 export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
@@ -27,5 +28,6 @@ export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
 	relativeTopFolders: [],
 	includeFoldersInSuggestions: false,
 	folderSuggestionSettings: {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: '/'},
-	enableRelativePaths: true
+	enableRelativePaths: true,
+	defaultTemplaterTemplate: ''
 }

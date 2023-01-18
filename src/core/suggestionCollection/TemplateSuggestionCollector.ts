@@ -21,8 +21,10 @@ export class TemplateSuggestionCollector {
 		const query = FileQuery.forTemplateSuggestions(templateQuery)
 		const templaterTemplateFolderPath = this.configStore.getTemplaterTemplatesPath()
 		const validSuggestions: TemplateSuggestion[] = []
+		const showDefaultFolderFirst = templateQuery === '' && this.settings.defaultTemplaterTemplate !== ''
 
-		for (const suggestion of this.getAllPossibleSuggestions(templaterTemplateFolderPath, noteSuggestion)){
+		const pathToFilterOut = showDefaultFolderFirst ? this.settings.defaultTemplaterTemplate : ''
+		for (const suggestion of this.getAllPossibleSuggestions(templaterTemplateFolderPath, noteSuggestion, pathToFilterOut)){
 			const queryResult = query.couldBeQueryFor(suggestion)
 			if (queryResult.isAtLeastPartialMatch){
 				validSuggestions.push(suggestion)
@@ -30,12 +32,22 @@ export class TemplateSuggestionCollector {
 		}
 
 		validSuggestions.sort(Suggestion.compare)
+		if (showDefaultFolderFirst){
+			const defaultTemplate = new TemplateSuggestion(this.settings.defaultTemplaterTemplate, noteSuggestion, templaterTemplateFolderPath)
+			return [defaultTemplate, ...validSuggestions]
+		}
 		return validSuggestions
 	}
 
-	private getAllPossibleSuggestions(templateFolderPath: string | undefined, noteSuggestion: NoteSuggestion ): TemplateSuggestion[]{
+	private getAllPossibleSuggestions(
+		templateFolderPath: string | undefined,
+		noteSuggestion: NoteSuggestion,
+		pathToFilterOut: string ): TemplateSuggestion[]
+	{
 		return templateFolderPath
-			? this.fileSystem.getAllFileDescendantsOf(templateFolderPath).map(f => new TemplateSuggestion(f.path, noteSuggestion, templateFolderPath))
+			? this.fileSystem.getAllFileDescendantsOf(templateFolderPath)
+				.filter(f => f.path.toLowerCase() !== pathToFilterOut)
+				.map(f => new TemplateSuggestion(f.path, noteSuggestion, templateFolderPath))
 			: []
 	}
 }

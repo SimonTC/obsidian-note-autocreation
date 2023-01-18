@@ -30,7 +30,6 @@ describe('when only templater is enabled', function () {
 		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
 		const interop = Fake.Interop
 		interop.getTemplaterTemplatesPath = () => rootTemplateFolder
-		// templatePaths.map(path => new TemplateSuggestion(path, fakeNote, rootTemplateFolder))
 		const expectedSuggestions = [
 			new TemplateSuggestion(templatePaths[0], fakeNote, rootTemplateFolder),
 			new TemplateSuggestion(templatePaths[1], fakeNote, rootTemplateFolder),
@@ -38,7 +37,9 @@ describe('when only templater is enabled', function () {
 		]
 		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
-		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings)
+		const settings = Fake.Settings
+		settings.defaultTemplaterTemplate = templatePaths[2]
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, settings)
 
 		const observedTemplates = templateCollector.getSuggestions('t', fakeNote )
 
@@ -53,13 +54,15 @@ describe('when only templater is enabled', function () {
 		const interop = Fake.Interop
 		interop.getTemplaterTemplatesPath = () => rootTemplateFolder
 		const expectedSuggestions = [
-			new TemplateSuggestion(templaterTemplates[2], fakeNote, rootTemplateFolder),
-			new TemplateSuggestion(templaterTemplates[0], fakeNote, rootTemplateFolder),
-			new TemplateSuggestion(templaterTemplates[1], fakeNote, rootTemplateFolder),
+			new TemplateSuggestion(templatePaths[2], fakeNote, rootTemplateFolder),
+			new TemplateSuggestion(templatePaths[0], fakeNote, rootTemplateFolder),
+			new TemplateSuggestion(templatePaths[1], fakeNote, rootTemplateFolder),
 		]
 		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
-		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings)
+		const settings = Fake.Settings
+		settings.defaultTemplaterTemplate = templatePaths[2]
+		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, settings)
 
 		const observedTemplates = templateCollector.getSuggestions('', fakeNote )
 
