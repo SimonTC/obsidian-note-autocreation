@@ -1,3 +1,7 @@
+## Next release
+### Features
+- Make it possible to define a default Templater template to execute when creating a note based on a Templater template
+
 ## 1.3.3 (2023-01-18)
 
 ### Bug fixes

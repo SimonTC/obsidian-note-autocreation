@@ -41,6 +41,9 @@ This will change the note selection drop-down to a template selection drop-down,
 When you have selected a template, the note will be created and the selected template will be applied to the note.
 [Templater](https://github.com/SilentVoid13/Templater) is used to apply the template. 
 
+If you have a specific template you use often, you can define it as the default template in the settings.
+The template defined here will be shown as the first template in the list of templates.
+
 **Prerequisites and limitations**
 - You may need to restart Obsidian after adding Templater or Note Auto Creator. Otherwise, Note Auto Creator might not be aware of the template folder configured in Templater.
 - Inserting templates only works if the Templater plugin is installed and enabled.
@@ -138,6 +141,10 @@ When this option is enabled, only folders are shown when the first character(s) 
 ### Template insertion trigger
 Any symbol can be used to trigger the selection of a template to insert. By default, the trigger symbol is `$`. This symbol can be configured by changing the value in `Trigger for template execution`.
 This setting is only shown when Templater is installed and enabled.
+
+A default template can be configured in `Default Templater template`.
+This will ensure that the chosen default template is pre-selected when inserting a template.
+You can of course still choose another template from the suggestion drop-down if the default template isn't needed.
 
 ### Relative top folders
 To add a new relative top folder click the "+"-button.
