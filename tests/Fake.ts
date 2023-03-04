@@ -12,7 +12,9 @@ import {FolderSuggestionSettings, NoteAutoCreatorSettings} from "../src/settings
 import {FileQuery} from "../src/core/queries/FileQuery"
 import {ObsidianFilePath} from "../src/core/paths/ObsidianFilePath"
 import {ObsidianFolderPath} from "../src/core/paths/ObsidianFolderPath"
-import {ITemplateConfig} from "../src/core/suggestionCollection/TemplateSuggestionCollector"
+import {ITemplateConfig} from "../src/core/templateApplication/ITemplateConfig"
+import {TemplateEngine} from "../src/core/templateApplication/TemplateEngine"
+
 
 class FakeInterop implements IObsidianInterop {
 	private metadataCollection: IMetadataCollection = Fake.MetaDataCollection
@@ -292,7 +294,7 @@ export class FakeFile implements TFile{
 	}
 }
 
-export class FakeTemplateConfig implements ITemplateConfig{
+export class FakeTemplateConfig implements ITemplateConfig {
 	private readonly defaultTemplatePath: string
 	private readonly templateFolderPath: string
 
@@ -300,6 +302,9 @@ export class FakeTemplateConfig implements ITemplateConfig{
 		this.defaultTemplatePath = defaultTemplatePath
 		this.templateFolderPath = templateFolderPath
 	}
+
+	readonly templateEngine = TemplateEngine.Templater
+
 	getDefaultTemplate(): string {
 		return this.defaultTemplatePath
 	}

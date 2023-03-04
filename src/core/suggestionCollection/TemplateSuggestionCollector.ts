@@ -5,6 +5,7 @@ import {TemplateSuggestion} from "../suggestions/TemplateSuggestion"
 import {NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {FileQuery} from "../queries/FileQuery"
 import {Suggestion} from "../suggestions/ISuggestion"
+import {ITemplateConfig} from "../templateApplication/ITemplateConfig"
 
 export class TemplateSuggestionCollector {
 	private readonly fileSystem: IFileSystem
@@ -36,7 +37,7 @@ export class TemplateSuggestionCollector {
 
 		validSuggestions.sort(Suggestion.compare)
 		if (showDefaultFolderFirst){
-			const defaultTemplateSuggestion = new TemplateSuggestion(defaultTemplate, noteSuggestion, templateFolderPath, this.templateConfig.triggerSymbol)
+			const defaultTemplateSuggestion = new TemplateSuggestion(defaultTemplate, noteSuggestion, templateFolderPath, this.templateConfig)
 			return [defaultTemplateSuggestion, ...validSuggestions]
 		}
 		return validSuggestions
@@ -49,36 +50,8 @@ export class TemplateSuggestionCollector {
 		return templateFolderPath
 			? this.fileSystem.getAllFileDescendantsOf(templateFolderPath)
 				.filter(f => f.path.toLowerCase() !== pathToFilterOut)
-				.map(f => new TemplateSuggestion(f.path, noteSuggestion, templateFolderPath, this.templateConfig.triggerSymbol))
+				.map(f => new TemplateSuggestion(f.path, noteSuggestion, templateFolderPath, this.templateConfig))
 			: []
 	}
 }
 
-export interface ITemplateConfig {
-	getTemplateFolderPath(): string
-	getDefaultTemplate(): string
-	triggerSymbol: string
-}
-
-export class TemplaterTemplateConfig implements ITemplateConfig{
-
-	private readonly settings: NoteAutoCreatorSettings
-	private readonly configStore: IConfigurationStore
-
-	get triggerSymbol(){
-		return this.settings.templateTriggerSymbol
-	}
-
-	constructor(configStore: IConfigurationStore, settings: NoteAutoCreatorSettings) {
-		this.settings = settings
-		this.configStore = configStore
-	}
-
-	getDefaultTemplate(): string {
-		return this.settings.defaultTemplaterTemplate
-	}
-
-	getTemplateFolderPath(): string {
-		return this.configStore.getTemplaterTemplatesPath()
-	}
-}

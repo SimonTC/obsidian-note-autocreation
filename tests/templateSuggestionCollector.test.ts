@@ -12,7 +12,8 @@ describe('when only templater is enabled', function () {
 		const templateConfig = new FakeTemplateConfig("", rootTemplateFolder)
 		const templaterTemplates = ['template1', 'template2', 'scripts/template4']
 		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
-		const expectedSuggestions = templatePaths.map(path => new TemplateSuggestion(path, fakeNote, rootTemplateFolder, "$"))
+		const config = new FakeTemplateConfig(undefined, rootTemplateFolder)
+		const expectedSuggestions = templatePaths.map(path => new TemplateSuggestion(path, fakeNote, rootTemplateFolder, config))
 		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
 		const templateCollector = new TemplateSuggestionCollector(fileSystem, Fake.Interop, Fake.Settings, templateConfig)
@@ -29,14 +30,14 @@ describe('when only templater is enabled', function () {
 		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
 		const interop = Fake.Interop
 		interop.getTemplaterTemplatesPath = () => rootTemplateFolder
+		const templateConfig = new FakeTemplateConfig(templatePaths[2], rootTemplateFolder)
 		const expectedSuggestions = [
-			new TemplateSuggestion(templatePaths[0], fakeNote, rootTemplateFolder, "$"),
-			new TemplateSuggestion(templatePaths[1], fakeNote, rootTemplateFolder, "$"),
-			new TemplateSuggestion(templatePaths[2], fakeNote, rootTemplateFolder, "$"),
+			new TemplateSuggestion(templatePaths[0], fakeNote, rootTemplateFolder, templateConfig),
+			new TemplateSuggestion(templatePaths[1], fakeNote, rootTemplateFolder, templateConfig),
+			new TemplateSuggestion(templatePaths[2], fakeNote, rootTemplateFolder, templateConfig),
 		]
 		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
-		const templateConfig = new FakeTemplateConfig(templatePaths[2], rootTemplateFolder)
 		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings, templateConfig)
 
 		const observedTemplates = templateCollector.getSuggestions('t', fakeNote )
@@ -51,13 +52,13 @@ describe('when only templater is enabled', function () {
 		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
 		const interop = Fake.Interop
 		interop.getTemplaterTemplatesPath = () => rootTemplateFolder
+		const templateConfig = new FakeTemplateConfig(templatePaths[2], rootTemplateFolder)
 		const expectedSuggestions = [
-			new TemplateSuggestion(templatePaths[2], fakeNote, rootTemplateFolder, "$"),
-			new TemplateSuggestion(templatePaths[0], fakeNote, rootTemplateFolder, "$"),
-			new TemplateSuggestion(templatePaths[1], fakeNote, rootTemplateFolder, "$"),
+			new TemplateSuggestion(templatePaths[2], fakeNote, rootTemplateFolder, templateConfig),
+			new TemplateSuggestion(templatePaths[0], fakeNote, rootTemplateFolder, templateConfig),
+			new TemplateSuggestion(templatePaths[1], fakeNote, rootTemplateFolder, templateConfig),
 		]
 		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
-		const templateConfig = new FakeTemplateConfig(templatePaths[2], rootTemplateFolder)
 
 		const templateCollector = new TemplateSuggestionCollector(fileSystem, interop, Fake.Settings, templateConfig)
 
@@ -70,9 +71,9 @@ describe('when only templater is enabled', function () {
 		const templaterTemplates = ['my first template', 'template2', 'scripts/template4']
 		const rootTemplateFolder = 'templater/templates'
 		const templatePaths = templaterTemplates.map(path => `${rootTemplateFolder}/${path}`)
-		const expectedSuggestions = [new TemplateSuggestion(`${rootTemplateFolder}/my first template`, fakeNote, rootTemplateFolder, "$")]
-		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 		const templateConfig = new FakeTemplateConfig("", rootTemplateFolder)
+		const expectedSuggestions = [new TemplateSuggestion(`${rootTemplateFolder}/my first template`, fakeNote, rootTemplateFolder, templateConfig)]
+		const fileSystem = Fake.FileSystem.withDescendantsOf(rootTemplateFolder, templatePaths)
 
 		const templateCollector = new TemplateSuggestionCollector(fileSystem, Fake.Interop, Fake.Settings, templateConfig)
 
