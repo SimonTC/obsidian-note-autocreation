@@ -5,7 +5,7 @@ import {
 	IObsidianInterop
 } from "../../interop/ObsidianInterfaces"
 import {ExistingNoteSuggestion, NewNoteSuggestion} from "../suggestions/NoteSuggestion"
-import {TemplateSuggestionCollector} from "./TemplateSuggestionCollector"
+import {TemplaterTemplateConfig, TemplateSuggestionCollector} from "./TemplateSuggestionCollector"
 import {FolderSuggestionMode, NoteAutoCreatorSettings} from "../../settings/NoteAutoCreatorSettings"
 import {HeaderSuggestionCollector} from "./HeaderSuggestionCollector"
 import {ISuggestion} from "../suggestions/ISuggestion"
@@ -33,7 +33,8 @@ export class SuggestionCollector {
 	constructor(interOp: IObsidianInterop, settings: NoteAutoCreatorSettings) {
 		this.settings = settings
 		this.noteSuggestionCollector = new NoteSuggestionCollector(interOp, settings)
-		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings)
+		const templaterConfig = new TemplaterTemplateConfig(interOp, settings)
+		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings, templaterConfig)
 		this.headerSuggestionCollector = new HeaderSuggestionCollector(interOp)
 		this.folderSuggestionCollector = new FolderSuggestionCollector(interOp)
 		this.combinedSuggestionCollector = new NoteAndFolderSuggestionCollector(interOp, settings)
