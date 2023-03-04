@@ -120,9 +120,19 @@ export interface IConfigurationStore{
 	getTemplaterTemplatesPath(): string | undefined
 
 	/**
+	 * Returns the root folder for the templates in the quickadd plugin.
+	 */
+	getQuickAddTemplatesPath(): string |undefined
+
+	/**
 	 * Returns true if templater is enabled
 	 */
 	get templaterIsEnabled(): boolean
+
+	/**
+	 * Returns true if QuickAdd is enabled
+	 */
+	get quickAddIsEnabled(): boolean
 }
 
 /**
@@ -130,4 +140,6 @@ export interface IConfigurationStore{
  */
 export interface IObsidianInterop extends IFileSystem, IMetadataCollection, IConfigurationStore{
 	runTemplaterOn(file: TFile): Promise<void>
+
+	runQuickAddFormattingOn(content: string): Promise<string>
 }

@@ -29,6 +29,16 @@ export class ConfigStore implements IConfigurationStore {
 		}
 	}
 
+	getQuickAddTemplatesPath(): string | undefined {
+		// @ts-ignore
+		const quickAdd = this.app.plugins.plugins.quickadd
+		if (quickAdd) {
+			const templateFolderPath = quickAdd.settings["templateFolderPath"]
+			if (templateFolderPath)
+				return templateFolderPath
+		}
+	}
+
 	getValueFor(configKey: string): unknown {
 		// @ts-ignore
 		return this.app.vault.getConfig(configKey)
@@ -37,6 +47,10 @@ export class ConfigStore implements IConfigurationStore {
 	get templaterIsEnabled(): boolean {
 		// @ts-ignore
 		return this.app.plugins.plugins["templater-obsidian"]
+	}
+
+	get quickAddIsEnabled(): boolean {
+		return this.app.plugins.plugins.quickadd
 	}
 
 }

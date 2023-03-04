@@ -96,6 +96,16 @@ class FakeInterop implements IObsidianInterop {
 	folderExists(folderPath: ObsidianFolderPath): boolean {
 		return this.fileSystem.folderExists(folderPath)
 	}
+
+	runQuickAddFormattingOn(content: string): Promise<string> {
+		throw new Error("Method not implemented.")
+	}
+	get quickAddIsEnabled(): boolean {
+		throw new Error("Method not implemented.")
+	}
+	getQuickAddTemplatesPath(): string {
+		throw new Error("Method not implemented.")
+	}
 }
 
 class FakeFileSystem implements IFileSystem {

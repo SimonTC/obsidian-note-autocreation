@@ -80,6 +80,15 @@ export class ObsidianInterop implements IObsidianInterop {
 		}
 	}
 
+	async runQuickAddFormattingOn(content: string): Promise<string>{
+		// @ts-ignore
+		const quickAdd = this.app.plugins.plugins.quickadd
+
+		if(quickAdd){
+			return await quickAdd.api.format(content)
+		}
+	}
+
 	getLinkSuggestions(): ObsidianLinkSuggestion[] {
 		// @ts-ignore
 		return app.metadataCache.getLinkSuggestions()
@@ -111,5 +120,13 @@ export class ObsidianInterop implements IObsidianInterop {
 
 	get templaterIsEnabled(): boolean {
 		return this.configStore.templaterIsEnabled
+	}
+
+	getQuickAddTemplatesPath(): string | undefined {
+		return this.configStore.getQuickAddTemplatesPath()
+	}
+
+	get quickAddIsEnabled(): boolean {
+		return this.configStore.quickAddIsEnabled
 	}
 }

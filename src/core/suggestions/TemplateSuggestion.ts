@@ -10,7 +10,7 @@ export class TemplateSuggestion extends FileSuggestion{
 	private readonly rootTemplateFolder
 	private readonly templateIsInTemplateFolder: boolean
 	private readonly pathFromTemplateRoot: string
-	private readonly templateEngine: TemplateEngine
+	readonly templateEngine: TemplateEngine
 
 	constructor(templatePath: string, noteSuggestion: NoteSuggestion, rootTemplateFolder: string, templateConfig: ITemplateConfig) {
 		super(templatePath)

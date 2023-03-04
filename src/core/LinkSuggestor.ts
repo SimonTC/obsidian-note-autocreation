@@ -9,6 +9,7 @@ import {SuggestionCollector} from "./suggestionCollection/SuggestionCollector"
 import {ISuggestion} from "./suggestions/ISuggestion"
 import {HeaderSuggestion} from "./suggestions/HeaderSuggestion"
 import {FolderSuggestion} from "./suggestions/FolderSuggestion"
+import {TemplateEngine} from "./templateApplication/TemplateEngine"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
@@ -84,8 +85,12 @@ export class LinkSuggestor {
 		}
 
 		const creationCommand = await this.noteCreationPreparer.prepareNoteCreationForTemplateNote(templateSuggestion, currentFile)
+		if (templateSuggestion.templateEngine === TemplateEngine.QuickAdd){
+			creationCommand.NoteCreationCommand.NoteContent = await this.obsidianInterop.runQuickAddFormattingOn(creationCommand.NoteCreationCommand.NoteContent)
+		}
+
 		const linkedFile = await this.obsidianInterop.getOrCreateFileAndFoldersInPath(creationCommand, currentFile)
-		if (creationCommand.NoteCreationCommand && linkedFile){
+		if (templateSuggestion.templateEngine === TemplateEngine.Templater && creationCommand.NoteCreationCommand && linkedFile){
 			await this.obsidianInterop.runTemplaterOn(linkedFile)
 		}
 		const linkToInsert = this.obsidianInterop.generateMarkdownLink(linkedFile, currentFile.path, undefined, creationCommand.NoteAlias)
