@@ -36,7 +36,7 @@ export class TemplateSuggestionCollector {
 
 		validSuggestions.sort(Suggestion.compare)
 		if (showDefaultFolderFirst){
-			const defaultTemplateSuggestion = new TemplateSuggestion(defaultTemplate, noteSuggestion, templateFolderPath)
+			const defaultTemplateSuggestion = new TemplateSuggestion(defaultTemplate, noteSuggestion, templateFolderPath, this.templateConfig.triggerSymbol)
 			return [defaultTemplateSuggestion, ...validSuggestions]
 		}
 		return validSuggestions
@@ -49,7 +49,7 @@ export class TemplateSuggestionCollector {
 		return templateFolderPath
 			? this.fileSystem.getAllFileDescendantsOf(templateFolderPath)
 				.filter(f => f.path.toLowerCase() !== pathToFilterOut)
-				.map(f => new TemplateSuggestion(f.path, noteSuggestion, templateFolderPath))
+				.map(f => new TemplateSuggestion(f.path, noteSuggestion, templateFolderPath, this.templateConfig.triggerSymbol))
 			: []
 	}
 }
@@ -57,12 +57,17 @@ export class TemplateSuggestionCollector {
 export interface ITemplateConfig {
 	getTemplateFolderPath(): string
 	getDefaultTemplate(): string
+	triggerSymbol: string
 }
 
 export class TemplaterTemplateConfig implements ITemplateConfig{
 
 	private readonly settings: NoteAutoCreatorSettings
 	private readonly configStore: IConfigurationStore
+
+	get triggerSymbol(){
+		return this.settings.templateTriggerSymbol
+	}
 
 	constructor(configStore: IConfigurationStore, settings: NoteAutoCreatorSettings) {
 		this.settings = settings

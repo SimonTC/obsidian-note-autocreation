@@ -4,12 +4,12 @@ import {SuggestionRenderer} from "./SuggestionRenderer"
 
 export class TemplateSuggestion extends FileSuggestion{
 	readonly noteSuggestion: NoteSuggestion
-	readonly triggerSymbol: string = '$'
+	private readonly triggerSymbol: string
 	private readonly rootTemplateFolder
 	private readonly templateIsInTemplateFolder: boolean
 	private readonly pathFromTemplateRoot: string
 
-	constructor(templatePath: string, noteSuggestion: NoteSuggestion, rootTemplateFolder: string) {
+	constructor(templatePath: string, noteSuggestion: NoteSuggestion, rootTemplateFolder: string, triggerSymbol: string) {
 		super(templatePath)
 		this.rootTemplateFolder = rootTemplateFolder ?? ""
 		this.templateIsInTemplateFolder = this.VaultPath.toLowerCase().includes(this.rootTemplateFolder.toLowerCase())
@@ -17,6 +17,7 @@ export class TemplateSuggestion extends FileSuggestion{
 			? this.VaultPathWithoutExtension.slice(this.rootTemplateFolder.length)
 			: this.VaultPathWithoutExtension
 		this.noteSuggestion = noteSuggestion
+		this.triggerSymbol = triggerSymbol
 	}
 
 	render(el: HTMLElement): void {

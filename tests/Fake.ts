@@ -307,6 +307,10 @@ export class FakeTemplateConfig implements ITemplateConfig{
 	getTemplateFolderPath(): string {
 		return this.templateFolderPath
 	}
+
+	get triggerSymbol() {
+		return "$"
+	}
 }
 
 export class Fake {
