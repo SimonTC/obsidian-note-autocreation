@@ -211,6 +211,8 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	folderSuggestionSettings = <FolderSuggestionSettings>{}
 	enableRelativePaths = true
 	defaultTemplaterTemplate = ""
+	defaultQuickAddTemplate = ""
+	quickAddTriggerSymbol = "€"
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{

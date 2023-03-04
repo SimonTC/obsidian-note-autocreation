@@ -12,22 +12,26 @@ export interface FolderSuggestionSettings {
 
 export interface NoteAutoCreatorSettings {
 	triggerSymbol: string,
-	templateTriggerSymbol: string,
 	suggestLinksToNonExistingNotes: boolean
 	relativeTopFolders: ObsidianFolderPath[]
 	includeFoldersInSuggestions: boolean
 	folderSuggestionSettings: FolderSuggestionSettings
 	enableRelativePaths: boolean
+	templateTriggerSymbol: string
 	defaultTemplaterTemplate: string
+	quickAddTriggerSymbol: string
+	defaultQuickAddTemplate: string
 }
 
 export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
 	triggerSymbol: '@',
-	templateTriggerSymbol: '$',
 	suggestLinksToNonExistingNotes: true,
 	relativeTopFolders: [],
 	includeFoldersInSuggestions: false,
 	folderSuggestionSettings: {folderSuggestionMode: FolderSuggestionMode.Always, folderSuggestionTrigger: '/'},
 	enableRelativePaths: true,
-	defaultTemplaterTemplate: ''
+	templateTriggerSymbol: '$',
+	defaultTemplaterTemplate: '',
+	quickAddTriggerSymbol: '€',
+	defaultQuickAddTemplate: ''
 }

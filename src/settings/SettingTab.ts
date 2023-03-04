@@ -34,8 +34,15 @@ export class SettingTab extends PluginSettingTab {
 		// @ts-ignore
 		// No need to show the setting if templater does not exist
 		if (this.configStore.templaterIsEnabled){
-			this.addTemplateTriggerSetting(containerEl)
-			this.addDefaultTemplateSetting(containerEl)
+			this.addTemplaterTriggerSetting(containerEl)
+			this.addDefaultTemplaterTemplateSetting(containerEl)
+		}
+
+		// @ts-ignore
+		// No need to show the setting if QuickAdd does not exist
+		if (this.configStore.quickAddIsEnabled){
+			this.addQuickAddTriggerSetting(containerEl)
+			this.addDefaultQuickAddTemplateSetting(containerEl)
 		}
 
 		this.addRelativeTopFolderSetting(containerEl)
@@ -185,10 +192,10 @@ export class SettingTab extends PluginSettingTab {
 			)
 	}
 
-	private addTemplateTriggerSetting(containerEl: HTMLElement) {
+	private addTemplaterTriggerSetting(containerEl: HTMLElement) {
 		new Setting(containerEl)
-			.setName('Trigger for template execution')
-			.setDesc('The text string that will trigger template execution')
+			.setName('Trigger for executing Templater templates')
+			.setDesc('The text string that will trigger execution of a Tempalter template. Leave empty if you don\'t need the ability to trigger Templater templates')
 			.addText(component => component
 				.setValue(this.plugin.settings.templateTriggerSymbol)
 				.onChange(async (value) => {
@@ -198,21 +205,51 @@ export class SettingTab extends PluginSettingTab {
 			)
 	}
 
-	private addDefaultTemplateSetting(containerEl: HTMLElement){
+	private addDefaultTemplaterTemplateSetting(containerEl: HTMLElement){
 		let searchComponent: SearchComponent
 		new Setting(containerEl)
 			.setName('Default Templater template')
-			.setDesc('This template will be the first in the list of templates to select from when triggering template execution')
+			.setDesc('This template will be the first in the list of templates to select from when triggering Templater template execution')
 			.addSearch(cb => {
 				searchComponent = cb
 				new FileSuggester(this.app, searchComponent.inputEl, this.configStore.getTemplaterTemplatesPath(), this.fileSystem)
-				cb.setPlaceholder('Default templater template')
+				cb.setPlaceholder('Default Templater template')
 					.setValue(this.plugin.settings.defaultTemplaterTemplate)
 					.onChange(async newValue => {
 						this.plugin.settings.defaultTemplaterTemplate = newValue
 						await this.plugin.saveSettings()
 					})
 			})
+	}
+
+	private addDefaultQuickAddTemplateSetting(containerEl: HTMLElement){
+		let searchComponent: SearchComponent
+		new Setting(containerEl)
+			.setName('Default QuickAdd template')
+			.setDesc('This template will be the first in the list of templates to select from when triggering QuickAdd template execution')
+			.addSearch(cb => {
+				searchComponent = cb
+				new FileSuggester(this.app, searchComponent.inputEl, this.configStore.getQuickAddTemplatesPath(), this.fileSystem)
+				cb.setPlaceholder('Default QuickAdd template')
+					.setValue(this.plugin.settings.defaultQuickAddTemplate)
+					.onChange(async newValue => {
+						this.plugin.settings.defaultQuickAddTemplate = newValue
+						await this.plugin.saveSettings()
+					})
+			})
+	}
+
+	private addQuickAddTriggerSetting(containerEl: HTMLElement) {
+		new Setting(containerEl)
+			.setName('Trigger for executing QuickAdd templates')
+			.setDesc("The text string that will trigger execution of a QuickAdd template. Leave empty if you don't need the ability to trigger QuickAdd templates")
+			.addText(component => component
+				.setValue(this.plugin.settings.quickAddTriggerSymbol)
+				.onChange(async (value) => {
+					this.plugin.settings.quickAddTriggerSymbol = value
+					await this.plugin.saveSettings()
+				})
+			)
 	}
 
 	private addFolderSearchTriggerSetting(containerEl: HTMLElement){

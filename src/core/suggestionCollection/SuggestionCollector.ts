@@ -20,11 +20,13 @@ import {FileQuery} from "../queries/FileQuery"
 import {FolderQuery} from "../queries/FolderQuery"
 import {ObsidianFilePath} from "../paths/ObsidianFilePath"
 import {TemplaterTemplateConfig} from "../templateApplication/TemplaterTemplateConfig"
+import {QuickAddTemplateConfig} from "../templateApplication/QuickAddTemplateConfig"
 
 export class SuggestionCollector {
 	private readonly noteSuggestionCollector: NoteSuggestionCollector
 	private readonly folderSuggestionCollector: FolderSuggestionCollector
-	private readonly templateSuggestionCollector: TemplateSuggestionCollector
+	private readonly templaterTemplateSuggestionCollector: TemplateSuggestionCollector
+	private readonly quickaddTemplateSuggestionCollector: TemplateSuggestionCollector
 	private readonly headerSuggestionCollector: HeaderSuggestionCollector
 	private readonly combinedSuggestionCollector: NoteAndFolderSuggestionCollector
 	private readonly fileSystem: IFileSystem
@@ -35,7 +37,9 @@ export class SuggestionCollector {
 		this.settings = settings
 		this.noteSuggestionCollector = new NoteSuggestionCollector(interOp, settings)
 		const templaterConfig = new TemplaterTemplateConfig(interOp, settings)
-		this.templateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings, templaterConfig)
+		const quickaddConfig = new QuickAddTemplateConfig(interOp, settings)
+		this.templaterTemplateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings, templaterConfig)
+		this.quickaddTemplateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings, quickaddConfig)
 		this.headerSuggestionCollector = new HeaderSuggestionCollector(interOp)
 		this.folderSuggestionCollector = new FolderSuggestionCollector(interOp)
 		this.combinedSuggestionCollector = new NoteAndFolderSuggestionCollector(interOp, settings)
@@ -56,8 +60,10 @@ export class SuggestionCollector {
 		}
 
 		let suggestions: ISuggestion[] = []
-		if (this.configStore.templaterIsEnabled && context.query.includes(this.settings.templateTriggerSymbol)) {
-			suggestions = this.getTemplateSuggestions(context.query)
+		if (this.configStore.templaterIsEnabled && this.settings.templateTriggerSymbol !== "" && context.query.includes(this.settings.templateTriggerSymbol)) {
+			suggestions = this.getTemplaterTemplateSuggestions(context.query)
+		} else if (this.configStore.quickAddIsEnabled && this.settings.quickAddTriggerSymbol !== "" && context.query.includes(this.settings.quickAddTriggerSymbol)) {
+			suggestions = this.getQuickAddTemplateSuggestions(context.query)
 		} else if (context.query.includes('#')){
 			suggestions = this.getHeaderSuggestions(context.query)
 		} else if (this.settings.includeFoldersInSuggestions){
@@ -124,9 +130,15 @@ export class SuggestionCollector {
 		}
 	}
 
-	private getTemplateSuggestions(query: string) {
+	private getTemplaterTemplateSuggestions(query: string) {
 		const [noteQuery, templateQuery] = query.split(this.settings.templateTriggerSymbol)
 		const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
-		return this.templateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
+		return this.templaterTemplateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
+	}
+
+	private getQuickAddTemplateSuggestions(query: string) {
+		const [noteQuery, templateQuery] = query.split(this.settings.quickAddTriggerSymbol)
+		const noteSuggestion = this.getNoteSuggestionFor(noteQuery)
+		return this.quickaddTemplateSuggestionCollector.getSuggestions(templateQuery, noteSuggestion)
 	}
 }
