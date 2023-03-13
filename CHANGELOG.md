@@ -1,6 +1,7 @@
-## Next release
+## Next release (BRAT)
 ### Features
-- Make it possible to define a default Templater template to execute when creating a note based on a Templater template
+- Make it possible to define default templates to execute when creating a note based on a [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd) template
+- Support templates from [QuickAdd](https://github.com/chhoumann/quickadd)
 
 ## 1.3.3 (2023-01-18)
 
