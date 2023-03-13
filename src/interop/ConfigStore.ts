@@ -50,6 +50,7 @@ export class ConfigStore implements IConfigurationStore {
 	}
 
 	get quickAddIsEnabled(): boolean {
+		// @ts-ignore
 		return this.app.plugins.plugins.quickadd
 	}
 
