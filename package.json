@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-note-autocreator",
-	"version": "1.3.3",
+	"version": "1.4.0",
 	"description": "Automatically create notes when links are created to them.",
 	"main": "src/main.js",
 	"scripts": {

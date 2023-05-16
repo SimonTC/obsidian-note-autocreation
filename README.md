@@ -9,24 +9,24 @@ After enabling the plugin in the settings menu, you will be able to trigger an a
 The drop-down is triggered by typing the characters configured in the settings menu. By default, the trigger is `@`.
 The suggestion drop-down works as the standard link suggestion activated by typing `[[` with some notable differences:
 
-|                                                                                                          | Obsidian Linking | Note Auto Creator linking                                                             |
-|----------------------------------------------------------------------------------------------------------|------------------|---------------------------------------------------------------------------------------|
-| Trigger for link suggestion                                                                              | `[[`             | Configurable (`@` by default)                                                         |
-| Inserts link to note when Enter is pressed                                                               | ✔️               | ✔️                                                                                    |     
-| Creates new note if no note exist at the link location                                                   | ❌                | ✔️                                                                                    |     
-| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created   | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured                            |
-| Filters link suggestions based on the text after the trigger                                             | ✔️               | ✔️                                                                                    |     
-| Custom display text can be inserted by using the &#124; character                                        | ✔️               | ✔️                                                                                    |     
-| Link to specific header can be inserted using the # character                                            | ✔️               | ✔️                                                                                    |
-| Link to specific block can be inserted using the ^ character                                             | ✔️               | ❌                                                                                     |
-| Adds new root notes in the default location specified in "Default location for new notes"                | ✔️               | ✔️                                                                                    |
-| Can search for notes by alias                                                                            | ✔️               | ✔️                                                                                    |
-| Can disable suggestions for links to notes that do not exist                                             | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled |
-| Proposes other filetypes than markdown files when triggering link insertion                              | ✔️               | ❌                                                                                     |
-| Can limit note suggestions to notes from only part of the vault                                          | ❌                | ✔️                                                                                    |
-| Suggests paths to folders                                                                                | ❌                | ✔️<br/>Folder suggestions are disabled by default but can be enabled in settings      |
-| Relative paths can be used when inserting links                                                          | ❌                | ✔️                                                                                    |
-| (BETA) Can apply a [QuickAdd](https://github.com/chhoumann/quickadd) template when a new note is created | ❌                | ✔️ <br/> Triggered by `€` by default but can be configured                            |
+|                                                                                                        | Obsidian Linking | Note Auto Creator linking                                                             |
+|--------------------------------------------------------------------------------------------------------|------------------|---------------------------------------------------------------------------------------|
+| Trigger for link suggestion                                                                            | `[[`             | Configurable (`@` by default)                                                         |
+| Inserts link to note when Enter is pressed                                                             | ✔️               | ✔️                                                                                    |     
+| Creates new note if no note exist at the link location                                                 | ❌                | ✔️                                                                                    |     
+| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured                            |
+| Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                                                    |     
+| Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                                                    |     
+| Link to specific header can be inserted using the # character                                          | ✔️               | ✔️                                                                                    |
+| Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                                                     |
+| Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                                                    |
+| Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                    |
+| Can disable suggestions for links to notes that do not exist                                           | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled |
+| Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ❌                                                                                     |
+| Can limit note suggestions to notes from only part of the vault                                        | ❌                | ✔️                                                                                    |
+| Suggests paths to folders                                                                              | ❌                | ✔️<br/>Folder suggestions are disabled by default but can be enabled in settings      |
+| Relative paths can be used when inserting links                                                        | ❌                | ✔️                                                                                    |
+| Can apply a [QuickAdd](https://github.com/chhoumann/quickadd) template when a new note is created      | ❌                | ✔️ <br/> Triggered by `€` by default but can be configured                            |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -49,8 +49,7 @@ The template defined here will be shown as the first template in the list of tem
 - Inserting templates only works if either the Templater or QuickAdd plugin is installed and enabled.
 - You need to have defined a template folder in Templater or QuickAdd
 - Inserting templates does not work with templates created for the [core Templates plugin](https://help.obsidian.md/Plugins/Templates).
-- You cannot apply templates to already existing notes.
-- **IMPORTANT**: Support for QuickAdd templates is still in beta and has not been fully tested. If you want to test this you should install Note Auto Creator using [BRAT](https://github.com/TfTHacker/obsidian42-brat). 
+- You cannot apply templates to already existing notes. 
 
 ### Limit note suggestions
 If your vault is organized into separate sub-vaults you might not be interested in getting suggestions for items in other sub vaults than the sub vault your current note is in.
@@ -147,8 +146,8 @@ A default template can be configured in `Default Templater template`.
 This will ensure that the chosen default template is pre-selected when inserting a template.
 You can of course still choose another template from the suggestion drop-down if the default template isn't needed.
 
-### QuicAdd template insertion trigger (BETA)
-Any symbol can be used to trigger the selection of a QuickAdd template to insert. By default, the trigger symbol is `€`. This symbol can be configured by changing the value in `Trigger for executing QiockAdd templates`.
+### QuickAdd template insertion trigger
+Any symbol can be used to trigger the selection of a QuickAdd template to insert. By default, the trigger symbol is `€`. This symbol can be configured by changing the value in `Trigger for executing QuickAdd templates`.
 This setting is only shown when QuickAdd is installed and enabled.
 
 A default template can be configured in `Default QuickAdd template`.
