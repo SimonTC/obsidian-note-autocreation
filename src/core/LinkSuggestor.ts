@@ -10,6 +10,8 @@ import {ISuggestion} from "./suggestions/ISuggestion"
 import {HeaderSuggestion} from "./suggestions/HeaderSuggestion"
 import {FolderSuggestion} from "./suggestions/FolderSuggestion"
 import {TemplateEngine} from "./templateApplication/TemplateEngine"
+import {ObsidianFolderPath} from "./paths/ObsidianFolderPath"
+import {ObsidianFilePath} from "./paths/ObsidianFilePath"
 
 export class LinkSuggestor {
 	private readonly suggestionsCollector: SuggestionCollector
@@ -38,6 +40,13 @@ export class LinkSuggestor {
 	}
 
 	onTrigger(cursor: DocumentLocation, editor: IEditor, file: TFile): SuggestionTrigger | null {
+		const pathToFile = new ObsidianFilePath(file.path)
+		if(this.settings.enabledFolders.length > 0){
+			const enablePlugin = this.settings.enabledFolders.find(enabledFolder => enabledFolder.isAncestorOf(pathToFile)) != undefined
+			if (!enablePlugin){
+				return null
+			}
+		}
 		const line = editor.getLine(cursor.line)
 		this.currentTrigger = extractSuggestionTrigger(line, cursor, this.settings.triggerSymbol)
 		return this.currentTrigger
