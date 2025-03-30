@@ -101,7 +101,7 @@ class FakeInterop implements IObsidianInterop {
 		throw new Error("Method not implemented.")
 	}
 	get quickAddIsEnabled(): boolean {
-		throw new Error("Method not implemented.")
+		return false
 	}
 	getQuickAddTemplatesPath(): string {
 		throw new Error("Method not implemented.")
