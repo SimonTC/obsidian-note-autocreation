@@ -51,4 +51,8 @@ export class ObsidianFolderPath extends ObsidianPath {
 		}
 		return path.VaultPath.toLowerCase().startsWith(this.VaultPath.toLowerCase())
 	}
+
+	isDescendantOf(path: ObsidianFolderPath): boolean {
+		return path.isAncestorOf(this)
+	}
 }

@@ -48,9 +48,31 @@ describe('a single Obsidian folder path', function () {
 	})
 })
 
+describe('isDescendantOf', function () {
+	it.each([
+		{folderPath: 'folder2/', otherPath: 'folder1/', expected: false},
+		{folderPath: 'folder2/', otherPath: 'folder2/', expected: true},
+		{folderPath: 'folder1/folder2/', otherPath: 'folder1/', expected: true},
+		{folderPath: 'Folder1/folder2/', otherPath: 'folder1/', expected: true}, // Capitalization should not matter
+		{folderPath: 'folder1/folder2/', otherPath: 'Folder1/', expected: true}, // Capitalization should not matter
+		{folderPath: 'folder1/folder2/', otherPath: '/', expected: true},
+		{folderPath: 'folder2/', otherPath: '/', expected: true},
+		{folderPath: 'folder2/', otherPath: '', expected: true},
+		{folderPath: '/folder2/', otherPath: '', expected: true},
+		{folderPath: 'folder1/folder2/folder3/folder4/', otherPath: 'folder1/folder2/', expected: true},
+		{folderPath: 'other folder/MyFolder/Folder1/', otherPath: 'myFolder/', expected: false},
+	])('is $expected when folder path is $folderPath and other folder path is $otherPath', ({folderPath, otherPath, expected}) => {
+		const obsidianPath = new ObsidianFolderPath(folderPath)
+		const possibleAncestor = new ObsidianFolderPath(otherPath)
+
+		expect(obsidianPath.isDescendantOf(possibleAncestor)).toBe(expected)
+	})
+})
+
 describe('isAncestorOf', function () {
 	it.each([
 		{folderPath: 'folder1/', otherPath: 'folder2/', expected: false},
+		{folderPath: 'folder2/', otherPath: 'folder2/', expected: true},
 		{folderPath: 'folder1/', otherPath: 'folder1/folder2/', expected: true},
 		{folderPath: 'folder1/', otherPath: 'Folder1/folder2/', expected: true}, // Capitalization should not matter
 		{folderPath: 'Folder1/', otherPath: 'folder1/folder2/', expected: true}, // Capitalization should not matter
