@@ -21,6 +21,7 @@ export interface NoteAutoCreatorSettings {
 	defaultTemplaterTemplate: string
 	quickAddTriggerSymbol: string
 	defaultQuickAddTemplate: string
+	enabledFolders: ObsidianFolderPath[]
 }
 
 export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
@@ -33,5 +34,6 @@ export const DEFAULT_SETTINGS: NoteAutoCreatorSettings = {
 	templateTriggerSymbol: '$',
 	defaultTemplaterTemplate: '',
 	quickAddTriggerSymbol: '€',
-	defaultQuickAddTemplate: ''
+	defaultQuickAddTemplate: '',
+	enabledFolders: []
 }

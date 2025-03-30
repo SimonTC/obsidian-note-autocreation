@@ -46,6 +46,7 @@ export class SettingTab extends PluginSettingTab {
 		}
 
 		this.addRelativeTopFolderSetting(containerEl)
+		this.addEnabledFoldersSetting(containerEl)
 	}
 
 	private addSuggestionTriggerSetting(containerEl: HTMLElement) {
@@ -78,51 +79,101 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	private addRelativeTopFolderSetting(containerEl: HTMLElement){
-		containerEl.createEl("h2", { text: "Relative top folders" })
+		const folderSelectionSettingConfig = {
+			headerText: "Relative top folders",
+			descriptionContent: {
+				intro:[
+					'Add folder names or paths to folders here if you want to filter suggestions when inserting new links. ',
+					'The filtering is activated when inserting a link in a note that has any of the specified folders in its folder tree. ',
+					'Only suggestions for notes that also have the same folder in their folder tree are shown.'
+				],
+				example: [
+					'If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative top folder, then you will only get suggestions for other notes descending from folder 1.'
+				],
+				outro: [
+					'The folder names are checked in prioritized order. ',
+					'If both "folder1/folder2" and "folder1" are defined as relative top folders, ',
+					'then "folder1/folder2" is used as the relative top folder if the path to the note is "folder1/folder2/note". ',
+					'If the path to the note is "folder1/my note", then "folder1" is used as the top folder.'
+				]
+			},
+			enablePrioritization: true,
+			descriptionForAddNewButton: "Add new relative top folder",
+			pathCollection: this.plugin.settings.relativeTopFolders
+		}
+		this.addSettingForSelectingFolders(containerEl, folderSelectionSettingConfig)
+	}
+
+	private addEnabledFoldersSetting(containerEl: HTMLElement){
+		const folderSelectionSettingConfig = {
+			headerText: "Enabled folders",
+			descriptionContent: {
+				intro:[
+					'Add paths to folders here if you only want the plugin to be enabled in specific folders. ',
+					'The plugin will only be active in notes that are descendants of the folders given here. ',
+					'If you leave this empty, the plugin will be active in all folders.'
+				],
+				example: [
+					'If you are trying to insert a link in "folder1/folder2/note.md" and you have configured "folder1" as an enabled folder then a link will be inserted. ',
+					'However, if you are trying to insert a link in "folder2/note.md" and you have configured "folder1" as an enabled folder then a link will not be inserted.',
+				],
+				outro: [
+					"If you only want suggestions from enabled folders, then you should also add the folders you want to be enabled as relative top folders."
+				]
+			},
+			enablePrioritization: false,
+			descriptionForAddNewButton: "Add new enabled folder",
+			pathCollection: this.plugin.settings.enabledFolders
+		}
+		this.addSettingForSelectingFolders(containerEl, folderSelectionSettingConfig)
+	}
+
+	private addSettingForSelectingFolders(containerEl: HTMLElement, folderSettingConfig: {
+		headerText: string;
+		descriptionContent: { intro: string[]; example: string[]; outro: string[] };
+		enablePrioritization: boolean;
+		descriptionForAddNewButton: string;
+		pathCollection: ObsidianFolderPath[]
+	}) {
+		containerEl.createEl("h2", {text: folderSettingConfig.headerText})
 		const description = document.createDocumentFragment()
 		description.append(
-			'Add folder names or paths to folders here if you want to filter suggestions when inserting new links. ',
-			'The filtering is activated when inserting a link in a note that has any of the specified folders in its folder tree. ',
-			'Only suggestions for notes that also have the same folder in their folder tree are shown.',
+			...folderSettingConfig.descriptionContent.intro,
 			description.createEl('br'),
 			description.createEl('br'),
-			description.createEl('strong', { text: 'Example ' }),
+			description.createEl('strong', {text: 'Example '}),
 			description.createEl('br'),
-			'If you are inserting a link in "folder1/folder2/note.md" and you have configured "folder1" as a relative top folder, then you will only get suggestions for other notes descending from folder 1.',
+			...folderSettingConfig.descriptionContent.example,
 			description.createEl('br'),
 			description.createEl('br'),
-			'The folder names are checked in prioritized order. ',
-			'If both "folder1/folder2" and "folder1" are defined as relative top folders, ',
-			'then "folder1/folder2" is used as the relative top folder if the path to the note is "folder1/folder2/note". ',
-			'If the path to the note is "folder1/my note", then "folder1" is used as the top folder.'
+			...folderSettingConfig.descriptionContent.outro
 		)
-		new Setting(containerEl).setDesc(description)
 
-		const folderPaths = this.plugin.settings.relativeTopFolders
+		new Setting(containerEl).setDesc(description)
 		new Setting(containerEl)
 			.setName("Add New")
-			.setDesc("Add new relative top folder")
+			.setDesc(folderSettingConfig.descriptionForAddNewButton)
 			.addButton((button: ButtonComponent) => {
 				button
 					.setButtonText("+")
 					.setCta()
 					.onClick(async () => {
-						folderPaths.push(new ObsidianFolderPath(''))
+						folderSettingConfig.pathCollection.push(new ObsidianFolderPath(''))
 						await this.plugin.saveSettings()
 						this.display()
 					})
 			})
 
-		folderPaths.forEach(
+		folderSettingConfig.pathCollection.forEach(
 			(folderPath, index) => {
 				let searchComponent: SearchComponent
-				new Setting(containerEl)
+				const setting = new Setting(containerEl)
 					.addSearch(cb => {
 						searchComponent = cb
 						cb.setPlaceholder('Folder name or path')
 							.setValue(folderPath.VaultPath)
 							.onChange(async newValue => {
-								folderPaths[index] = new ObsidianFolderPath(newValue)
+								(folderSettingConfig.pathCollection)[index] = new ObsidianFolderPath(newValue)
 								await this.plugin.saveSettings()
 							})
 					})
@@ -137,33 +188,38 @@ export class SettingTab extends PluginSettingTab {
 					.addExtraButton(cb => cb
 						.setIcon('cross')
 						.setTooltip('Delete')
-						.onClick(async() =>{
-							folderPaths.splice(index, 1)
-							await this.plugin.saveSettings()
-							this.display()
-						})
-					)
-					.addExtraButton(cb => cb
-						.setIcon('down-chevron-glyph')
-						.setTooltip('Decrease priority')
 						.onClick(async () => {
-							this.moveFolderPath(folderPaths, index, index + 1)
+							folderSettingConfig.pathCollection.splice(index, 1)
 							await this.plugin.saveSettings()
 							this.display()
 						})
 					)
-					.addExtraButton(cb => cb
-						.setIcon('up-chevron-glyph')
-						.setTooltip('Increase priority')
-						.onClick(async () => {
-							this.moveFolderPath(folderPaths, index, index -1)
-							await this.plugin.saveSettings()
-							this.display()
-						})
-					)
+
+				if (folderSettingConfig.enablePrioritization) {
+					setting
+						.addExtraButton(cb => cb
+							.setIcon('down-chevron-glyph')
+							.setTooltip('Decrease priority')
+							.onClick(async () => {
+								this.moveFolderPath(folderSettingConfig.pathCollection, index, index + 1)
+								await this.plugin.saveSettings()
+								this.display()
+							})
+						)
+						.addExtraButton(cb => cb
+							.setIcon('up-chevron-glyph')
+							.setTooltip('Increase priority')
+							.onClick(async () => {
+								this.moveFolderPath(folderSettingConfig.pathCollection, index, index - 1)
+								await this.plugin.saveSettings()
+								this.display()
+							})
+						)
+				}
 			}
 		)
 	}
+
 	private addSuggestNonExistingNotesSetting(containerEl: HTMLElement){
 		new Setting(containerEl)
 			.setName('Suggest existing links to notes that do not exist')
