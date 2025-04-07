@@ -9,24 +9,25 @@ After enabling the plugin in the settings menu, you will be able to trigger an a
 The drop-down is triggered by typing the characters configured in the settings menu. By default, the trigger is `@`.
 The suggestion drop-down works as the standard link suggestion activated by typing `[[` with some notable differences:
 
-|                                                                                                        | Obsidian Linking | Note Auto Creator linking                                                             |
-|--------------------------------------------------------------------------------------------------------|------------------|---------------------------------------------------------------------------------------|
-| Trigger for link suggestion                                                                            | `[[`             | Configurable (`@` by default)                                                         |
-| Inserts link to note when Enter is pressed                                                             | ✔️               | ✔️                                                                                    |     
-| Creates new note if no note exist at the link location                                                 | ❌                | ✔️                                                                                    |     
-| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured                            |
-| Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                                                    |     
-| Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                                                    |     
-| Link to specific header can be inserted using the # character                                          | ✔️               | ✔️                                                                                    |
-| Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                                                     |
-| Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                                                    |
-| Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                    |
-| Can disable suggestions for links to notes that do not exist                                           | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled |
-| Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ❌                                                                                     |
-| Can limit note suggestions to notes from only part of the vault                                        | ❌                | ✔️                                                                                    |
-| Suggests paths to folders                                                                              | ❌                | ✔️<br/>Folder suggestions are disabled by default but can be enabled in settings      |
-| Relative paths can be used when inserting links                                                        | ❌                | ✔️                                                                                    |
-| Can apply a [QuickAdd](https://github.com/chhoumann/quickadd) template when a new note is created      | ❌                | ✔️ <br/> Triggered by `€` by default but can be configured                            |
+|                                                                                                        | Obsidian Linking | Note Auto Creator linking                                                                               |
+|--------------------------------------------------------------------------------------------------------|------------------|---------------------------------------------------------------------------------------------------------|
+| Trigger for link suggestion                                                                            | `[[`             | Configurable (`@` by default)                                                                           |
+| Inserts link to note when Enter is pressed                                                             | ✔️               | ✔️                                                                                                      |     
+| Creates new note if no note exist at the link location                                                 | ❌                | ✔️                                                                                                      |     
+| Can apply a [Templater](https://github.com/SilentVoid13/Templater) template when a new note is created | ❌                | ✔️ <br/> Triggered by `$` by default but can be configured                                              |
+| Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                                                                      |     
+| Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                                                                      |     
+| Link to specific header can be inserted using the # character                                          | ✔️               | ✔️                                                                                                      |
+| Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                                                                       |
+| Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                                                                      |
+| Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                                      |
+| Can disable suggestions for links to notes that do not exist                                           | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled                   |
+| Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ❌                                                                                                       |
+| Can limit note suggestions to notes from only part of the vault                                        | ❌                | ✔️                                                                                                      |
+| Can limit insertion of note suggestions to only be possible in part of the vault                       | ❌                | ✔️<br/>Note suggestion is active in all folders by default, but can be limited to specific folders only |
+| Suggests paths to folders                                                                              | ❌                | ✔️<br/>Folder suggestions are disabled by default but can be enabled in settings                        |
+| Relative paths can be used when inserting links                                                        | ❌                | ✔️                                                                                                      |
+| Can apply a [QuickAdd](https://github.com/chhoumann/quickadd) template when a new note is created      | ❌                | ✔️ <br/> Triggered by `€` by default but can be configured                                              |
 
 Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
@@ -108,6 +109,29 @@ In the following table you can see examples of what suggestions are returned bas
 | `/Private/Tasks/Less important task/Clean up my desk.md` | `Private/`, `Tasks`                      | All notes in the `Private/` folder or its sub folders                                     |
 | `/Private/Tasks/Less important task/Clean up my desk.md` | `Tasks`, `Private/`                      | All notes in the `Private/Tasks/` folder or its sub folders                               |
 
+### Limiting Plugin Functionality to Specific Folders
+
+Under some circumstances you may want to limit the folders in which the trigger symbol will trigger a note suggestion.
+To achieve this you can define [a list of enabled folders](#enabled-folders).
+When defined, the plugin will only respond to the trigger symbol in notes that are in (or are descendants of) the folders you specify.
+If no enabled folders are specified (the default setting), the plugin will be active throughout the entire vault.
+
+**Example:**
+- If you configure "Projects" as an enabled folder:
+	- The plugin will be active in "Projects/Project1/note.md"
+	- The plugin will NOT be active in "Personal/diary.md"
+
+**Note:** If you want to both enable the plugin only in specific folders AND limit suggestions to those same folders, you should add the same folders to both the "Enabled Folders" and "Relative Top Folders" settings.
+
+### Working with Relative Top Folders
+
+When using both "Enabled Folders" and "Relative Top Folders" features:
+
+- "Enabled Folders" controls where the plugin is active (where the trigger symbol works)
+- "Relative Top Folders" controls which notes are suggested when the plugin is active
+
+For a completely isolated experience within specific folders, configure the same paths in both settings.
+
 ## Settings
 
 ### Link suggestion trigger
@@ -157,6 +181,11 @@ You can of course still choose another template from the suggestion drop-down if
 ### Relative top folders
 To add a new relative top folder click the "+"-button.
 This will add a new input box where you can write the relative top folder.
+Click the search icon if you want to get suggestions for folders.
+
+### Enabled folders
+To add a folder where the plugin should be enabled click the "+"-button.
+This will add a new input box where you can write the enabled folder.
 Click the search icon if you want to get suggestions for folders.
 
 ## Compatibility
