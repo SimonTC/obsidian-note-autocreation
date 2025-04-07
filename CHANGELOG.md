@@ -1,3 +1,7 @@
+## Next release (BRAT)
+### Features
+- Make it possible to limit plugin to only work in specific folders
+
 ## 1.4.0 (2023-05-16)
 ### Features
 - Make it possible to define default templates to execute when creating a note based on a [Templater](https://github.com/SilentVoid13/Templater) or [QuickAdd](https://github.com/chhoumann/quickadd) template
