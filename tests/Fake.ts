@@ -213,6 +213,7 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	defaultTemplaterTemplate = ""
 	defaultQuickAddTemplate = ""
 	quickAddTriggerSymbol = "€"
+	enabledFolders: ObsidianFolderPath[] = []
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{
