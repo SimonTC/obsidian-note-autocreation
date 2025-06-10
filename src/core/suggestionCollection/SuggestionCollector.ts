@@ -40,7 +40,7 @@ export class SuggestionCollector {
 		const quickaddConfig = new QuickAddTemplateConfig(interOp, settings)
 		this.templaterTemplateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings, templaterConfig)
 		this.quickaddTemplateSuggestionCollector = new TemplateSuggestionCollector(interOp, interOp, settings, quickaddConfig)
-		this.headerSuggestionCollector = new HeaderSuggestionCollector(interOp)
+		this.headerSuggestionCollector = new HeaderSuggestionCollector(interOp, settings)
 		this.folderSuggestionCollector = new FolderSuggestionCollector(interOp)
 		this.combinedSuggestionCollector = new NoteAndFolderSuggestionCollector(interOp, settings)
 		this.fileSystem = interOp

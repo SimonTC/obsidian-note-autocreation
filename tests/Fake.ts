@@ -203,6 +203,7 @@ export class FakeMetadataCollection implements IMetadataCollection{
 }
 
 export class FakeSettings implements NoteAutoCreatorSettings{
+    triggerHeaderAsAliasSymbol = '!'
 	templateTriggerSymbol = '$'
 	triggerSymbol = '@'
 	suggestLinksToNonExistingNotes = true
@@ -214,6 +215,11 @@ export class FakeSettings implements NoteAutoCreatorSettings{
 	defaultQuickAddTemplate = ""
 	quickAddTriggerSymbol = "€"
 	enabledFolders: ObsidianFolderPath[] = []
+
+	withTriggerHeaderAsAliasSymbol(symbol: string): FakeSettings{
+		this.triggerHeaderAsAliasSymbol = symbol
+		return this
+	}
 }
 
 export class FakeObsidianLinkSuggestion implements ObsidianLinkSuggestion{

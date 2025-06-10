@@ -1,11 +1,12 @@
 import 'jest-extended'
-import {Fake} from "./Fake"
+import {Fake, FakeSettings} from "./Fake"
 import {HeadingCache} from "obsidian"
 import {HeaderSuggestionCollector} from "../src/core/suggestionCollection/HeaderSuggestionCollector"
 import {ExistingNoteSuggestion} from "../src/core/suggestions/NoteSuggestion"
 import {HeaderSuggestion} from "../src/core/suggestions/HeaderSuggestion"
 
 const fakeExistingNote = new ExistingNoteSuggestion('My note')
+const fakeSettings = Fake.Settings
 
 it.each([
 	{query: ''},
@@ -13,7 +14,7 @@ it.each([
 ])('no suggestions are returned when there are no headers in the note and the query is "$query"', ({query}) => {
 	const headers = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, []]])
 	const metadataCollection = Fake.MetaDataCollection.withHeaders(headers)
-	const collector = new HeaderSuggestionCollector(metadataCollection)
+	const collector = new HeaderSuggestionCollector(metadataCollection, fakeSettings)
 
 	const observedSuggestions = collector.getSuggestions(query, fakeExistingNote)
 
@@ -42,7 +43,7 @@ describe('when there are headers in the note', function () {
 			[fakeExistingNote.VaultPath, headers
 		]])
 		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
-		const collector = new HeaderSuggestionCollector(metadataCollection)
+		const collector = new HeaderSuggestionCollector(metadataCollection, fakeSettings)
 
 		const observedSuggestions = collector.getSuggestions('', fakeExistingNote)
 
@@ -56,45 +57,13 @@ describe('when there are headers in the note', function () {
 
 		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
 		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
-		const collector = new HeaderSuggestionCollector(metadataCollection)
+		const collector = new HeaderSuggestionCollector(metadataCollection, fakeSettings)
 
 		const observedSuggestions = collector.getSuggestions('Header 1|some alias', fakeExistingNote)
 		expect(observedSuggestions.length).toBe(1)
 		const suggestion = observedSuggestions[0]
 		expect(suggestion.Alias).toBe('some alias')
 		expect(suggestion.Title).toBe('Header 1')
-	})
-
-	test('uses the header as alias if bang character is given after header trigger', () => {
-		const headers = [
-			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
-		]
-
-		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
-		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
-		const collector = new HeaderSuggestionCollector(metadataCollection)
-
-		const observedSuggestions = collector.getSuggestions('Header 1!', fakeExistingNote)
-		expect(observedSuggestions.length).toBe(1)
-		const suggestion = observedSuggestions[0]
-		expect(suggestion.Alias).toBe('Header 1')
-		expect(suggestion.Title).toBe('Header 1')
-	})
-
-	test('does not use the header as alias if header includes bang character', () => {
-		const headers = [
-			Fake.HeadingCache.withTitle('Header 1!').withLevel(1),
-		]
-
-		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
-		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
-		const collector = new HeaderSuggestionCollector(metadataCollection)
-
-		const observedSuggestions = collector.getSuggestions('Header 1!', fakeExistingNote)
-		expect(observedSuggestions.length).toBe(1)
-		const suggestion = observedSuggestions[0]
-		expect(suggestion.Alias).toBeUndefined()
-		expect(suggestion.Title).toBe('Header 1!')
 	})
 
 	test('uses the original note alias if two aliases are given', () => {
@@ -105,7 +74,7 @@ describe('when there are headers in the note', function () {
 
 		const headerMap = new Map<string, HeadingCache[]>([[note.VaultPath, headers]])
 		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
-		const collector = new HeaderSuggestionCollector(metadataCollection)
+		const collector = new HeaderSuggestionCollector(metadataCollection, fakeSettings)
 
 		const observedSuggestions = collector.getSuggestions('Header 1|some alias', note)
 		expect(observedSuggestions.length).toBe(1)
@@ -130,10 +99,69 @@ describe('when there are headers in the note', function () {
 		]
 		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
 		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
-		const collector = new HeaderSuggestionCollector(metadataCollection)
+		const collector = new HeaderSuggestionCollector(metadataCollection, fakeSettings)
 
 		const observedSuggestions = collector.getSuggestions(query, fakeExistingNote)
 
 		expect(observedSuggestions.map(s => s.Title)).toStrictEqual(expectedHeaders)
+	})
+
+	const headerAsTriggerSymbols = [
+		{headerAsAliasTrigger: '!'},
+		{headerAsAliasTrigger: '?'},
+	]
+
+	it.each(headerAsTriggerSymbols)('uses the header as alias if header-as-alias-trigger character = "$headerAsAliasTrigger" is given after header trigger', ({headerAsAliasTrigger}) => {
+		const headers = [
+			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
+		]
+
+		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection, Fake.Settings.withTriggerHeaderAsAliasSymbol(headerAsAliasTrigger))
+
+		const observedSuggestions = collector.getSuggestions(`Header 1${headerAsAliasTrigger}`, fakeExistingNote)
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBe('Header 1')
+		expect(suggestion.Title).toBe('Header 1')
+	})
+
+	it.each(headerAsTriggerSymbols)(`does not use the header as alias if header includes header-as-alias-trigger = "$headerAsAliasTrigger"`, ({headerAsAliasTrigger}) => {
+		const headers = [
+			Fake.HeadingCache.withTitle(`Header 1${headerAsAliasTrigger}`).withLevel(1),
+		]
+
+		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection, Fake.Settings.withTriggerHeaderAsAliasSymbol(headerAsAliasTrigger))
+
+		const observedSuggestions = collector.getSuggestions(`Header 1${headerAsAliasTrigger}`, fakeExistingNote)
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBeUndefined()
+		expect(suggestion.Title).toBe(`Header 1${headerAsAliasTrigger}`)
+	})
+
+	const emptyHeaderAsTriggerSymbols = [
+		{headerAsAliasTrigger: '', name: 'empty'},
+		{headerAsAliasTrigger: undefined, name: 'undefined'},
+		{headerAsAliasTrigger: null, name: 'null'},
+	]
+
+	it.each(emptyHeaderAsTriggerSymbols)('does not use the header as alias if header-as-alias-trigger character is $name', ({headerAsAliasTrigger}) => {
+		const headers = [
+			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
+		]
+
+		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection, Fake.Settings.withTriggerHeaderAsAliasSymbol(headerAsAliasTrigger))
+
+		const observedSuggestions = collector.getSuggestions('Header 1', fakeExistingNote)
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBeUndefined()
+		expect(suggestion.Title).toBe('Header 1')
 	})
 })
