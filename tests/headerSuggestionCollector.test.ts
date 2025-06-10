@@ -65,6 +65,38 @@ describe('when there are headers in the note', function () {
 		expect(suggestion.Title).toBe('Header 1')
 	})
 
+	test('uses the header as alias if bang character is given after header trigger', () => {
+		const headers = [
+			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
+		]
+
+		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection)
+
+		const observedSuggestions = collector.getSuggestions('Header 1!', fakeExistingNote)
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBe('Header 1')
+		expect(suggestion.Title).toBe('Header 1')
+	})
+
+	test('does not use the header as alias if header includes bang character', () => {
+		const headers = [
+			Fake.HeadingCache.withTitle('Header 1!').withLevel(1),
+		]
+
+		const headerMap = new Map<string, HeadingCache[]>([[fakeExistingNote.VaultPath, headers]])
+		const metadataCollection = Fake.MetaDataCollection.withHeaders(headerMap)
+		const collector = new HeaderSuggestionCollector(metadataCollection)
+
+		const observedSuggestions = collector.getSuggestions('Header 1!', fakeExistingNote)
+		expect(observedSuggestions.length).toBe(1)
+		const suggestion = observedSuggestions[0]
+		expect(suggestion.Alias).toBeUndefined()
+		expect(suggestion.Title).toBe('Header 1!')
+	})
+
 	test('uses the original note alias if two aliases are given', () => {
 		const headers = [
 			Fake.HeadingCache.withTitle('Header 1').withLevel(1),
