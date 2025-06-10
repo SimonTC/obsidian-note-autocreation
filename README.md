@@ -18,6 +18,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Filters link suggestions based on the text after the trigger                                           | ✔️               | ✔️                                                                                                      |     
 | Custom display text can be inserted by using the &#124; character                                      | ✔️               | ✔️                                                                                                      |     
 | Link to specific header can be inserted using the # character                                          | ✔️               | ✔️                                                                                                      |
+| Header can be quick-inserted as alias for note  														                                         | ❌                | ✔️ Configurable (`!` by default)                                                                        |
 | Link to specific block can be inserted using the ^ character                                           | ✔️               | ❌                                                                                                       |
 | Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                                                                      |
 | Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                                      |
@@ -144,6 +145,21 @@ You can choose to ignore the warning and still use any of the special symbols as
 ### Suggest existing links to notes that do not exist
 By default, Note Auto Creator will suggest links to notes that have not been created if such links have been inserted in other files.
 Disabling this feature will hide suggestions for links to notes that do not exist. 
+
+### Quick insert header as alias for note
+If you are creating a link to a header in a file, you can use a trigger symbol to insert the value of the header as the alias of the link.
+The trigger is `!` by default, but can be configured in the setting `Trigger for using header as alias`.
+
+**Examples**
+Assuming the trigger symbol is `!`, the following the links will be created:
+
+| Query                 | Header in file | Inserted link                                               |
+|-----------------------|----------------|-------------------------------------------------------------|
+| `MyNote#SomeHeader`   | `SomeHeader`   | `[[MyNote#SomeHeader]]`                                     |
+| `MyNote#SomeHeader!`  | `SomeHeader`   | `[[MyNote#SomeHeader\|SomeHeader]]`                         |
+| `MyNote#SomeHeader!!` | `SomeHeader`   | Nothing since no header in the file is called `SomeHeader!` |
+| `MyNote#SomeHeader!!` | `SomeHeader!`  | `[[MyNote#SomeHeader!\|SomeHeader!]]`                       |
+
 
 ### Enable relative paths
 Set this to true if you want an easy way to link to notes in the same folder as the active note or in the parent folder. 

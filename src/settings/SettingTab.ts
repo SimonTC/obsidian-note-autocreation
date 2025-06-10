@@ -30,6 +30,7 @@ export class SettingTab extends PluginSettingTab {
 		this.addSuggestNonExistingNotesSetting(containerEl)
 		this.addRelativePathsSetting(containerEl)
 		this.addFolderSearchTriggerSetting(containerEl)
+		this.addHeaderAsAliasTriggerSetting(containerEl)
 
 		// @ts-ignore
 		// No need to show the setting if templater does not exist
@@ -63,6 +64,19 @@ export class SettingTab extends PluginSettingTab {
 				this.removeValidationWarning(component, trigger)
 				this.warnIfTriggerIsProblematic(value, trigger, component)
 				this.plugin.settings.triggerSymbol = value
+				await this.plugin.saveSettings()
+			}))
+	}
+
+	private addHeaderAsAliasTriggerSetting(containerEl: HTMLElement) {
+		const trigger = new Setting(containerEl)
+			.setName('Trigger for using header as alias')
+			.setDesc('The text string that will trigger using a header as alias for the inserted link.')
+			.setTooltip('The string can contain only a single symbol such as ! ')
+		trigger.addText(component => component
+			.setValue(this.plugin.settings.triggerHeaderAsAliasSymbol)
+			.onChange(async (value) => {
+				this.plugin.settings.triggerHeaderAsAliasSymbol = value
 				await this.plugin.saveSettings()
 			}))
 	}
