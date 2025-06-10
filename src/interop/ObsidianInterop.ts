@@ -44,7 +44,7 @@ export class ObsidianInterop implements IObsidianInterop {
 	}
 
 	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null{
-		return this.getFile(filePath, currentFile)
+		return this.fileSystem.getFile(filePath, currentFile)
 	}
 
 	private async createFolderIfNeeded(creationCommand: FolderCreationCommand){
