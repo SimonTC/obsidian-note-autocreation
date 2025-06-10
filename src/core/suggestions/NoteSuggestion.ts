@@ -6,7 +6,7 @@ import {SuggestionRenderer} from "./SuggestionRenderer"
  */
 export abstract class NoteSuggestion extends FileSuggestion{
     /**
-	 * The alias of the suggestion. This is the name that is shown in the document where the link is inserted.
+	 * The alias of the suggestion. This is the name shown in the document where the link is inserted.
 	 */
 	Alias: string | undefined
 
@@ -62,7 +62,7 @@ export class ExistingNoteSuggestion extends NoteSuggestion{
 /**
  * Suggestion for a note that has not yet been created.
  * This could either be an existing link to a note that has not been created,
- * or it could be a completely new note that is not linked anywhere
+ * or it could be a completely new note not linked anywhere
  */
 export class NewNoteSuggestion extends NoteSuggestion{
 	get ForExistingNote(): boolean {

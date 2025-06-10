@@ -17,7 +17,7 @@ import {IConfigurationStore, IFileSystem} from "./ObsidianInterfaces"
 
 /**
  * Wrapper around the Link suggestor logic.
- * Enables testing of the core logic since no obsidian specific types needs to be used in LinkSuggestor.
+ * Enables testing of the core logic since no obsidian-specific types needs to be used in LinkSuggestor.
  */
 export class LinkSuggestorInterop extends EditorSuggest<ISuggestion> {
 	private wrapped: LinkSuggestor

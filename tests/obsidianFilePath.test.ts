@@ -77,7 +77,7 @@ describe('a single Obsidian file path', function () {
 		{path: 'folder1/note ', expected: 'folder1/note'}, // space after trigger
 		{path: 'Folder1/nOte ', expected: 'Folder1/nOte'}, // Capital letters
 		{path: ' folder/name ', expected: 'folder/name'}, // space before and after the trigger
-		{path: 'myNote.md', expected: 'myNote.md'}, // file with markdown extension
+		{path: 'myNote.md', expected: 'myNote.md'}, // file with Markdown extension
 		{path: 'myImage.png', expected: 'myImage.png'}, // file with other extension
 		{path: 'myNote', expected: 'myNote'}, // file without extension
 		{path: 'folder1/folder2/folder3/', expected: 'folder1/folder2/folder3/'}, // only folder

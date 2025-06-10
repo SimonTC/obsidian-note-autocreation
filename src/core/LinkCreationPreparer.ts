@@ -121,7 +121,7 @@ export class LinkCreationPreparer {
 			}
 			case 'root':
 			default:
-				// On default we assume that new files are created in root
+				// On default, we assume that new files are created in root
 				return pathInRoot
 		}
 	}

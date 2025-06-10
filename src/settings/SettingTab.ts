@@ -11,7 +11,7 @@ export class SettingTab extends PluginSettingTab {
 	private readonly configStore: IConfigurationStore
 	private readonly fileSystem: IFileSystem
 
-	// Problematic symbols are based on this table from the markdown guide:
+	// Problematic symbols are based on this table from the Markdown guide:
 	// https://www.markdownguide.org/basic-syntax/#characters-you-can-escape
 	private readonly problematicSymbols = ["\\", "`", "*", "_", "{", "}", "[", "]", "<", ">", "(", ")", "#", "+", "-", ".", "!", "|"]
 
@@ -251,7 +251,7 @@ export class SettingTab extends PluginSettingTab {
 	private addTemplaterTriggerSetting(containerEl: HTMLElement) {
 		new Setting(containerEl)
 			.setName('Trigger for executing Templater templates')
-			.setDesc('The text string that will trigger execution of a Tempalter template. Leave empty if you don\'t need the ability to trigger Templater templates')
+			.setDesc('The text string that will trigger execution of a Templater template. Leave empty if you don\'t need the ability to trigger Templater templates')
 			.addText(component => component
 				.setValue(this.plugin.settings.templateTriggerSymbol)
 				.onChange(async (value) => {

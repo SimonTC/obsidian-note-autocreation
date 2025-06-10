@@ -10,7 +10,6 @@ import {ISuggestion} from "./suggestions/ISuggestion"
 import {HeaderSuggestion} from "./suggestions/HeaderSuggestion"
 import {FolderSuggestion} from "./suggestions/FolderSuggestion"
 import {TemplateEngine} from "./templateApplication/TemplateEngine"
-import {ObsidianFolderPath} from "./paths/ObsidianFolderPath"
 import {ObsidianFilePath} from "./paths/ObsidianFilePath"
 
 export class LinkSuggestor {

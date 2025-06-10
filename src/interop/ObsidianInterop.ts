@@ -51,7 +51,7 @@ export class ObsidianInterop implements IObsidianInterop {
 		try{
 			await this.app.vault.createFolder(creationCommand.PathToNewFolder.VaultPath)
 		} catch (e) {
-			// Folder apparently already exists.
+			// The folder apparently already exists.
 			// This might happen if a folder of the same name but with different casing exist
 			console.debug('NAC: Failed folder creation. Folder probably already exist.')
 		}
@@ -63,7 +63,7 @@ export class ObsidianInterop implements IObsidianInterop {
 		try{
 			return await this.app.vault.create(creationCommand.PathToNewFile, creationCommand.NoteContent)
 		} catch (e) {
-			// File apparently already exists.
+			// The file apparently already exists.
 			// This might happen if a file of the same name but with different casing exist
 			console.debug('NAC: Failed file creation. File probably already exist.')
 		}

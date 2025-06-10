@@ -39,27 +39,26 @@ export interface IFileSystem{
 	folderExists(folderPath: ObsidianFolderPath): boolean
 
 	/**
-	 * Returns the file if it already exists. Otherwise it will create the file and folders.
+	 * Returns the file if it already exists. Otherwise, it will create the file and folders.
 	 * @param creationCommand the command used for creating the file and folders
-	 * @param suggestion the suggestion that should be converted to a note
 	 * @param currentFile the file currently active in Obsidian
 	 */
 	getOrCreateFileAndFoldersInPath(creationCommand: LinkCreationCommand, currentFile: TFile): Promise<TFile>
 
 	/**
-	 * Returns the file if it exists. Otherwise null is returned.
+	 * Returns the file if it exists. Otherwise, null is returned.
 	 * @param filePath the path to the file
 	 * @param currentFile the file currently active in Obsidian
 	 */
 	getFile(filePath: ObsidianFilePath, currentFile: TFile): TFile | null
 
 	/**
-	 * Generate a markdown link based on the user's preferences.
+	 * Generate a Markdown link based on the user's preferences.
 	 *
 	 * @param file – the file to link to.
 	 * @param sourcePath – where the link is stored in, used to compute relative links.
 	 * @param subpath – A subpath, starting with #, used for linking to headings or blocks.
-	 * @param alias – The display text if it's to be different than the file name. Pass empty string to use file name.
+	 * @param alias – The display text if it's to be different from the file name. Pass empty string to use file name.
 	 */
 	generateMarkdownLink(file: TFile, sourcePath: string, subpath?: string, alias?: string): string;
 
