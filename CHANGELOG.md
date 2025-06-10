@@ -1,6 +1,7 @@
 ## Next release (BRAT)
 ### Features
 - Make it possible to limit plugin to only work in specific folders
+- Make it possible to insert header as alias by using a trigger symbol
 
 ### Bug fixes
 - Fix issue where it was not possible to link to headers in a file
