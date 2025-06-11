@@ -128,11 +128,11 @@ export class SettingTab extends PluginSettingTab {
 					'If you leave this empty, the plugin will be active in all folders.'
 				],
 				example: [
-					'If you are trying to insert a link in "folder1/folder2/note.md" and you have configured "folder1" as an enabled folder then a link will be inserted. ',
-					'However, if you are trying to insert a link in "folder2/note.md" and you have configured "folder1" as an enabled folder then a link will not be inserted.',
+					'If you use the link insertion trigger symbol in "folder1/folder2/note.md" and you have configured "folder1" as an enabled folder then suggestions for links will be shown. ',
+					'However, if you have not configured folder1 as an enabled folder then the trigger symbol is handled as normal text and no suggestions are shown.',
 				],
 				outro: [
-					"If you only want suggestions from enabled folders, then you should also add the folders you want to be enabled as relative top folders."
+					"If you only want to see suggestions for notes in enabled folders, then you should also add the folders you want to be enabled as relative top folders."
 				]
 			},
 			enablePrioritization: false,
