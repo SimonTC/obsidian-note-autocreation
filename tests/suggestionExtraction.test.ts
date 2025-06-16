@@ -41,7 +41,8 @@ describe('a suggestion trigger using a single letter trigger symbol', function (
 			inputLine: inputLine,
 			cursorPosition: testData.cursorPosition,
 			expectedTrigger: expectedTrigger,
-			triggerSymbol: symbol}
+			triggerSymbol: symbol,
+			description: testData.description}
 	}))
 
 
