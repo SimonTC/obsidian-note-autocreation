@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 (2025-06-17)
+
+### Bug fixes
+- Fix issue where periods in note names where not supported (e.g. `1.1.2 My note`, `My note 1.2.3`, or `this.is.a.note` )
+
+### Improvements
+- Propose links to any type of file when triggering link insertion
+
 ## 1.5.0 (2025-06-11)
 ### Features
 - Make it possible to limit plugin to only work in specific folders
