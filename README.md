@@ -23,7 +23,7 @@ The suggestion drop-down works as the standard link suggestion activated by typi
 | Adds new root notes in the default location specified in "Default location for new notes"              | ✔️               | ✔️                                                                                                      |
 | Can search for notes by alias                                                                          | ✔️               | ✔️                                                                                                      |
 | Can disable suggestions for links to notes that do not exist                                           | ❌                | ✔️<br/>Links to non-existing notes are suggested by default, but this can be disabled                   |
-| Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ❌                                                                                                       |
+| Proposes other filetypes than markdown files when triggering link insertion                            | ✔️               | ✔️                                                                                                      |
 | Can limit note suggestions to notes from only part of the vault                                        | ❌                | ✔️                                                                                                      |
 | Can limit insertion of note suggestions to only be possible in part of the vault                       | ❌                | ✔️<br/>Note suggestion is active in all folders by default, but can be limited to specific folders only |
 | Suggests paths to folders                                                                              | ❌                | ✔️<br/>Folder suggestions are disabled by default but can be enabled in settings                        |
@@ -34,7 +34,7 @@ Some general notes:
 - To exit out of the note selection process, press `ESC`. Note that the drop-down will be shown again as soon as you being writing on the same line.
 - The type of link that is created by the Note Auto Creator is the same type of link that is created when using the standard Obsidian way. If [[Wikilinks]] have been enabled, then wikilinks are used. Otherwise markdown links are used. 
 - The new note that is created when using the Note Auto Creator will be an empty note unless a template is applied.
-- The sorting of the suggestions is not quite the same between the two link insertion methods, but the contents are the same except that only markdown files are suggested with Note Auto Creator.
+- The sorting of the suggestions is not quite the same between the two link insertion methods, but the contents are the same.
 
 ### Inserting templates
 ![template demo](https://raw.githubusercontent.com/SimonTC/obsidian-note-autocreation/master/readme_assets/NAC-template%20demo.gif)
