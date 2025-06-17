@@ -65,6 +65,11 @@ export class ObsidianFilePath extends ObsidianPath{
 		this.VaultPathWithoutExtension = this.NoteIsInRoot ? title : `${folderPath}/${title}`
 	}
 
+	// From https://help.obsidian.md/file-formats
+	private static supportedFileTypes: Set<string> = new Set([
+		"md", "base", "canvas", "avif", "bmp", "gif", "jpeg", "jpg", "png", "svg", "webp", "flac", "m4a", "mp3", "ogg", "wav", "webm", "3gp", "mkv", "mov", "mp4", "ogv", "webm", "pdf"
+	])
+
 	private static extractPathParts(fullPath: string): {vaultPath: string, folderPath: string, title: string, extension: string, fileNameWithPossibleExtension: string} {
 		// eslint-disable-next-line prefer-const
 		let [vaultPath] = fullPath.split(/[|#]/)
@@ -74,12 +79,14 @@ export class ObsidianFilePath extends ObsidianPath{
 			: [vaultPath.slice(0, fileNameStartsAt), vaultPath.slice(fileNameStartsAt + 1) ]
 
 		const extensionStartsAt = fileNameWithPossibleExtension.lastIndexOf('.')
-		const title = extensionStartsAt === -1
-			? fileNameWithPossibleExtension
-			: fileNameWithPossibleExtension.slice(0, extensionStartsAt)
 		const extension = extensionStartsAt !== -1
 			? fileNameWithPossibleExtension.slice(extensionStartsAt + 1)
 			: ''
-		return {vaultPath, folderPath, title, extension, fileNameWithPossibleExtension}
+		const includeExtensionInTitle = !this.supportedFileTypes.has(extension)
+		const title = extensionStartsAt === -1 || includeExtensionInTitle
+			? fileNameWithPossibleExtension
+			: fileNameWithPossibleExtension.slice(0, extensionStartsAt)
+		const extensionToUse = includeExtensionInTitle ? '' : extension
+		return {vaultPath, folderPath, title, extension: extensionToUse, fileNameWithPossibleExtension}
 	}
 }
