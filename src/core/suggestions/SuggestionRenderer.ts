@@ -6,6 +6,7 @@ export type FlairParams = {
 export type RenderingParams = {
 	content: string
 	note: string
+	fileTag?: string
 	flair?: FlairParams
 }
 
@@ -32,6 +33,14 @@ export class SuggestionRenderer {
 			cls: "suggestion-note",
 			text: params.note
 		})
+
+		if (params.fileTag) {
+			el.createDiv({
+				cls: "nav-file-tag",
+				text: params.fileTag
+			})
+		}
+
 
 		if (params.flair){
 			const aux = el.createDiv({

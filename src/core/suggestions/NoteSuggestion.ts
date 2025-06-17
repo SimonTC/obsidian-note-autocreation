@@ -55,6 +55,7 @@ export class ExistingNoteSuggestion extends NoteSuggestion{
 		SuggestionRenderer.RenderSuggestion(el, {
 			content: this.Title,
 			note: this.FolderPath + '/',
+			fileTag: this.Path.Extension
 		})
 	}
 }
