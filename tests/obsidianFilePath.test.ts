@@ -17,7 +17,7 @@ describe('a single Obsidian file path', function () {
 	it.each([
 		{path: 'folder1/folder2/mynote.md', expectedTitle: 'mynote'}, // normal link
 		{path: 'folder1/folder2/some note', expectedTitle: 'some note'}, // link without extension
-		{path: 'folder1/folder2/with some extension.exe', expectedTitle: 'with some extension'}, // link with other extension
+		{path: 'folder1/folder2/with some extension.5', expectedTitle: 'with some extension.5'}, // link with extension not supported by Obsidian
 		{path: 'folder1/My note.md', expectedTitle: 'My note'}, // Capitalized
 	])('uses title $expectedTitle when path is $path', ({path, expectedTitle}) => {
 		const obsidianPath = new ObsidianFilePath(path)
@@ -28,7 +28,7 @@ describe('a single Obsidian file path', function () {
 	it.each([
 		{path: 'folder1/folder2/.md'},
 		{path: 'folder1/'},
-		{path: 'folder1/.exe'},
+		{path: 'folder1/.png'},
 		{path: ''},
 		{path: '/'},
 	])('has empty title when path is $path', ({path}) => {
@@ -52,7 +52,7 @@ describe('a single Obsidian file path', function () {
 		{path: 'folder1/note', expectedExtension: ""},
 		{path: 'folder1/note.', expectedExtension: ""},
 		{path: 'folder1/folder2/', expectedExtension: ""},
-		{path: 'folder/name.txt', expectedExtension: 'txt'},
+		{path: 'folder/name.txt', expectedExtension: ''},
 	])('stores extension as $expectedExtension when path is $path', ({path, expectedExtension}) => {
 		const obsidianPath = new ObsidianFilePath(path)
 
@@ -88,17 +88,17 @@ describe('a single Obsidian file path', function () {
 	})
 
 	test('does not include alias', () => {
-		const path = 'folder1/folder3/my file.exe|this is my alias'
+		const path = 'folder1/folder3/my file.md|this is my alias'
 		const obsidianPath = new ObsidianFilePath(path)
 
 		const expectedPath = {
-			VaultPath: 'folder1/folder3/my file.exe',
+			VaultPath: 'folder1/folder3/my file.md',
 			VaultPathWithoutExtension: 'folder1/folder3/my file',
 			Title: 'my file',
 			FolderPath: new ObsidianFolderPath('folder1/folder3'),
 			NoteIsInRoot: false,
-			Extension: 'exe',
-			FileNameWithPossibleExtension: 'my file.exe'
+			Extension: 'md',
+			FileNameWithPossibleExtension: 'my file.md'
 		}
 
 		expect(obsidianPath).toEqual(expectedPath)
@@ -106,17 +106,17 @@ describe('a single Obsidian file path', function () {
 	})
 
 	test('does not include link to header', () => {
-		const path = 'folder1/folder3/my file.exe#some header'
+		const path = 'folder1/folder3/my file.md#some header'
 		const obsidianPath = new ObsidianFilePath(path)
 
 		const expectedPath = {
-			VaultPath: 'folder1/folder3/my file.exe',
+			VaultPath: 'folder1/folder3/my file.md',
 			VaultPathWithoutExtension: 'folder1/folder3/my file',
 			Title: 'my file',
 			FolderPath: new ObsidianFolderPath('folder1/folder3'),
 			NoteIsInRoot: false,
-			Extension: 'exe',
-			FileNameWithPossibleExtension: 'my file.exe'
+			Extension: 'md',
+			FileNameWithPossibleExtension: 'my file.md'
 		}
 
 		expect(obsidianPath).toEqual(expectedPath)
